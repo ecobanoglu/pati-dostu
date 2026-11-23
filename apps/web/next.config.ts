@@ -8,6 +8,7 @@ if (existsSync("../../.env")) process.loadEnvFile("../../.env")
 
 const nextConfig: NextConfig = {
   cacheComponents: true,
+  partialPrefetching: true,
   typedRoutes: true,
 }
 

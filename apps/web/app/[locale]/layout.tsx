@@ -37,10 +37,18 @@ export const viewport: Viewport = {
 export default async function LocaleLayout({ children }: LayoutProps<"/[locale]">) {
   const locale = await getLocale()
   if (!hasLocale(routing.locales, locale)) notFound()
+  const t = await getTranslations("Common")
 
   return (
     <html lang={locale} className={nunito.variable}>
       <body>
+        {/* Klavye kullanıcıları için menüyü atlayıp içeriğe geçiş (Tab ile ilk odaklanan öğe). */}
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded-lg focus:bg-primary focus:px-4 focus:py-3 focus:font-bold focus:text-primary-foreground"
+        >
+          {t("skipToContent")}
+        </a>
         <NextIntlClientProvider>{children}</NextIntlClientProvider>
       </body>
     </html>

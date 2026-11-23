@@ -46,7 +46,12 @@ export const routing = defineRouting({
     "/account/listings": { tr: "/hesabim/ilanlarim", en: "/account/listings" },
     "/account/messages": { tr: "/hesabim/mesajlar", en: "/account/messages" },
     "/account/favorites": { tr: "/hesabim/favoriler", en: "/account/favorites" },
+    "/account/questions": { tr: "/hesabim/sorularim", en: "/account/questions" },
+    "/account/saved-searches": { tr: "/hesabim/kayitli-aramalar", en: "/account/saved-searches" },
+    "/account/notifications": { tr: "/hesabim/bildirimler", en: "/account/notifications" },
     "/account/settings": { tr: "/hesabim/ayarlar", en: "/account/settings" },
+    "/organization": { tr: "/kurum", en: "/organization" },
+    "/organization/appointments": { tr: "/kurum/randevular", en: "/organization/appointments" },
     "/account/organization-application": {
       tr: "/hesabim/kurumsal-basvuru",
       en: "/account/organization-application",

@@ -3,6 +3,7 @@ import { betterAuth } from "better-auth"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
 import { APIError, createAuthMiddleware } from "better-auth/api"
 import { admin, openAPI } from "better-auth/plugins"
+import { isStrongPassword, normalizeTurkishMobile } from "@pati-dostu/validators"
 import { eq } from "drizzle-orm"
 
 import { ErrorCode } from "../common/errors.js"
@@ -11,16 +12,7 @@ import type { MailService } from "../mail/mail.service.js"
 import { type MailLocale, resetPasswordMail, verifyEmailMail } from "../mail/templates.js"
 import { ac, roles } from "./permissions.js"
 
-/** Kayıt formundaki kural: en az 8 karakter, harf ve rakam içermeli. */
-const PASSWORD_RULE = /^(?=.*\p{L})(?=.*\d).{8,128}$/u
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
-
-/** "0532 123 45 67", "+90 532…", "532…" → "+905321234567"; geçersizse null. */
-export function normalizeTurkishMobile(input: string): string | null {
-  const digits = input.replace(/[\s()-]/g, "")
-  const match = /^(?:\+?90|0)?(5\d{9})$/.exec(digits)
-  return match ? `+90${match[1]}` : null
-}
 
 const LOCALES = ["tr", "en"] as const
 
@@ -29,6 +21,23 @@ const invalid = (code: ErrorCode, message: string) => new APIError("BAD_REQUEST"
 
 /** Kullanıcının e-posta dili; bilinmiyorsa Türkçe. */
 const mailLocale = (u: object): MailLocale => ("locale" in u && u.locale === "en" ? "en" : "tr")
+
+/** Web'deki "E-postanı doğrula" sayfası, dile göre (apps/web/i18n/routing.ts › pathnames ile aynı). */
+const VERIFY_EMAIL_PATH: Record<MailLocale, string> = { tr: "/e-posta-dogrula", en: "/en/verify-email" }
+
+/**
+ * Doğrulama bağlantısının, doğrulamadan sonra web'e dönmesini sağlar. Web kayıt formu kendi dönüş adresini verir;
+ * ama girişte doğrulanmamış kullanıcıya Better Auth'un kendiliğinden gönderdiği e-postada dönüş adresi "/" olur
+ * ve kullanıcı API'nin kök adresine düşerdi. Böyle durumlarda dönüş adresi kullanıcının dilindeki doğrulama sayfası yapılır.
+ */
+export function withWebCallback(url: string, locale: MailLocale): string {
+  const link = new URL(url)
+  const callback = link.searchParams.get("callbackURL")
+  if (!callback || !callback.startsWith(env.WEB_URL)) {
+    link.searchParams.set("callbackURL", `${env.WEB_URL}${VERIFY_EMAIL_PATH[locale]}?verified=1`)
+  }
+  return link.toString()
+}
 
 /** Better Auth örneğini oluşturur: e-posta/şifre ve Google girişi, e-posta doğrulama, şifre sıfırlama, roller ve kayıt formu kuralları. */
 export function createAuth(db: Database, mail: MailService) {
@@ -62,7 +71,8 @@ export function createAuth(db: Database, mail: MailService) {
       autoSignInAfterVerification: true,
       expiresIn: 60 * 60 * 24,
       sendVerificationEmail: async ({ user, url }) => {
-        await mail.send(verifyEmailMail(mailLocale(user), user.email, user.name, url))
+        const locale = mailLocale(user)
+        await mail.send(verifyEmailMail(locale, user.email, user.name, withWebCallback(url, locale)))
       },
     },
 
@@ -101,13 +111,13 @@ export function createAuth(db: Database, mail: MailService) {
           if (body.acceptTerms !== true) {
             throw invalid(ErrorCode.TERMS_NOT_ACCEPTED, "KVKK Aydınlatma Metni ve Kullanım Şartları kabul edilmelidir.")
           }
-          if (typeof body.password !== "string" || !PASSWORD_RULE.test(body.password)) {
+          if (typeof body.password !== "string" || !isStrongPassword(body.password)) {
             throw invalid(ErrorCode.PASSWORD_WEAK, "Şifre en az 8 karakter olmalı; harf ve rakam içermelidir.")
           }
         }
 
         if (ctx.path === "/reset-password" || ctx.path === "/change-password") {
-          if (typeof body.newPassword !== "string" || !PASSWORD_RULE.test(body.newPassword)) {
+          if (typeof body.newPassword !== "string" || !isStrongPassword(body.newPassword)) {
             throw invalid(ErrorCode.PASSWORD_WEAK, "Şifre en az 8 karakter olmalı; harf ve rakam içermelidir.")
           }
         }

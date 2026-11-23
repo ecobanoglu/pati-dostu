@@ -16,6 +16,7 @@
     "@nestjs/platform-express": "^12.6.0",
     "@nestjs/swagger": "^12.1.2",
     "@pati-dostu/db": "workspace:*",
+    "@pati-dostu/validators": "workspace:*",
     "better-auth": "^1.7.27",
     "drizzle-orm": "^0.45.4",
     "nestjs-zod": "^5.6.0",

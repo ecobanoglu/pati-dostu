@@ -5,12 +5,13 @@ import { ZodSerializerInterceptor, ZodValidationPipe } from "nestjs-zod"
 import { AuthModule } from "./auth/auth.module.js"
 import { HttpExceptionFilter } from "./common/http-exception.filter.js"
 import { DatabaseModule } from "./database/database.module.js"
+import { DictionaryModule } from "./dictionary/dictionary.module.js"
 import { HealthModule } from "./health/health.module.js"
 import { MailModule } from "./mail/mail.module.js"
 import { UsersModule } from "./users/users.module.js"
 
 @Module({
-  imports: [DatabaseModule, MailModule, AuthModule, HealthModule, UsersModule],
+  imports: [DatabaseModule, MailModule, AuthModule, HealthModule, UsersModule, DictionaryModule],
   providers: [
     // Tüm girişler Zod şemalarıyla (createZodDto) doğrulanır.
     { provide: APP_PIPE, useClass: ZodValidationPipe },

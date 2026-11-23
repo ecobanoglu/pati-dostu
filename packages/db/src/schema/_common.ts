@@ -28,8 +28,20 @@ export const tsvector = customType<{ data: string }>({
 
 export const roleEnum = pgEnum("role", ["user", "clinic", "shelter", "admin"])
 
+/** Desteklenen diller (apps/web/i18n/routing.ts ile aynı). */
+export const locales = ["tr", "en"] as const
+export type Locale = (typeof locales)[number]
+
+/** Çevrilebilir metin (tür, ırk, kategori adları): Türkçe zorunlu, diğer diller isteğe bağlı. */
+export type LocalizedText = { tr: string } & Partial<Record<Exclude<Locale, "tr">, string>>
+
+/** Çevrilebilir metnin istenen dildeki karşılığı; çevirisi yoksa Türkçe. */
+export function localize(text: LocalizedText, locale: Locale): string {
+  return text[locale] ?? text.tr
+}
+
 /** Arayüz ve e-posta dili. Varsayılan Türkçe; İngilizce kodda hazır, yayında kapalı. */
-export const localeEnum = pgEnum("locale", ["tr", "en"])
+export const localeEnum = pgEnum("locale", locales)
 
 export const organizationTypeEnum = pgEnum("organization_type", ["clinic", "shelter"])
 

@@ -1,6 +1,6 @@
-import { boolean, index, pgTable, smallint, text, unique, uuid } from "drizzle-orm/pg-core"
+import { boolean, index, jsonb, pgTable, smallint, text, unique, uuid } from "drizzle-orm/pg-core"
 
-import { id, sizeEnum, timestamps } from "./_common.js"
+import { id, type LocalizedText, sizeEnum, timestamps } from "./_common.js"
 
 export const city = pgTable("city", {
   id: id(),
@@ -26,7 +26,8 @@ export const district = pgTable(
 
 export const species = pgTable("species", {
   id: id(),
-  name: text().notNull(),
+  /** Dile göre ad: { tr, en }. Türkçe zorunlu; çevirisi olmayan dilde Türkçe gösterilir. */
+  name: jsonb().$type<LocalizedText>().notNull(),
   slug: text().notNull().unique(),
   /** lucide ikon adı: cat, dog, bird, rabbit */
   icon: text(),
@@ -41,7 +42,8 @@ export const breed = pgTable(
     speciesId: uuid()
       .notNull()
       .references(() => species.id),
-    name: text().notNull(),
+    /** Dile göre ad: { tr, en }. Türkçe zorunlu; çevirisi olmayan dilde Türkçe gösterilir. */
+    name: jsonb().$type<LocalizedText>().notNull(),
     slug: text().notNull(),
     /** Köpek ırklarında tipik boyut; ilan formunda öneri olarak kullanılır. */
     size: sizeEnum(),

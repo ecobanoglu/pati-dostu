@@ -9,13 +9,13 @@
  */
 import { readFileSync } from "node:fs"
 
-import { and, eq } from "drizzle-orm"
+import { and, eq, sql } from "drizzle-orm"
 
 import { createDb } from "../client.js"
 import { bannedTerm, breed, city, district, moderationRule, species } from "../schema/index.js"
 import { normalizeTurkish, slugify } from "../text.js"
 import { bannedTermSeed, moderationRuleSeed } from "./data/moderation.js"
-import { speciesSeed } from "./data/species.js"
+import { mixedBreedName, speciesSeed } from "./data/species.js"
 
 type CitySeed = { plate: number; name: string; districts: string[] }
 
@@ -46,22 +46,31 @@ async function seedCities() {
   console.log(`  il: ${cities.length}, ilçe: ${districts.length}`)
 }
 
-/** Türleri ve her türün ırklarını ("Melez / Bilinmiyor" ilk sırada) ekler. */
+/**
+ * Var olan kayıtta yalnızca eksik dilleri doldurur: excluded || mevcut → mevcut anahtarlar (admin düzenlemeleri)
+ * korunur, seed'deki yeni diller (ör. "en") eklenir.
+ */
+const fillMissingLocales = (table: typeof species | typeof breed) => sql`excluded.name || ${table.name}`
+
+/** Türleri ve her türün ırklarını ("Melez / Bilinmiyor" ilk sırada) ekler; mevcutlarda eksik çevirileri tamamlar. */
 async function seedSpecies() {
   let breedCount = 0
   for (const [index, s] of speciesSeed.entries()) {
     await db
       .insert(species)
       .values({ name: s.name, slug: s.slug, icon: s.icon, sortOrder: index })
-      .onConflictDoNothing()
+      .onConflictDoUpdate({ target: species.slug, set: { name: fillMissingLocales(species) } })
     const [row] = await db.select({ id: species.id }).from(species).where(eq(species.slug, s.slug))
     if (!row) throw new Error(`Tür bulunamadı: ${s.slug}`)
 
     const breeds = [
-      { speciesId: row.id, name: "Melez / Bilinmiyor", slug: "melez", isMixed: true },
-      ...s.breeds.map((b) => ({ speciesId: row.id, name: b.name, slug: slugify(b.name), size: b.size })),
+      { speciesId: row.id, name: mixedBreedName, slug: "melez", isMixed: true },
+      ...s.breeds.map((b) => ({ speciesId: row.id, name: b.name, slug: slugify(b.name.tr), size: b.size })),
     ]
-    await db.insert(breed).values(breeds).onConflictDoNothing()
+    await db
+      .insert(breed)
+      .values(breeds)
+      .onConflictDoUpdate({ target: [breed.speciesId, breed.slug], set: { name: fillMissingLocales(breed) } })
     breedCount += breeds.length
   }
   console.log(`  tür: ${speciesSeed.length}, ırk: ${breedCount}`)

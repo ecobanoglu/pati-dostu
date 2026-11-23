@@ -77,14 +77,30 @@ Bir özelliğe başlamadan önce: taslaktaki ilgili sayfa bölümünü, API sat�
 - **Erişilebilirlik (zorunlu):** metin kontrastı ≥ 4.5:1 (çiftler `globals.css` yorumlarında); dokunma hedefi ≥ 44 px (`min-h-tap`); her form alanının görünür etiketi; hatalar `aria-invalid` + `aria-describedby`; ikon butonlarında `aria-label`; renk tek başına anlam taşımaz; klavye ile tüm akışlar kullanılabilir; `prefers-reduced-motion` desteklenir.
 - Her ekran masaüstü ve mobil olarak tasarlandı; mobilde alt menü (Anasayfa, İlanlar, İlan Ver, Mesajlar, Profil) vardır.
 
-## Şu anki adım: Yol haritası 1. aşama — Kurulum ve temel
+## Şu anki adım: Yol haritası 2. aşama — İlanlar
 
-1. Monorepo iskeleti: `pnpm-workspace.yaml`, `turbo.json`, `packages/tsconfig` (TS 6), ESLint + Prettier, `.gitignore`, `.nvmrc` (Node 24), `.env.example`, `.github/workflows/ci.yml` (typecheck, lint, build).
-2. `apps/web` (Next.js 16) — bu repodaki `globals.css`, `lib/utils.ts` ve `components/ui/*` dosyalarını koruyarak; shadcn init; Nunito; boş anasayfa.
-3. `apps/api` (NestJS 12) — `GET /api/v1/health`, Zod doğrulama, Swagger (`/api/v1/docs`).
-4. Yerel ortam: yerel Postgres 17 + `docker-compose.yml` (redis, serverless-redis-http, mailpit, RustFS + bucket). `README.md`'ye "İlk kurulum" bölümü.
-5. `packages/db`: Drizzle yapılandırması, şema (taslaktaki *Veritabanı şeması*), ilk migration, seed (il/ilçe, tür/ırk, örnek yasaklı kelimeler).
-6. Better Auth: kayıt, giriş, e-posta doğrulama, şifre sıfırlama, roller; Resend (geliştirmede Mailpit).
-7. Web kabuğu: üst menü (misafir ve giriş yapılmış hâlleri), footer, mobil alt menü, giriş/kayıt/şifre sayfaları — `docs/tasarim/01-sayfalar` ve `02-hesabim/…ust-menu…`.
+1. aşama (Kurulum ve temel) tamamlandı: monorepo, web, API, yerel Postgres, `packages/db` + seed, Better Auth, çoklu dil (next-intl), web kabuğu ve kimlik sayfaları.
 
-Her alt adım ayrı, küçük ve çalışır durumda bir commit olacak şekilde ilerle; adım sonunda kullanıcıya neyi nasıl deneyeceğini ve önerilen commit mesajını yaz.
+**Hazır olanlar (yeniden yazma, genişlet):** `packages/validators` (Zod şemaları, hata kodu döner), API `common/errors.ts` + hata filtresi, `AuthGuard` (`@Public`, `@Roles`, `@RequirePermissions`), `GET /api/v1/cities`, web `components/form/*` (Field, Input, Select, PasswordInput, Checkbox), `lib/errors.ts` (`useErrorMessage`), `lib/session.ts` (`getCurrentUser`), proxy'de korumalı yollar (`/ilan-ver` dahil).
+
+**Alt adımlar** (API uçları taslaktaki *API uç noktaları* tablosuna göre; ekranlar `docs/tasarim/README.md` üzerinden masaüstü + mobil):
+
+1. ✅ **Sözlük API'si:** `GET /cities/{id}/districts`, `GET /species?locale=`, `GET /species/{id}/breeds?locale=` ("Melez / Bilinmiyor" ilk sırada). Tür/ırk adları jsonb `{ tr, en }` (`LocalizedText`, `localize()` — `packages/db`). Web'de önbellekli okuma: `lib/dictionary.ts` (`getCities`, `getDistricts`, `getSpecies`, `getBreeds`).
+2. **Dosya yükleme:** S3 istemcisi (`@aws-sdk/client-s3` + presigner; yerelde RustFS, yayında R2), `POST /listings/{id}/images/upload-url` (imzalı PUT; tür ve boyut sınırı, en fazla 5), `PUT /listings/{id}/images` (sıra, kapak). Web `ImageUploader` (sürükle-bırak, önizleme, kapak seçimi, klavyeyle sıralama). Ön koşul: Docker'daki RustFS çalışıyor olmalı.
+3. **İçerik filtresi:** API'de `ModerationService` (telefon, e-posta, URL, IBAN, fiyat kalıpları + `banned_term`, `normalizeTurkish` ile). Eşleşirse kayıt yok, kod döner (`CONTENT_BLOCKED` + kural); `moderation_hit` sayılır, metin saklanmaz. İlan başlığı/açıklaması bundan geçer.
+4. **İlan API'si:** `POST /listings` (onaya gönder → `pending`), `PATCH /listings/{id}` (her düzenleme yeniden `pending`), `DELETE` (yumuşak), `POST /listings/{id}/status` (sahiplendirildi/kapatıldı), `GET /me/listings`, `GET /listings` (filtreler, sıralama, sayfalama, `searchVector` ile arama; yalnız `active`), `GET /listings/{id}` (telefon yalnız `showPhone` + oturum; çip numarası yalnız admin), `GET /listings/{id}/similar`. Admin onay uçları (`/admin/listings…` approve / reject / request-changes) — arayüzü 5. aşamada; şimdilik Swagger'dan denenir. Satış yasağı ve onay akışı CLAUDE.md › Ürün kuralları.
+5. **İlan ver formu (YZ'siz):** `/ilan-ver`, çok adımlı (tasarım 04, 21, 20), taslak › *İlan oluşturma* alanları; türe göre ırk, ile göre ilçe; kayıp/bulunan için son görülme konumu; "Telefonumu göster" varsayılan kapalı; e-postası doğrulanmamış kullanıcı ilan veremez.
+6. **İlan listeleme:** `/ilanlar`, `/ilanlar/[kategori]`, `/ilanlar/[kategori]/[sehir]` (tasarım 02, 17, 18). Sol filtre paneli (mobilde Sheet), filtreler URL'de (nuqs), ilk sayfa SSR + TanStack Query; ilan kartı bileşeni (tür rozeti `Badge`).
+7. **İlan detay:** `/ilan/[slug]-[id]` (tasarım 03, 19): galeri (lightbox), özellik tablosu, ilan sahibi kartı, telefon gizliliği (Ara / WhatsApp yalnız `showPhone` + giriş), benzer ilanlar, görüntülenme sayısı; yalnız `active` ilanlar (değilse 404).
+8. **Favoriler:** `PUT/DELETE /listings/{id}/favorite`, `GET /me/favorites`; kartta ve detayda kalp butonu (misafirde girişe yönlendirir).
+9. **Paylaşım görseli:** `next/og` ile 6 şablon (Klasik, Polaroid, Afiş, Minimal, Turuncu, Karakter), post (1:1) ve story (9:16); kayıp/bulunanda Afiş varsayılan; **telefon asla yer almaz**.
+10. **Anasayfa:** hero arama formu (şehir, tür, cinsiyet, yaş → `/ilanlar?…`) ve "En yeni ilanlar" gerçek veriyle (tasarım 01, 16). Topluluk ve blog bölümleri 4. aşamada.
+
+Her alt adım ayrı, küçük ve çalışır durumda bir commit olacak şekilde ilerle; adım sonunda kullanıcıya neyi nasıl deneyeceğini ve önerilen commit mesajını yaz. Arayüz işlerinde sonucu tarayıcıda (masaüstü 1440 px + mobil 390 px) tasarımla karşılaştır.
+
+**1. aşamadan açık kalanlar** (ilgili adımda ya da kullanıcı hazır olunca):
+- `docker-compose.yml` servisleri (redis, serverless-redis-http, mailpit, RustFS) Docker kurulu olmadığı için hiç çalıştırılmadı; 2. alt adımdan önce doğrulanmalı.
+- Üst menüdeki **megamenü** (taslak 1. aşamada) yapılmadı; ilan kategorileri netleşince (6. alt adım) eklenecek.
+- Better Auth istek sınırlaması bellekte; Redis hazır olunca `secondaryStorage` ile Upstash'e bağlanacak.
+- Google ile giriş: kimlik bilgileri girilince `NEXT_PUBLIC_GOOGLE_AUTH=true`.
+- Şifre değişince tüm oturumlar kapanır (karar). Sıfırlamada uygulanıyor; şifre değiştirme (3. aşama, Profil ve ayarlar) için API'deki Better Auth hook'unda `/change-password` isteğine `revokeOtherSessions: true` zorla — istemciye bırakma.

@@ -5,3 +5,4 @@ packages:
 # Kurulum betiği çalıştırma izinleri
 allowBuilds:
   "@scarf/scarf": false # swagger-ui-dist'in telemetrisi
+  esbuild: true # drizzle-kit ve tsx için platform ikili dosyası

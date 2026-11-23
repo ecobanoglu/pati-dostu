@@ -1,3 +1,7 @@
 packages:
   - "apps/*"
   - "packages/*"
+
+# Kurulum betiği çalıştırma izinleri
+allowBuilds:
+  "@scarf/scarf": false # swagger-ui-dist'in telemetrisi

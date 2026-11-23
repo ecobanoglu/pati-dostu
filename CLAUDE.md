@@ -30,7 +30,7 @@ Bir özelliğe başlamadan önce: taslaktaki ilgili sayfa bölümünü, API sat�
 - **apps/web:** Next.js 16 (App Router, Cache Components, `proxy.ts`), React 19, Tailwind CSS 4.3, shadcn/ui (CLI v4, Base UI), TanStack Query v5, react-hook-form + Zod 4.
 - **apps/api:** NestJS 12, tek Vercel Function olarak çalışır; tüm uçlar `/api/v1` önekiyle. nestjs-zod v5 + @nestjs/swagger; OpenAPI'den `packages/api-client` üretilir.
 - **Kimlik:** Better Auth 1.7 — web'de cookie, mobilde bearer (Expo eklentisi). Roller: `admin`, `clinic`, `shelter` (arayüzde "Barınak"), `user`. Şifre sıfırlama / e-posta doğrulama Better Auth uçlarıyla (`/api/auth/*`).
-- **Veri:** Drizzle ORM 0.45.x + drizzle-kit 0.31.x + drizzle-zod; Postgres (geliştirmede yerel Supabase, yayında Supabase). Dosyalar Supabase Storage, imzalı yükleme URL'leriyle.
+- **Veri:** Drizzle ORM 0.45.x + drizzle-kit 0.31.x + drizzle-zod; Postgres 17 (geliştirmede bilgisayardaki yerel Postgres, yayında Supabase — **yalnızca veritabanı**; Supabase Auth/Storage/Realtime kullanılmaz). Dosyalar **Cloudflare R2** (S3 API, `@aws-sdk/client-s3`), imzalı yükleme URL'leriyle; geliştirmede docker-compose'daki RustFS (S3 uyumlu).
 - **Gerçek zamanlı:** Socket.IO `MessagingGateway` + Redis adaptörü; WebSocket kurulamazsa polling. **Supabase Realtime kullanılmaz.**
 - **Redis:** Upstash (`@upstash/ratelimit` ile istek sınırlama + Socket.IO adaptörü). Geliştirmede yerel Redis + `serverless-redis-http` (Upstash REST taklidi).
 - **E-posta:** Resend; geliştirmede Mailpit yakalar.
@@ -75,7 +75,7 @@ Bir özelliğe başlamadan önce: taslaktaki ilgili sayfa bölümünü, API sat�
 1. Monorepo iskeleti: `pnpm-workspace.yaml`, `turbo.json`, `packages/tsconfig` (TS 6), ESLint + Prettier, `.gitignore`, `.nvmrc` (Node 24), `.env.example`, `.github/workflows/ci.yml` (typecheck, lint, build).
 2. `apps/web` (Next.js 16) — bu repodaki `globals.css`, `lib/utils.ts` ve `components/ui/*` dosyalarını koruyarak; shadcn init; Nunito; boş anasayfa.
 3. `apps/api` (NestJS 12) — `GET /api/v1/health`, Zod doğrulama, Swagger (`/api/v1/docs`).
-4. Yerel ortam: Supabase CLI (`supabase init`, `supabase start`) + `docker-compose.yml` (redis, serverless-redis-http, mailpit). `README.md`'ye "İlk kurulum" bölümü.
+4. Yerel ortam: yerel Postgres 17 + `docker-compose.yml` (redis, serverless-redis-http, mailpit, RustFS + bucket). `README.md`'ye "İlk kurulum" bölümü.
 5. `packages/db`: Drizzle yapılandırması, şema (taslaktaki *Veritabanı şeması*), ilk migration, seed (il/ilçe, tür/ırk, örnek yasaklı kelimeler).
 6. Better Auth: kayıt, giriş, e-posta doğrulama, şifre sıfırlama, roller; Resend (geliştirmede Mailpit).
 7. Web kabuğu: üst menü (misafir ve giriş yapılmış hâlleri), footer, mobil alt menü, giriş/kayıt/şifre sayfaları — `docs/tasarim/01-sayfalar` ve `02-hesabim/…ust-menu…`.

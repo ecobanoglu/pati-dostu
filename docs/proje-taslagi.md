@@ -106,8 +106,8 @@ Proje Kasım 2026 itibarıyla güncel sürümlerle başlar: Next.js 16.4 + React
 | URL durumu | nuqs | son sürüm | Filtrelerin URL'de tutulması (paylaşılabilir arama) |
 | Kimlik doğrulama | [Better Auth](https://better-auth.com/changelog) | 1.7 | E-posta/şifre, Google OAuth, e-posta doğrulama, admin plugin (rol, ban), access control |
 | ORM | [Drizzle ORM](https://orm.drizzle.team/docs/upgrade-v1) + drizzle-kit | 0.45.x (drizzle-kit 0.31.x) | Şema, migration, seed, `drizzle-zod` |
-| Veritabanı | Supabase PostgreSQL | yönetilen servis | Full-text search (tsvector), pg\_trgm, ileride PostGIS |
-| Dosya | Supabase Storage | – | İlan görselleri, avatar, blog kapakları |
+| Veritabanı | PostgreSQL 17 (yayında Supabase, yalnızca veritabanı) | yönetilen servis | Full-text search (tsvector), pg\_trgm, ileride PostGIS |
+| Dosya | Cloudflare R2 (S3 API) | – | İlan görselleri, avatar, blog kapakları; geliştirmede RustFS |
 | Gerçek zamanlı | Socket.IO (NestJS Gateway) + Upstash Redis adaptörü | – | Mesajlaşmada anlık olaylar (yeni mesaj, okundu, yazıyor) |
 | Zengin metin | Tiptap | son sürüm | Blog/haber editörü (admin) |
 | Görsel üretimi | next/og (Satori) | Next.js ile gelir | İlan paylaşım görseli (Instagram/WhatsApp kartı) |
@@ -116,11 +116,11 @@ Proje Kasım 2026 itibarıyla güncel sürümlerle başlar: Next.js 16.4 + React
 | Tablo | TanStack Table | v8 | Admin listeleri |
 | Güvenlik | Upstash Ratelimit, Cloudflare Turnstile | son sürüm | Spam/bot koruması |
 | Kalite | ESLint, Prettier, Vitest, Playwright | son sürüm | Birim + uçtan uca test |
-| Dağıtım | Vercel + Supabase | – | Preview ortamları, Vercel Cron |
+| Dağıtım | Vercel + Supabase (veritabanı) + Cloudflare R2 (dosya) | – | Preview ortamları, Vercel Cron |
 
 **Notlar:**
 
-- Better Auth kendi tablolarını (user, session, account, verification) Drizzle adaptörüyle Postgres'te tutar; Supabase Auth kullanılmaz. Yetki kontrolü sunucu tarafında (Server Action / Data Access Layer) yapılır; Storage yüklemeleri sunucuda üretilen imzalı URL ile yapılır.
+- Better Auth kendi tablolarını (user, session, account, verification) Drizzle adaptörüyle Postgres'te tutar; Supabase Auth kullanılmaz. Yetki kontrolü sunucu tarafında (Server Action / Data Access Layer) yapılır; Dosya yüklemeleri sunucuda üretilen imzalı URL ile R2'ye yapılır.
 - Next.js 16 ile `middleware.ts` dosyasının adı `proxy.ts` oldu; oturum kontrolü orada yapılır.
 - Drizzle'ın kararlı 0.45.x sürümü kullanılır. 1.0 kararlı çıktığında `drizzle-kit up` ve resmi v1 geçiş rehberiyle yükseltilir (ilişki tanımları `defineRelations()` yapısına taşınır).
 - TypeScript 6 kullanılır: TypeScript 7 derleyici API'si içermediği için NestJS'in Swagger eklentisi gibi araçlarla uyumsuz. NestJS ve araçlar TypeScript 7'yi desteklediğinde geçiş değerlendirilir.
@@ -342,7 +342,7 @@ pati-dostu/
 4. **Tipli istemci.** `packages/api-client` OpenAPI dokümanından otomatik üretilir (openapi-typescript + openapi-fetch veya Orval). Web ve mobil aynı istemciyi ve TanStack Query hook'larını kullanır.
 5. **Kimlik doğrulama.** Better Auth, NestJS içinde `/api/auth/*` yoluna bağlanır. Web cookie ile (api ve web aynı üst alan adında: `pati-dostu.com` / `api.pati-dostu.com`), mobil Expo eklentisi + bearer token ile çalışır. Global `AuthGuard` oturumu çözer, `@Roles()` dekoratörü + `RolesGuard` rol kontrolünü yapar.
 6. **Web'de veri çekme.** Server Component'ler API'yi sunucuda çağırır ve sonucu Cache Components (`"use cache"` + `cacheTag`) ile önbelleğe alır; ilan onaylanınca API, web'in revalidate uçuna (`/api/revalidate`, gizli anahtarla) haber verir. İstemci tarafı listeler TanStack Query kullanır.
-7. **Dosya yükleme.** API, Supabase Storage için imzalı yükleme linki üretir; web ve mobil dosyayı doğrudan Storage'a yükler, sonra API'ye yolu bildirir.
+7. **Dosya yükleme.** API, Cloudflare R2 için imzalı yükleme linki (S3 presigned PUT) üretir; web ve mobil dosyayı doğrudan R2'ye yükler, sonra API'ye yolu bildirir.
 8. **Serverless kısıtları.** Vercel'de NestJS tek bir Vercel Function olarak çalışır. `@nestjs/schedule` kullanılmaz; zamanlanmış işler (kayıtlı arama bildirimi, e-posta) `jobs/` altındaki uçları tetikleyen Vercel Cron ile yapılır. WebSocket, Vercel'in Haziran 2026'da public beta olarak sunduğu destekle çalışır (madde 12). Trafik artarsa API, kod değişmeden Render/Railway/Fly.io gibi sürekli çalışan bir sunucuya taşınabilir.
 9. **Bildirimler.** Web için e-posta ve site içi bildirim; mobil için Expo Push (`push_token` tablosu). Gönderimi API servisleri yapar.
 10. **TypeScript sürümü.** NestJS 12'nin yükseltme aracı TypeScript 6'yı hedefliyor ve Swagger CLI eklentisi TypeScript derleyici API'sine ihtiyaç duyuyor (TypeScript 7'de bu API yok). Bu yüzden tüm monorepo (api, web, mobil) TypeScript 6 ile derlenir.
@@ -589,3 +589,5 @@ Her aşama sonunda çalışan bir sürüm preview ortamına çıkar; v1.1 ve son
 - Kurum kampanyaları v1.1'de yayına alınır. MVP'de kodlanır ama `campaigns` özellik bayrağı kapalı kalır: Kurum paneli menüsündeki "Kampanyalar", klinik profilindeki kampanya kutusu ve randevu formundaki kampanya seçimi görünmez.
 - E-posta servisi Resend (doğrulama, şifre sıfırlama, bildirim e-postaları).
 - Geliştirmede veritabanı ve dosya depolama yerelde çalışır; yayına alırken Supabase'e, uygulamalar Vercel'e geçer. Bağlantı bilgileri yalnızca `.env` dosyalarındadır.
+- Supabase yalnızca yönetilen PostgreSQL olarak kullanılır; Supabase Auth, Storage ve Realtime kullanılmaz. Geliştirmede bilgisayardaki yerel PostgreSQL 17 kullanılır, Supabase CLI gerekmez.
+- Dosyalar (ilan fotoğrafları, avatar, blog kapakları) Cloudflare R2'de tutulur; S3 API'siyle erişildiği için sağlayıcı değiştirilebilir. Geliştirmede docker-compose'daki RustFS (S3 uyumlu) kullanılır.

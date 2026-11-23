@@ -1,0 +1,83 @@
+# Pati Dostu — yerel geliştirme servisleri
+# Başlat: docker compose up -d   ·   Durdur: docker compose down
+# Postgres bu dosyada yok: geliştirmede bilgisayarınızdaki Postgres 17 kullanılır (.env › DATABASE_URL).
+
+name: pati-dostu
+
+services:
+  # Socket.IO Redis adaptörü ve serverless-redis-http'nin arka ucu
+  redis:
+    image: redis:8.8-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+
+  # Upstash REST API taklidi (@upstash/redis, @upstash/ratelimit yerelde buna bağlanır)
+  redis-http:
+    image: hiett/serverless-redis-http:0.0.10
+    ports:
+      - "8079:80"
+    environment:
+      SRH_MODE: env
+      SRH_TOKEN: dev-token
+      SRH_CONNECTION_STRING: redis://redis:6379
+    depends_on:
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # Giden e-postaları yakalar · arayüz: http://localhost:8025
+  mailpit:
+    image: axllent/mailpit:v1.34
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    environment:
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
+    restart: unless-stopped
+
+  # Cloudflare R2 yerine S3 uyumlu yerel depolama · konsol: http://localhost:9001
+  storage:
+    image: rustfs/rustfs:1.0.6
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      RUSTFS_ACCESS_KEY: patidostu
+      RUSTFS_SECRET_KEY: patidostu-dev-secret
+      RUSTFS_CONSOLE_ENABLE: "true"
+    volumes:
+      - storage-data:/data
+    restart: unless-stopped
+
+  # "pati-dostu" bucket'ını bir kez oluşturur, sonra kapanır
+  storage-init:
+    image: amazon/aws-cli:2.42.1
+    depends_on:
+      - storage
+    environment:
+      AWS_ACCESS_KEY_ID: patidostu
+      AWS_SECRET_ACCESS_KEY: patidostu-dev-secret
+      AWS_DEFAULT_REGION: us-east-1
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        for i in $$(seq 1 30); do
+          aws --endpoint-url http://storage:9000 s3api list-buckets >/dev/null 2>&1 && break
+          sleep 1
+        done
+        aws --endpoint-url http://storage:9000 s3api head-bucket --bucket pati-dostu 2>/dev/null \
+          || aws --endpoint-url http://storage:9000 s3 mb s3://pati-dostu
+    restart: "no"
+
+volumes:
+  redis-data:
+  storage-data:

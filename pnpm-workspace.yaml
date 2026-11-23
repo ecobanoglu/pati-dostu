@@ -6,3 +6,5 @@ packages:
 allowBuilds:
   "@scarf/scarf": false # swagger-ui-dist'in telemetrisi
   esbuild: true # drizzle-kit ve tsx için platform ikili dosyası
+  "@parcel/watcher": false # next-intl mesaj çıkarma (kullanılmıyor); hazır ikili paketle gelir
+  "@swc/core": false # next-intl mesaj çıkarma (kullanılmıyor); hazır ikili paketle gelir

@@ -24,6 +24,7 @@ if (!url) throw new Error("DATABASE_URL tanımlı değil (.env)")
 
 const db = createDb(url, { max: 1 })
 
+/** 81 il ve 973 ilçeyi ekler; var olanları atlar. */
 async function seedCities() {
   const cities = JSON.parse(readFileSync(new URL("./data/cities.json", import.meta.url), "utf8")) as CitySeed[]
 
@@ -45,6 +46,7 @@ async function seedCities() {
   console.log(`  il: ${cities.length}, ilçe: ${districts.length}`)
 }
 
+/** Türleri ve her türün ırklarını ("Melez / Bilinmiyor" ilk sırada) ekler. */
 async function seedSpecies() {
   let breedCount = 0
   for (const [index, s] of speciesSeed.entries()) {
@@ -65,6 +67,7 @@ async function seedSpecies() {
   console.log(`  tür: ${speciesSeed.length}, ırk: ${breedCount}`)
 }
 
+/** İçerik filtresi kurallarını ve normalize edilmiş örnek yasaklı kelimeleri ekler. */
 async function seedModeration() {
   await db.insert(moderationRule).values(moderationRuleSeed).onConflictDoNothing()
   await db
@@ -74,6 +77,7 @@ async function seedModeration() {
   console.log(`  içerik kuralı: ${moderationRuleSeed.length}, yasaklı kelime: ${bannedTermSeed.length}`)
 }
 
+/** Seed sonrası hızlı tutarlılık kontrolü: İstanbul ve 39 ilçesi. */
 async function verify() {
   const [ist] = await db
     .select({ id: city.id })

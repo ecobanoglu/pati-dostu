@@ -3,6 +3,7 @@ import { customType, pgEnum, timestamp, uuid } from "drizzle-orm/pg-core"
 /** Zaman damgaları: her tabloda createdAt / updatedAt, yumuşak silme için deletedAt. */
 export const createdAt = () => timestamp({ withTimezone: true }).notNull().defaultNow()
 
+/** Güncelleme zamanı: kayıt her güncellendiğinde Drizzle tarafından otomatik yenilenir. */
 export const updatedAt = () =>
   timestamp({ withTimezone: true })
     .notNull()
@@ -26,6 +27,9 @@ export const tsvector = customType<{ data: string }>({
 // --- Enum'lar ---------------------------------------------------------------
 
 export const roleEnum = pgEnum("role", ["user", "clinic", "shelter", "admin"])
+
+/** Arayüz ve e-posta dili. Varsayılan Türkçe; İngilizce kodda hazır, yayında kapalı. */
+export const localeEnum = pgEnum("locale", ["tr", "en"])
 
 export const organizationTypeEnum = pgEnum("organization_type", ["clinic", "shelter"])
 

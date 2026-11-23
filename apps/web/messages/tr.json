@@ -1,0 +1,27 @@
+{
+  "Metadata": {
+    "title": "Pati Dostu",
+    "titleTemplate": "%s · Pati Dostu",
+    "description": "Sahiplendirme, geçici yuva, kayıp ve bulunan hayvan ilanları; topluluk, veteriner ve barınak dizini. Tamamen sosyal sorumluluk amaçlı."
+  },
+  "HomePage": {
+    "title": "Pati Dostu",
+    "comingSoon": "Yakında burada."
+  },
+  "Errors": {
+    "BAD_REQUEST": "İstek geçersiz.",
+    "VALIDATION_FAILED": "Bazı alanlar hatalı. Lütfen kontrol edin.",
+    "UNAUTHORIZED": "Bu işlem için giriş yapmalısınız.",
+    "FORBIDDEN": "Bu işlem için yetkiniz yok.",
+    "ACCOUNT_BANNED": "Hesabınız askıya alınmış.",
+    "NOT_FOUND": "Aradığınız kayıt bulunamadı.",
+    "TOO_MANY_REQUESTS": "Çok fazla deneme yaptınız. Lütfen biraz sonra tekrar deneyin.",
+    "INTERNAL_ERROR": "Beklenmeyen bir hata oluştu. Lütfen tekrar deneyin.",
+    "TERMS_NOT_ACCEPTED": "KVKK Aydınlatma Metni ve Kullanım Şartları kabul edilmelidir.",
+    "PASSWORD_WEAK": "Şifre en az 8 karakter olmalı; harf ve rakam içermelidir.",
+    "PHONE_INVALID": "Telefon numarası 05xx xxx xx xx biçiminde olmalı.",
+    "CITY_INVALID": "Geçersiz şehir.",
+    "LOCALE_INVALID": "Desteklenmeyen dil.",
+    "UNKNOWN": "Bir hata oluştu. Lütfen tekrar deneyin."
+  }
+}

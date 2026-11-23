@@ -15,6 +15,20 @@
       "when": 1795455209816,
       "tag": "0001_init",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1795455806618,
+      "tag": "0002_user_consent",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1795456786955,
+      "tag": "0003_user_locale",
+      "breakpoints": true
     }
   ]
 }

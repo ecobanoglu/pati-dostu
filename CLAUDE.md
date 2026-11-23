@@ -20,6 +20,7 @@ Bir özelliğe başlamadan önce: taslaktaki ilgili sayfa bölümünü, API sat�
 
 - Kullanıcı Ergun, front-end geliştirici; VS Code'da çalışıyor. **Commit ve push'u kullanıcı yapar** — sen `git commit` / `git push` çalıştırma; iş bitince önerilen commit mesajını yaz.
 - Commit mesajları Conventional Commits: `feat(web): …`, `fix(api): …`, `chore: …`.
+- **Her fonksiyonun (React bileşenleri, sınıf metotları, export edilen ok fonksiyonları dahil) üstüne ne işe yaradığını anlatan Türkçe bir `/** … */` yorumu yaz.** Ne yaptığını ve gerekiyorsa neden öyle yaptığını söyle; kodu satır satır tekrar etme. Dekoratörlü metotlarda yorum ilk dekoratörün üstüne gelir.
 - İşletim sistemi Windows; komutları PowerShell ve WSL uyumlu yaz (yol ayırıcı, `rm -rf` yerine `pnpm dlx rimraf` vb.).
 - Bir işi "bitti" demeden önce `pnpm typecheck`, `pnpm lint` ve ilgili `pnpm build` / testleri çalıştır. Arayüz işinde sonucu ilgili tasarım görseliyle karşılaştır.
 - Emin olmadığın ürün kararlarında tahmin yürütme; kullanıcıya sor ve kararı `docs/proje-taslagi.md` › *Alınan kararlar* listesine eklemeyi öner.
@@ -61,8 +62,14 @@ Bir özelliğe başlamadan önce: taslaktaki ilgili sayfa bölümünü, API sat�
 
 ## Arayüz kuralları
 
-- Arayüz dili **Türkçe**; `<html lang="tr">`. Büyük/küçük harf dönüşümünde `toLocaleUpperCase("tr-TR")` (İ/ı). Tarih ve sayılar `Intl` ile `tr-TR`.
-- Kod içindeki adlar (değişken, dosya, tablo, uç nokta) İngilizce; URL'ler Türkçe (`/ilanlar`, `/hesabim`, `/veterinerler`…; tam liste taslakta *Sayfa haritası*).
+- **Çoklu dil (next-intl):** varsayılan **Türkçe**, ikinci dil İngilizce. Yayına yalnızca Türkçe ile çıkılır (`NEXT_PUBLIC_LOCALES=tr`); İngilizce kodda hazır tutulur.
+  - **Arayüzde sabit metin yazma.** Her metin `apps/web/messages/tr.json` ve `en.json`'da; bileşende `useTranslations` / `getTranslations`. İki dosyanın anahtarları aynı olmalı (`pnpm typecheck` denetler).
+  - Sayfalar `app/[locale]/` altında; klasör adları İngilizce, URL'ler `i18n/routing.ts` › `pathnames` ile çevrilir (`/ilanlar` ↔ `/en/listings`). Yeni sayfa = `pathnames`'e satır ekle.
+  - Bağlantı ve yönlendirmede `next/link` / `next/navigation` değil, `@/i18n/navigation` (`Link`, `redirect`, `useRouter`, `usePathname`).
+  - API hata yanıtları `{ statusCode, code, message }`; arayüz `message`'ı değil `code`'u `Errors.<code>` ile çevirip gösterir. Yeni hata kodu = `apps/api/src/common/errors.ts` + iki dil dosyası.
+  - Büyük/küçük harf dönüşümünde aktif dili kullan (`toLocaleUpperCase(locale)`; Türkçede İ/ı). Tarih ve sayılar `useFormatter` / `Intl` ile aktif dilde; saat dilimi Europe/Istanbul.
+  - E-postalar `user.locale`'e göre gönderilir (`apps/api/src/mail/templates.ts`).
+- Kod içindeki adlar (değişken, dosya, tablo, uç nokta) İngilizce; Türkçe URL'ler `pathnames` ile (tam liste taslakta *Sayfa haritası*).
 - Font Nunito, `next/font/google` ile `variable: "--font-nunito"`, `subsets: ["latin", "latin-ext"]`.
 - **shadcn kurulumu:** `shadcn init` kendi `globals.css`, `lib/utils.ts` ve bileşen dosyalarını yazar. Init/add sonrası bu repodaki `globals.css`, `lib/utils.ts`, `button.tsx`, `badge.tsx`, `alert.tsx` **korunmalı** (üzerine yazıldıysa `git checkout -- <dosya>` ile geri al). `sidebar` / `chart` eklenince `globals.css` farkını kontrol et.
 - `cn()` her zaman `@/lib/utils`'ten; özel ölçüler (`text-h1`, `rounded-card`, `shadow-pop`, `size-tap`) orada tailwind-merge'e tanıtılmıştır.

@@ -1,11 +1,11 @@
 import { boolean, index, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core"
 
-import { createdAt, roleEnum, updatedAt } from "./_common.js"
+import { createdAt, localeEnum, roleEnum, updatedAt } from "./_common.js"
 import { city } from "./dictionary.js"
 
 /**
  * Better Auth tabloları (çekirdek + admin eklentisi). Kimlikler Better Auth'un ürettiği text değerlerdir.
- * 6. adımda `@better-auth/cli generate` çıktısıyla karşılaştırılacak; alan adlarını Better Auth belirler.
+ * Çekirdek alan adlarını Better Auth belirler; Pati Dostu alanları apps/api/src/auth/auth.ts › additionalFields'ta da tanımlıdır.
  */
 export const user = pgTable(
   "user",
@@ -24,6 +24,12 @@ export const user = pgTable(
     phone: text(),
     cityId: uuid().references(() => city.id),
     bio: text(),
+    /** E-postaların ve (girişten sonra) arayüzün dili. */
+    locale: localeEnum().notNull().default("tr"),
+    /** Yeni ilan ve blog e-postaları (kayıt formundaki isteğe bağlı onay). */
+    marketingOptIn: boolean().notNull().default(false),
+    /** KVKK aydınlatma metni ve kullanım şartlarının kabul edildiği an (kayıtta zorunlu). */
+    termsAcceptedAt: timestamp({ withTimezone: true }),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
     deletedAt: timestamp({ withTimezone: true }),

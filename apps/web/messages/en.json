@@ -1,0 +1,27 @@
+{
+  "Metadata": {
+    "title": "Pati Dostu",
+    "titleTemplate": "%s · Pati Dostu",
+    "description": "Adoption, foster, lost and found pet listings; community, vet and shelter directory. A purely non-profit, social responsibility project."
+  },
+  "HomePage": {
+    "title": "Pati Dostu",
+    "comingSoon": "Coming soon."
+  },
+  "Errors": {
+    "BAD_REQUEST": "The request is invalid.",
+    "VALIDATION_FAILED": "Some fields are invalid. Please check them.",
+    "UNAUTHORIZED": "Please sign in to continue.",
+    "FORBIDDEN": "You don't have permission to do this.",
+    "ACCOUNT_BANNED": "Your account has been suspended.",
+    "NOT_FOUND": "We couldn't find what you were looking for.",
+    "TOO_MANY_REQUESTS": "Too many attempts. Please try again in a moment.",
+    "INTERNAL_ERROR": "Something went wrong. Please try again.",
+    "TERMS_NOT_ACCEPTED": "You must accept the Privacy Notice and the Terms of Use.",
+    "PASSWORD_WEAK": "Password must be at least 8 characters and contain letters and numbers.",
+    "PHONE_INVALID": "Phone number must be a Turkish mobile number (05xx xxx xx xx).",
+    "CITY_INVALID": "Invalid city.",
+    "LOCALE_INVALID": "Unsupported language.",
+    "UNKNOWN": "Something went wrong. Please try again."
+  }
+}

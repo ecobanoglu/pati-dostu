@@ -1,0 +1,12 @@
+pnpm-lock.yaml
+node_modules
+.next
+.turbo
+dist
+coverage
+docs/tasarim
+*.svg
+
+# Elle hizalanmış yorumlar/tablolar; Prettier hizayı bozar
+*.md
+apps/web/app/globals.css

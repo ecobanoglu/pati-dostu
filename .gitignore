@@ -1,0 +1,46 @@
+# Bağımlılıklar
+node_modules/
+.pnpm-store/
+
+# Derleme çıktıları
+.next/
+out/
+dist/
+build/
+*.tsbuildinfo
+next-env.d.ts
+
+# Turborepo / Vercel
+.turbo/
+.vercel/
+
+# Test
+coverage/
+playwright-report/
+test-results/
+
+# Ortam değişkenleri (yalnızca .env.example commit edilir)
+.env
+.env*.local
+.env.*
+!.env.example
+
+# Supabase yerel ortam
+supabase/.branches/
+supabase/.temp/
+
+# Günlükler
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# İşletim sistemi / editör
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# Claude Code yerel ayarları
+.claude/settings.local.json

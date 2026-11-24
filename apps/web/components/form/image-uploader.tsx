@@ -42,8 +42,8 @@ type Item = {
   errorCode?: string
 }
 
-/** Forma bildirilen değer: sıralı depo anahtarları (ilk = kapak) ve devam eden yükleme var mı. */
-export type ImageUploaderValue = { keys: string[]; busy: boolean }
+/** Forma bildirilen değer: sıralı depo anahtarları (ilk = kapak), devam eden yükleme var mı, kapak önizlemesi. */
+export type ImageUploaderValue = { keys: string[]; busy: boolean; coverUrl: string | null }
 
 type PresignResponse = { key: string; uploadUrl: string; headers: Record<string, string> }
 
@@ -63,10 +63,13 @@ const cornerDot = "flex size-8 items-center justify-center rounded-full border b
  * (Kapak yap, Sola/Sağa taşı, Kaldır). Değişiklikler ekran okuyucuya duyurulur.
  */
 export function ImageUploader({
+  initial = [],
   onChange,
   describedBy,
   invalid,
 }: {
+  /** Düzenlemede ilanın mevcut fotoğrafları (anahtar + herkese açık adres), sırasıyla. */
+  initial?: Array<{ key: string; url: string }>
   onChange: (value: ImageUploaderValue) => void
   /** Formdaki hata metninin id'si (aria-describedby). */
   describedBy?: string
@@ -75,7 +78,16 @@ export function ImageUploader({
   const t = useTranslations("ImageUploader")
   const errorMessage = useErrorMessage()
   const inputId = useId()
-  const [items, setItems] = useState<Item[]>([])
+  const [items, setItems] = useState<Item[]>(() =>
+    initial.map((img) => ({
+      id: img.key,
+      name: img.key.split("/").pop() ?? img.key,
+      previewUrl: img.url,
+      status: "done",
+      progress: 1,
+      key: img.key,
+    }))
+  )
   const [announcement, setAnnouncement] = useState("")
   const [notice, setNotice] = useState<string | null>(null)
   const [dragIndex, setDragIndex] = useState<number | null>(null)
@@ -83,9 +95,11 @@ export function ImageUploader({
 
   // Forma güncel değeri bildir.
   useEffect(() => {
+    const done = items.filter((i) => i.status === "done" && i.key)
     onChange({
-      keys: items.filter((i) => i.status === "done" && i.key).map((i) => i.key as string),
+      keys: done.map((i) => i.key as string),
       busy: items.some((i) => i.status === "processing" || i.status === "uploading"),
+      coverUrl: done[0]?.previewUrl ?? null,
     })
   }, [items, onChange])
 
@@ -94,7 +108,10 @@ export function ImageUploader({
   useEffect(() => {
     itemsRef.current = items
   }, [items])
-  useEffect(() => () => itemsRef.current.forEach((i) => i.previewUrl && URL.revokeObjectURL(i.previewUrl)), [])
+  useEffect(
+    () => () => itemsRef.current.forEach((i) => i.previewUrl?.startsWith("blob:") && URL.revokeObjectURL(i.previewUrl)),
+    []
+  )
 
   /** Tek bir öğeyi günceller. */
   const patch = useCallback((id: string, changes: Partial<Item>) => {
@@ -166,7 +183,7 @@ export function ImageUploader({
   /** Öğeyi kaldırır ve önizleme adresini serbest bırakır. Depodaki geçici dosya süre dolunca silinir. */
   function remove(index: number) {
     const item = items[index]
-    if (item?.previewUrl) URL.revokeObjectURL(item.previewUrl)
+    if (item?.previewUrl?.startsWith("blob:")) URL.revokeObjectURL(item.previewUrl)
     setItems((list) => list.filter((_, i) => i !== index))
     setNotice(null)
     setAnnouncement(t("removed"))

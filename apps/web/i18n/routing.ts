@@ -44,6 +44,7 @@ export const routing = defineRouting({
     "/verify-email": { tr: "/e-posta-dogrula", en: "/verify-email" },
     "/account": { tr: "/hesabim", en: "/account" },
     "/account/listings": { tr: "/hesabim/ilanlarim", en: "/account/listings" },
+    "/account/listings/[id]/edit": { tr: "/hesabim/ilanlarim/[id]/duzenle", en: "/account/listings/[id]/edit" },
     "/account/messages": { tr: "/hesabim/mesajlar", en: "/account/messages" },
     "/account/favorites": { tr: "/hesabim/favoriler", en: "/account/favorites" },
     "/account/questions": { tr: "/hesabim/sorularim", en: "/account/questions" },

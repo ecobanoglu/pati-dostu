@@ -2,6 +2,7 @@
 
 import { House, LayoutGrid, MessageCircle, Plus, User } from "lucide-react"
 import { useTranslations } from "next-intl"
+import { Suspense } from "react"
 
 import { Link, usePathname } from "@/i18n/navigation"
 import { cn } from "@/lib/utils"
@@ -22,8 +23,22 @@ const tabs = [
  * Mesajlar/Profil giriş ister; misafir giriş sayfasına yönlendirilir (proxy, 7c).
  */
 export function MobileTabBar() {
+  // Adresi değişken içeren sayfalarda aktif sekme Suspense içinde hesaplanır (bkz. MainNav).
+  return (
+    <Suspense fallback={<TabBar pathname={null} />}>
+      <ActiveTabBar />
+    </Suspense>
+  )
+}
+
+/** Bulunulan adresi okuyup alt menüyü işaretli çizer. */
+function ActiveTabBar() {
+  return <TabBar pathname={usePathname()} />
+}
+
+/** Alt menünün kendisi; pathname null ise hiçbir sekme işaretlenmez. */
+function TabBar({ pathname }: { pathname: string | null }) {
   const t = useTranslations("Nav")
-  const pathname = usePathname()
 
   return (
     <nav
@@ -34,9 +49,10 @@ export function MobileTabBar() {
         {tabs.map(({ href, key, icon: Icon }) => {
           // Profil sekmesi, alt sekmesi olan Mesajlar açıkken aktif görünmesin.
           const active =
-            href === "/account"
+            pathname !== null &&
+            (href === "/account"
               ? isActivePath(pathname, href) && !isActivePath(pathname, "/account/messages")
-              : isActivePath(pathname, href)
+              : isActivePath(pathname, href))
           const isCta = href === "/post-listing"
           return (
             <li key={href} className="flex">

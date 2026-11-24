@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server"
 import { cacheLife } from "next/cache"
+import { Suspense } from "react"
 
 import { Logo } from "@/components/brand/logo"
 import { Link } from "@/i18n/navigation"
@@ -166,7 +167,10 @@ export async function SiteFooter() {
 
         <div className="mt-10 flex flex-col gap-4 border-t border-white/20 pt-6 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-sm text-white/80">{t("copyright", { year })}</p>
-          <LocaleSwitcher />
+          {/* Dil seçici bulunulan adresi okur; adresi değişken içeren sayfalarda Suspense gerekir. */}
+          <Suspense fallback={null}>
+            <LocaleSwitcher />
+          </Suspense>
         </div>
       </div>
     </footer>

@@ -44,3 +44,6 @@ Thumbs.db
 
 # Claude Code yerel ayarları
 .claude/settings.local.json
+
+# Demo içerik fotoğraf önbelleği (pnpm db:demo; Wikimedia Commons)
+packages/db/.demo-cache/

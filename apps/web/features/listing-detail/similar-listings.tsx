@@ -30,11 +30,12 @@ function SimilarCard({ listing, layout }: { listing: ListingCardData; layout: "r
           </span>
         )}
       </div>
-      <div className={cn("grid min-w-0 content-start gap-1", !row && "p-3")}>
-        {row && <ListingTypeBadge type={listing.type} className="justify-self-start" />}
-        <h3 className="line-clamp-2 text-[15px] font-extrabold">
+      <div className={cn("grid min-w-0 grid-cols-[minmax(0,1fr)] content-start gap-1", !row && "p-3")}>
+        {row && <ListingTypeBadge type={listing.type} className="justify-self-start py-1 text-[11px] font-bold" />}
+        <h3 className="truncate text-[15px] font-extrabold">
           <Link
             href={{ pathname: "/listing/[slug]", params: { slug: listingSlug(listing) } }}
+            title={listing.title ?? undefined}
             className="text-title after:absolute after:inset-0 focus-visible:outline-none after:focus-visible:rounded-card after:focus-visible:outline-2 after:focus-visible:outline-ring"
           >
             {listing.title ?? t("untitled")}

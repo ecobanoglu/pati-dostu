@@ -51,6 +51,9 @@ export type CardRow = {
   title: string | null
   type: ListingCard["type"]
   status: ListingStatus
+  gender: ListingCard["gender"]
+  vaccinated: boolean
+  neutered: boolean
   publishedAt: Date | null
   createdAt: Date
   speciesName: LocalizedText | null
@@ -69,6 +72,9 @@ const cardColumns = {
   title: listing.title,
   type: listing.type,
   status: listing.status,
+  gender: listing.gender,
+  vaccinated: listing.vaccinated,
+  neutered: listing.neutered,
   publishedAt: listing.publishedAt,
   submittedAt: listing.submittedAt,
   createdAt: listing.createdAt,
@@ -460,6 +466,9 @@ export class ListingsService {
       type: r.type,
       status: r.status,
       coverUrl: r.cover ? this.storage.publicUrl(r.cover) : null,
+      gender: r.gender,
+      vaccinated: r.vaccinated,
+      neutered: r.neutered,
       species: r.speciesName && r.speciesSlug ? { name: localize(r.speciesName, locale), slug: r.speciesSlug } : null,
       city: r.cityName && r.citySlug ? { name: r.cityName, slug: r.citySlug } : null,
       district: r.districtName,

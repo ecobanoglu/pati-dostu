@@ -364,6 +364,9 @@ importers:
         specifier: ^4.1.1
         version: 4.1.1
     devDependencies:
+      '@aws-sdk/client-s3':
+        specifier: ~3.1175.0
+        version: 3.1175.0
       '@pati-dostu/eslint-config':
         specifier: workspace:*
         version: link:../eslint-config

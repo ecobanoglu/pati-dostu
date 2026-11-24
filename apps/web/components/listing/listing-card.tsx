@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils"
 
 import { FavoriteButton } from "./favorite-button"
 import { ListingTypeBadge } from "./listing-type-badge"
+import { ListingTraitBadges } from "./trait-icons"
 
 /** İlan detay adresinin slug parçası: /ilan/{slug}-{ilanNo}. */
 export function listingSlug(listing: Pick<ListingCardData, "slug" | "listingNo">): string {
@@ -16,7 +17,7 @@ export function listingSlug(listing: Pick<ListingCardData, "slug" | "listingNo">
 
 /**
  * İlan kartı (tasarım: 02-ilan-listeleme, 17-mobil-ilan-listeleme): kapak fotoğrafı, tür rozeti, başlık, il/ilçe ve
- * yayın tarihi, sağ üstte favori (kalp) butonu. Kartın tamamı detay sayfasına bağlantıdır (başlık bağlantının adıdır).
+ * yayın tarihi, sağ üstte favori (kalp) butonu, görselin alt köşesinde cinsiyet / aşılı / kısır ikonları. Kartın tamamı detay sayfasına bağlantıdır (başlık bağlantının adıdır).
  * `layout="list"`: yatay kart. `inactiveNote`: yayından kalkmış ilan (favoriler) — soluk, bağlantısız, notlu.
  */
 export function ListingCard({
@@ -70,26 +71,32 @@ export function ListingCard({
         )}
         <ListingTypeBadge
           type={listing.type}
-          className={cn("absolute top-2.5 left-2.5", inactiveNote && "opacity-60")}
+          className={cn("absolute top-2.5 left-2.5 py-1 text-[11px] font-bold", inactiveNote && "opacity-60")}
+        />
+        <ListingTraitBadges
+          listing={listing}
+          className={cn("absolute bottom-2.5 left-2.5", inactiveNote && "opacity-60")}
         />
         <FavoriteButton
           listingNo={listing.listingNo}
           title={title}
           variant="card"
           onChange={onFavoriteChange}
-          className="absolute top-1.5 right-1.5"
+          className="absolute top-2 right-2"
         />
       </div>
 
-      <div className="grid content-start gap-1.5 p-3.5 sm:p-4">
+      <div className="grid grid-cols-[minmax(0,1fr)] content-start gap-1.5 p-3.5 sm:p-4">
         <h3
-          className={cn("line-clamp-2 text-base font-extrabold sm:text-lg", inactiveNote ? "text-body" : "text-title")}
+          title={inactiveNote ? title : undefined}
+          className={cn("truncate text-base font-extrabold sm:text-lg", inactiveNote ? "text-body" : "text-title")}
         >
           {inactiveNote ? (
             title
           ) : (
             <Link
               href={{ pathname: "/listing/[slug]", params: { slug: listingSlug(listing) } }}
+              title={title}
               className="text-title after:absolute after:inset-0 focus-visible:outline-none after:focus-visible:rounded-card after:focus-visible:outline-2 after:focus-visible:outline-ring"
             >
               {title}

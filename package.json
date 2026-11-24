@@ -15,6 +15,8 @@
     "db:generate": "pnpm --filter @pati-dostu/db db:generate",
     "db:migrate": "pnpm --filter @pati-dostu/db db:migrate",
     "db:seed": "pnpm --filter @pati-dostu/db db:seed",
+    "db:demo": "pnpm --filter @pati-dostu/db db:demo",
+    "db:demo:clear": "pnpm --filter @pati-dostu/db db:demo:clear",
     "db:studio": "pnpm --filter @pati-dostu/db db:studio",
     "test": "turbo run test"
   },

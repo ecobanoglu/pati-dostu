@@ -164,6 +164,12 @@
   --color-badge-found: var(--success);           /* Bulunan */
   --color-badge-found-fg: #ffffff;
 
+  /* Hayvan özellik ikonları (kart görselindeki rozetler): beyaz ikon, renkli dolgu (hepsi beyazla ≥ 4.5:1) */
+  --color-trait-neutered: var(--brand-purple);   /* Kısır — makas (6.9:1) */
+  --color-trait-vaccinated: var(--success);      /* Aşılı — şırınga (4.6:1) */
+  --color-trait-male: #1f62c7;                   /* Erkek — ♂ (5.8:1) */
+  --color-trait-female: #c2307a;                 /* Dişi — ♀ (5.3:1); "Kayıp" bordosundan (#a60c56) ayrı */
+
   /* Köşe yuvarlaklıkları: rounded-sm … rounded-sheet */
   --radius-sm: calc(var(--radius) - 4px);        /*  8px: etiket kaldır, küçük ikon butonu */
   --radius-md: calc(var(--radius) - 2px);        /* 10px: menü öğesi, saat seçimi */

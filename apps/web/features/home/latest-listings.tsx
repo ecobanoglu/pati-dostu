@@ -6,11 +6,11 @@ import { Link } from "@/i18n/navigation"
 import { emptyFilters, toApiQuery } from "@/lib/listing-filters"
 import { getListings } from "@/lib/listings"
 
-/** Anasayfada gösterilen ilan sayısı (masaüstünde tek sıra, mobilde 2×2). */
-const COUNT = 4
+/** Anasayfada gösterilen ilan sayısı (masaüstünde 4×3, mobilde 2×6). */
+const COUNT = 12
 
 /**
- * "En yeni ilanlar" (tasarım 01, 16): yayındaki en yeni 4 ilan, gerçek veriyle (1 dakika önbellekli, `listings`
+ * "En yeni ilanlar" (tasarım 01, 16): yayındaki en yeni 12 ilan, gerçek veriyle (1 dakika önbellekli, `listings`
  * etiketi). İlan yoksa "İlk ilanı siz verin" bağlantısı.
  */
 export async function LatestListings() {

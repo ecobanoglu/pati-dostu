@@ -13,6 +13,9 @@ export type ListingCardData = {
   type: "adoption" | "foster" | "lost" | "found"
   status: string
   coverUrl: string | null
+  gender: "unknown" | "male" | "female"
+  vaccinated: boolean
+  neutered: boolean
   species: { name: string; slug: string } | null
   city: { name: string; slug: string } | null
   district: string | null
@@ -46,11 +49,8 @@ export type ListingDetailData = ListingCardData & {
   description: string | null
   breed: { name: string; slug: string } | null
   name: string | null
-  gender: "unknown" | "male" | "female"
   ageGroup: "puppy" | "young" | "adult" | "senior" | null
   size: "small" | "medium" | "large" | null
-  vaccinated: boolean
-  neutered: boolean
   microchipped: boolean
   childFriendly: boolean
   source: "foster_home" | "street" | "shelter" | "clinic" | null

@@ -95,7 +95,7 @@ export function ListingFormSidebar({
                 {t("previewPhoto")}
               </span>
             )}
-            <ListingTypeBadge type={preview.type} className="absolute top-2.5 left-2.5" />
+            <ListingTypeBadge type={preview.type} className="absolute top-2.5 left-2.5 py-1 text-[11px] font-bold" />
             <span className="absolute top-2.5 right-2.5 flex size-8 items-center justify-center rounded-full bg-background text-primary">
               <Heart className="size-4" />
             </span>

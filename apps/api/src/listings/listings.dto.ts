@@ -55,6 +55,10 @@ export const listingCardSchema = z
     type: z.enum(listingTypes),
     status: z.enum(listingStatuses),
     coverUrl: z.string().nullable(),
+    /** Kartın görseli üzerindeki ikonlar: cinsiyet, aşılı, kısır. */
+    gender: z.enum(genders),
+    vaccinated: z.boolean(),
+    neutered: z.boolean(),
     species: named.nullable(),
     city: named.nullable(),
     district: z.string().nullable(),

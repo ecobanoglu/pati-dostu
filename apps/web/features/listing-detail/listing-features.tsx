@@ -1,10 +1,11 @@
-import { Check, ShieldCheck, X } from "lucide-react"
+import { Check, type LucideIcon, ShieldCheck, X } from "lucide-react"
 import { useFormatter, useTranslations } from "next-intl"
 
+import { TRAIT_ICONS } from "@/components/listing/trait-icons"
 import type { ListingDetailData } from "@/lib/listings"
 import { cn } from "@/lib/utils"
 
-type Row = { label: string; value: string }
+type Row = { label: string; value: string; icon?: LucideIcon }
 
 /** İlanın dolu alanlarından özellik satırlarını üretir (boş alan gösterilmez). short: mobil kutucuklar için. */
 function useFeatureRows(listing: ListingDetailData, short: boolean): Row[] {
@@ -19,7 +20,9 @@ function useFeatureRows(listing: ListingDetailData, short: boolean): Row[] {
     listing.species ? { label: t("rowSpecies"), value: listing.species.name } : null,
     listing.breed ? { label: t("rowBreed"), value: listing.breed.name } : null,
     listing.ageGroup ? { label: t(short ? "rowAgeShort" : "rowAge"), value: tl(`ageGroup.${listing.ageGroup}`) } : null,
-    listing.gender !== "unknown" ? { label: t("rowGender"), value: tl(`gender.${listing.gender}`) } : null,
+    listing.gender !== "unknown"
+      ? { label: t("rowGender"), value: tl(`gender.${listing.gender}`), icon: TRAIT_ICONS[listing.gender] }
+      : null,
     listing.size ? { label: t("rowSize"), value: tl(`size.${listing.size}`) } : null,
     listing.source ? { label: t("rowSource"), value: tl(`source.${listing.source}`) } : null,
     lastSeen
@@ -34,20 +37,31 @@ function useFeatureRows(listing: ListingDetailData, short: boolean): Row[] {
   return rows.filter((row): row is Row => row !== null)
 }
 
-/** Sağlık/uyum rozetleri: aşı ve kısırlık her zaman (✓ / ×), mikroçip ve çocuk dostu yalnızca varsa. */
+/**
+ * Sağlık/uyum rozetleri: aşı ve kısırlık her zaman (aşılı → şırınga, kısır → makas; değilse ×), mikroçip ve çocuk
+ * dostu yalnızca varsa (✓).
+ */
 export function FeaturePills({ listing }: { listing: ListingDetailData }) {
   const t = useTranslations("ListingDetail")
   const tl = useTranslations("Listing")
   const pills = [
-    { on: listing.vaccinated, label: listing.vaccinated ? tl("feature.vaccinated") : t("notVaccinated") },
-    { on: listing.neutered, label: listing.neutered ? tl("feature.neutered") : t("notNeutered") },
-    listing.microchipped ? { on: true, label: tl("feature.microchipped") } : null,
-    listing.childFriendly ? { on: true, label: tl("feature.childFriendly") } : null,
+    {
+      on: listing.vaccinated,
+      label: listing.vaccinated ? tl("feature.vaccinated") : t("notVaccinated"),
+      icon: TRAIT_ICONS.vaccinated,
+    },
+    {
+      on: listing.neutered,
+      label: listing.neutered ? tl("feature.neutered") : t("notNeutered"),
+      icon: TRAIT_ICONS.neutered,
+    },
+    listing.microchipped ? { on: true, label: tl("feature.microchipped"), icon: Check } : null,
+    listing.childFriendly ? { on: true, label: tl("feature.childFriendly"), icon: Check } : null,
   ].filter((pill) => pill !== null)
 
   return (
     <ul className="flex flex-wrap gap-2">
-      {pills.map(({ on, label }) => (
+      {pills.map(({ on, label, icon: Icon }) => (
         <li
           key={label}
           className={cn(
@@ -55,12 +69,17 @@ export function FeaturePills({ listing }: { listing: ListingDetailData }) {
             on ? "bg-success-soft text-success-text" : "bg-smoke-2 text-body"
           )}
         >
-          {on ? <Check aria-hidden="true" className="size-4" /> : <X aria-hidden="true" className="size-4" />}
+          {on ? <Icon aria-hidden="true" className="size-4" /> : <X aria-hidden="true" className="size-4" />}
           {label}
         </li>
       ))}
     </ul>
   )
+}
+
+/** Satır değerinin önündeki ikon (ör. cinsiyet: ♀ / ♂); metin zaten yazdığı için ekran okuyucudan gizli. */
+function RowIcon({ icon: Icon }: { icon?: LucideIcon }) {
+  return Icon ? <Icon aria-hidden="true" className="size-4 shrink-0 text-primary" strokeWidth={2.25} /> : null
 }
 
 /** Masaüstü "İlan özellikleri" tablosu ve rozetler (tasarım 03, orta sütun). */
@@ -76,7 +95,10 @@ export function FeaturesTable({ listing }: { listing: ListingDetailData }) {
         {rows.map((row) => (
           <div key={row.label} className="flex justify-between gap-4 border-b border-border py-3 text-[15px]">
             <dt className="text-body">{row.label}</dt>
-            <dd className="text-right font-bold break-words text-heading">{row.value}</dd>
+            <dd className="flex items-center justify-end gap-1.5 text-right font-bold break-words text-heading">
+              <RowIcon icon={row.icon} />
+              {row.value}
+            </dd>
           </div>
         ))}
       </dl>
@@ -100,7 +122,10 @@ export function FeatureTiles({ listing }: { listing: ListingDetailData }) {
         {rows.map((row) => (
           <div key={row.label} className="rounded-xl bg-smoke-2 px-3 py-2.5">
             <dt className="text-xs text-body">{row.label}</dt>
-            <dd className="font-extrabold break-words text-heading">{row.value}</dd>
+            <dd className="flex items-center gap-1.5 font-extrabold break-words text-heading">
+              <RowIcon icon={row.icon} />
+              {row.value}
+            </dd>
           </div>
         ))}
       </dl>

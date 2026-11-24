@@ -12,8 +12,11 @@ import { cn } from "@/lib/utils"
 type Variant = "card" | "full" | "icon" | "bar"
 
 const VARIANT: Record<Variant, string> = {
-  /** Kartın fotoğrafının üstünde beyaz yuvarlak (tasarım 02, 17, hesabım/favoriler). */
-  card: "size-tap rounded-full bg-background/95 text-primary shadow-sm hover:bg-background",
+  /**
+   * Kartın fotoğrafının üstünde yarı saydam beyaz yuvarlak (tasarım 02, 17, hesabım/favoriler). Görünürde 32 px;
+   * görünmez ::after katmanı tıklama alanını 44 px'e çıkarır (CLAUDE.md › Erişilebilirlik: dokunma hedefi ≥ 44 px).
+   */
+  card: "size-8 rounded-full bg-background/65 text-primary shadow-sm hover:bg-background after:absolute after:-inset-1.5",
   /** Detay sayfasındaki iletişim kartında yazılı buton (tasarım 03). */
   full: buttonVariants({ variant: "outline", size: "sm" }) + " [&_svg]:text-primary",
   /** Mobil üst çubuktaki ikon (tasarım 19). */

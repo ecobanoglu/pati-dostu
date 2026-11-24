@@ -242,6 +242,14 @@
     "IMAGE_TOO_LARGE": "Photos can be at most 10 MB.",
     "IMAGE_UNREADABLE": "This photo couldn't be opened in this browser. Save it as JPG or PNG and try again.",
     "TOO_MANY_IMAGES": "You can add up to 5 photos; the rest weren't added.",
-    "UPLOAD_FAILED": "The photo couldn't be uploaded. Check your connection and try again."
+    "UPLOAD_FAILED": "The photo couldn't be uploaded. Check your connection and try again.",
+    "CONTENT_BLOCKED": "This content was caught by our filter; please edit the text.",
+    "CONTENT_BLOCKED_PHONE": "Phone numbers can't be shared. Use on-site messaging or the listing's “Show my phone” option.",
+    "CONTENT_BLOCKED_EMAIL": "Email addresses can't be shared. Use on-site messaging instead.",
+    "CONTENT_BLOCKED_URL": "Links can't be shared.",
+    "CONTENT_BLOCKED_IBAN": "IBANs or account numbers can't be shared. No money changes hands on Pati Dostu.",
+    "CONTENT_BLOCKED_PRICE": "Content with a price, fee or deposit can't be published. Selling animals is not allowed on Pati Dostu.",
+    "CONTENT_BLOCKED_DUPLICATE": "You sent the same content again a moment ago.",
+    "CONTENT_BLOCKED_BANNED_TERM": "The text contains wording that breaks our community rules (e.g. selling or insults). Please edit it."
   }
 }

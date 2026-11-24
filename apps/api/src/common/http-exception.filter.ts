@@ -37,7 +37,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
       const obj = typeof res === "object" && res !== null ? (res as Record<string, unknown>) : {}
       const message = typeof res === "string" ? res : typeof obj.message === "string" ? obj.message : exception.message
       const code = typeof obj.code === "string" ? obj.code : defaultCodeForStatus(status)
-      return { statusCode: status, code, message }
+      const details =
+        typeof obj.details === "object" && obj.details !== null ? (obj.details as Record<string, unknown>) : undefined
+      return { statusCode: status, code, message, ...(details ? { details } : {}) }
     }
 
     this.logger.error(exception instanceof Error ? (exception.stack ?? exception.message) : String(exception))

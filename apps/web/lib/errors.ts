@@ -3,14 +3,22 @@
 import { useTranslations } from "next-intl"
 import { useCallback } from "react"
 
+/** API hata yanıtındaki koda özgü ek bilgi (ör. CONTENT_BLOCKED → { reason, field }). */
+export type ErrorDetails = Record<string, unknown> | undefined
+
 /**
  * Hata kodunu (API, Better Auth veya form şeması) aktif dildeki metne çevirir: messages › Errors.<kod>.
+ * İçerik filtresinde neden de kullanılır: CONTENT_BLOCKED + { reason: "phone" } → Errors.CONTENT_BLOCKED_PHONE.
  * Bilinmeyen kodlarda genel "Bir hata oluştu" metni döner; API'nin `message` alanı arayüzde gösterilmez.
  */
 export function useErrorMessage() {
   const t = useTranslations("Errors")
   return useCallback(
-    (code: string | undefined | null): string => {
+    (code: string | undefined | null, details?: ErrorDetails): string => {
+      if (code === "CONTENT_BLOCKED" && typeof details?.reason === "string") {
+        const specific = `CONTENT_BLOCKED_${details.reason.toUpperCase()}`
+        if (t.has(specific as never)) return t(specific as never)
+      }
       if (code && t.has(code as never)) return t(code as never)
       return t("UNKNOWN")
     },

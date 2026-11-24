@@ -8,7 +8,9 @@
     "build": "nest build",
     "start": "node dist/main.js",
     "lint": "eslint .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "~3.1175.0",
@@ -19,6 +21,7 @@
     "@nestjs/swagger": "^12.1.2",
     "@pati-dostu/db": "workspace:*",
     "@pati-dostu/validators": "workspace:*",
+    "@upstash/redis": "^1.41.0",
     "better-auth": "^1.7.27",
     "drizzle-orm": "^0.45.4",
     "nestjs-zod": "^5.6.0",
@@ -36,6 +39,7 @@
     "@types/node": "^24",
     "@types/nodemailer": "^8.0.2",
     "eslint": "^10.15.0",
-    "typescript": "~6.0.3"
+    "typescript": "~6.0.3",
+    "vitest": "^5.1.1"
   }
 }

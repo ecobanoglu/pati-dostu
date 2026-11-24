@@ -28,6 +28,11 @@ export const ErrorCode = {
   // Dosya yükleme
   IMAGE_TYPE_NOT_ALLOWED: "IMAGE_TYPE_NOT_ALLOWED",
   IMAGE_TOO_LARGE: "IMAGE_TOO_LARGE",
+  /**
+   * İçerik filtresine takıldı (kaydedilmedi). details.reason: phone | email | url | iban | price | duplicate |
+   * banned_term; details.field: takılan alan (ör. title, description). Web: Errors.CONTENT_BLOCKED_<REASON>.
+   */
+  CONTENT_BLOCKED: "CONTENT_BLOCKED",
 } as const
 
 export type ErrorCode = (typeof ErrorCode)[keyof typeof ErrorCode]
@@ -39,6 +44,8 @@ export type ErrorBody = {
   message: string
   /** VALIDATION_FAILED: alan bazında ayrıntılar (Zod issue'ları). */
   errors?: unknown[]
+  /** Koda özgü ek bilgi; ör. CONTENT_BLOCKED → { reason: "phone", field: "description" }. */
+  details?: Record<string, unknown>
 }
 
 /** HTTP durumundan varsayılan hata kodu (kodu belirtilmemiş hatalar için). */
@@ -61,7 +68,7 @@ export function defaultCodeForStatus(status: number): ErrorCode {
 
 /** Kodlu uygulama hatası: throw new AppException(HttpStatus.FORBIDDEN, ErrorCode.ACCOUNT_BANNED, "Hesabınız askıya alınmış.") */
 export class AppException extends HttpException {
-  constructor(status: HttpStatus, code: ErrorCode, message: string) {
-    super({ statusCode: status, code, message } satisfies ErrorBody, status)
+  constructor(status: HttpStatus, code: ErrorCode, message: string, details?: Record<string, unknown>) {
+    super({ statusCode: status, code, message, ...(details ? { details } : {}) } satisfies ErrorBody, status)
   }
 }

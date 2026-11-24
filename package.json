@@ -15,7 +15,8 @@
     "db:generate": "pnpm --filter @pati-dostu/db db:generate",
     "db:migrate": "pnpm --filter @pati-dostu/db db:migrate",
     "db:seed": "pnpm --filter @pati-dostu/db db:seed",
-    "db:studio": "pnpm --filter @pati-dostu/db db:studio"
+    "db:studio": "pnpm --filter @pati-dostu/db db:studio",
+    "test": "turbo run test"
   },
   "devDependencies": {
     "prettier": "^3.10.1",

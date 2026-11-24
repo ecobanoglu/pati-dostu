@@ -242,6 +242,14 @@
     "IMAGE_TOO_LARGE": "Fotoğraf en fazla 10 MB olabilir.",
     "IMAGE_UNREADABLE": "Bu fotoğraf bu tarayıcıda açılamadı. JPG veya PNG olarak kaydedip tekrar deneyin.",
     "TOO_MANY_IMAGES": "En fazla 5 fotoğraf ekleyebilirsiniz; fazlası eklenmedi.",
-    "UPLOAD_FAILED": "Fotoğraf yüklenemedi. Bağlantınızı kontrol edip tekrar deneyin."
+    "UPLOAD_FAILED": "Fotoğraf yüklenemedi. Bağlantınızı kontrol edip tekrar deneyin.",
+    "CONTENT_BLOCKED": "İçerik filtremize takıldı; lütfen metni düzenleyin.",
+    "CONTENT_BLOCKED_PHONE": "Telefon numarası paylaşılamaz. İletişim için site içi mesajlaşmayı ya da ilandaki “Telefonumu göster” seçeneğini kullanın.",
+    "CONTENT_BLOCKED_EMAIL": "E-posta adresi paylaşılamaz. İletişim için site içi mesajlaşmayı kullanın.",
+    "CONTENT_BLOCKED_URL": "Bağlantı (link) paylaşılamaz.",
+    "CONTENT_BLOCKED_IBAN": "IBAN veya hesap numarası paylaşılamaz. Pati Dostu'da para alışverişi yapılmaz.",
+    "CONTENT_BLOCKED_PRICE": "Ücret, kapora veya fiyat içeren içerik yayınlanamaz. Pati Dostu'da hayvan satışı yasaktır.",
+    "CONTENT_BLOCKED_DUPLICATE": "Aynı içeriği kısa süre içinde tekrar gönderdiniz.",
+    "CONTENT_BLOCKED_BANNED_TERM": "Metinde topluluk kurallarımıza uymayan bir ifade var (ör. satış veya hakaret). Lütfen düzenleyin."
   }
 }

@@ -6,7 +6,7 @@ export default defineConfig(base, {
     parserOptions: {
       // Tip bilgisi: consistent-type-imports, emitDecoratorMetadata açıkken
       // DI için gereken import'ları "import type"a çevirmesin diye gerekli.
-      projectService: { allowDefaultProject: ["eslint.config.js"] },
+      projectService: { allowDefaultProject: ["eslint.config.js", "vitest.config.ts"] },
       tsconfigRootDir: import.meta.dirname,
     },
   },

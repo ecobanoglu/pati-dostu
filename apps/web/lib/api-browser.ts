@@ -2,7 +2,7 @@
 
 import { PUBLIC_API_URL } from "./api"
 
-export type ApiError = { code: string; status: number }
+export type ApiError = { code: string; status: number; details?: Record<string, unknown> }
 export type ApiResult<T> = { data: T; error: null } | { data: null; error: ApiError }
 
 /**
@@ -17,8 +17,11 @@ export async function apiFetch<T>(path: string, init: RequestInit = {}): Promise
       credentials: "include",
       headers: { "content-type": "application/json", ...init.headers },
     })
-    const body = (await res.json().catch(() => null)) as (T & { code?: string }) | null
-    if (!res.ok) return { data: null, error: { code: body?.code ?? "UNKNOWN", status: res.status } }
+    const body = (await res.json().catch(() => null)) as
+      (T & { code?: string; details?: Record<string, unknown> }) | null
+    if (!res.ok) {
+      return { data: null, error: { code: body?.code ?? "UNKNOWN", status: res.status, details: body?.details } }
+    }
     return { data: body as T, error: null }
   } catch {
     return { data: null, error: { code: "NETWORK_ERROR", status: 0 } }

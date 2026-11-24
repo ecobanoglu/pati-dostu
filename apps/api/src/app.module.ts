@@ -8,6 +8,8 @@ import { DatabaseModule } from "./database/database.module.js"
 import { DictionaryModule } from "./dictionary/dictionary.module.js"
 import { HealthModule } from "./health/health.module.js"
 import { MailModule } from "./mail/mail.module.js"
+import { ModerationModule } from "./moderation/moderation.module.js"
+import { RedisModule } from "./redis/redis.module.js"
 import { StorageModule } from "./storage/storage.module.js"
 import { UploadsModule } from "./uploads/uploads.module.js"
 import { UsersModule } from "./users/users.module.js"
@@ -17,6 +19,8 @@ import { UsersModule } from "./users/users.module.js"
     DatabaseModule,
     MailModule,
     StorageModule,
+    RedisModule,
+    ModerationModule,
     AuthModule,
     HealthModule,
     UsersModule,

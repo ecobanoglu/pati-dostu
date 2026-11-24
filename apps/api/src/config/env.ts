@@ -34,6 +34,10 @@ const envSchema = z.object({
   SMTP_HOST: optional,
   SMTP_PORT: z.coerce.number().int().default(1025),
 
+  // Redis (Upstash REST; yerelde docker-compose'daki serverless-redis-http). Tanımlı değilse tekrar kontrolü atlanır.
+  UPSTASH_REDIS_REST_URL: optional,
+  UPSTASH_REDIS_REST_TOKEN: optional,
+
   // Dosya depolama (S3 uyumlu): yerelde RustFS, yayında Cloudflare R2
   S3_ENDPOINT: z.url().default("http://localhost:9000"),
   S3_REGION: z.string().default("us-east-1"),

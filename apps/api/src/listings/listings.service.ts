@@ -36,6 +36,13 @@ type SessionUser = AuthSession["user"]
 
 const iso = (d: Date | null | undefined) => (d ? d.toISOString() : null)
 
+/** "+905321234567" → "0532 *** ** 67" (ilan sayfasında numaranın varlığını gösterir, kendisini değil). */
+export function maskPhone(e164: string): string {
+  const digits = e164.replace(/\D/g, "").replace(/^90/, "")
+  if (digits.length !== 10) return "*** *** ** **"
+  return `0${digits.slice(0, 3)} *** ** ${digits.slice(8)}`
+}
+
 /** Kart satırı: ilan sütunları + birleştirilen tür/il/ilçe adları ve kapak fotoğrafı anahtarı. */
 type CardRow = {
   id: string
@@ -249,7 +256,14 @@ export class ListingsService {
     const isAdmin = viewer?.role === "admin"
     if (row.l.status !== "active" && !isOwner && !isAdmin) throw this.notFound()
 
-    const keys = await this.images.currentKeys(this.db, row.l.id)
+    const [keys, [active]] = await Promise.all([
+      this.images.currentKeys(this.db, row.l.id),
+      this.db
+        .select({ value: count() })
+        .from(listing)
+        .where(and(eq(listing.ownerId, row.l.ownerId), eq(listing.status, "active"), isNull(listing.deletedAt))),
+    ])
+    const showPhone = row.l.showPhone && Boolean(row.owner.phone)
     return {
       ...this.toDetailBase(row, locale),
       images: keys.map((key) => ({ url: this.storage.publicUrl(key) })),
@@ -259,10 +273,41 @@ export class ListingsService {
         image: row.owner.image,
         role: row.owner.role,
         memberSince: row.owner.createdAt.toISOString(),
-        phone: row.l.showPhone && viewer ? row.owner.phone : null,
+        activeListings: active?.value ?? 0,
       },
+      contact: { showPhone, phoneMasked: showPhone ? maskPhone(row.owner.phone ?? "") : null },
       microchipNumber: isAdmin ? row.l.microchipNumber : null,
     }
+  }
+
+  /**
+   * İlan sahibinin tam telefon numarası: yalnızca giriş yapmış kullanıcıya, yayındaki ve "Telefonumu göster" açık
+   * ilanda (sahibi ve admin her durumda). Aksi hâlde 404 (numaranın varlığı sızdırılmaz).
+   */
+  async phone(ref: string, viewer: SessionUser): Promise<{ phone: string }> {
+    const [row] = await this.db
+      .select({ ownerId: listing.ownerId, status: listing.status, showPhone: listing.showPhone, phone: user.phone })
+      .from(listing)
+      .innerJoin(user, eq(user.id, listing.ownerId))
+      .where(and(this.refCondition(ref), isNull(listing.deletedAt)))
+    const privileged = row && (row.ownerId === viewer.id || viewer.role === "admin")
+    if (!row?.phone || (!privileged && (row.status !== "active" || !row.showPhone))) throw this.notFound()
+    return { phone: row.phone }
+  }
+
+  /** Görüntülenme sayısını artırır (yalnızca yayındaki ilan; sahibinin kendi bakışı sayılmaz). */
+  async recordView(ref: string, viewer: SessionUser | null): Promise<void> {
+    await this.db
+      .update(listing)
+      .set({ viewCount: sql`${listing.viewCount} + 1`, updatedAt: sql`${listing.updatedAt}` })
+      .where(
+        and(
+          this.refCondition(ref),
+          eq(listing.status, "active"),
+          isNull(listing.deletedAt),
+          viewer ? ne(listing.ownerId, viewer.id) : undefined
+        )
+      )
   }
 
   /** Benzer ilanlar: aynı tür ve ildeki yayındaki ilanlardan rastgele 4; yetmezse aynı türden tamamlanır. */

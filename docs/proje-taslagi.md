@@ -370,7 +370,9 @@ MVP için yaklaşık 60 uç nokta gerekiyor; hepsi NestJS API'de (api.pati-dostu
 | Sözlük | GET | `/cities`, `/cities/{id}/districts` | Herkes | İl ve ilçe listeleri |
 | Sözlük | GET | `/species`, `/species/{id}/breeds` | Herkes | Hayvan türleri ve ırklar |
 | İlanlar | GET | `/listings` | Herkes | Filtreler: type, species, breed, city, district, gender, age, size, source (kimden), features, q, sort; yalnız onaylı ilanlar |
-| İlanlar | GET | `/listings/{id}` | Herkes | Detay; telefon yalnız `showPhone` açıksa ve oturum varsa döner |
+| İlanlar | GET | `/listings/{id}` | Herkes | Detay (yayındaki ilan; sahibi/admin diğer durumları önizler). Telefon yok — `showPhone` açıksa yalnız maskeli hâli (`contact.phoneMasked`), böylece yanıt önbelleğe alınabilir |
+| İlanlar | GET | `/listings/{id}/phone` | Giriş | Tam telefon numarası; yalnız yayındaki ve `showPhone` açık ilanda (sahibi/admin her zaman), aksi hâlde 404 |
+| İlanlar | POST | `/listings/{id}/views` | Herkes | Görüntülenme sayısını 1 artırır (yayındaki ilan; sahibin kendi bakışı sayılmaz). Web oturum başına bir kez çağırır |
 | İlanlar | GET | `/listings/{id}/similar` | Herkes | Aynı tür/şehirden rastgele 4 ilan |
 | İlanlar | POST | `/listings` | Giriş (doğrulanmış e-posta) | İlan oluşturur. Gövdede `submit`: `false` → taslak (`draft`, yalnızca tür zorunlu), `true` → onaya gönderim (`pending`; tüm zorunlu alanlar, en az 1 fotoğraf, ücretsiz onayı). `images`: sıralı yükleme anahtarları |
 | İlanlar | PATCH | `/listings/{id}` | Sahibi | Düzenleme; form ilanın tamamını gönderir (gövde POST ile aynı). Onaya gönderimde ilan her zaman yeniden `pending` olur; yayına girmiş ilan taslağa çevrilemez, sahiplendirilen/kapatılan düzenlenemez |

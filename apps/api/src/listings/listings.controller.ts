@@ -11,6 +11,7 @@ import {
   ListingImagesDto,
   ListingOwnerStatusDto,
   ListingPageDto,
+  ListingPhoneDto,
   ListingQueryDto,
   ListingRefParamDto,
   LocaleQueryDto,
@@ -44,6 +45,24 @@ export class ListingsController {
     @CurrentSession() session: AuthSession | null
   ): Promise<ListingDetailDto> {
     return this.listings.detail(ref, session?.user ?? null, locale)
+  }
+
+  /** İlan sahibinin tam telefon numarası ("Numarayı göster"): giriş gerekir; numara izni yoksa 404. */
+  @ApiCookieAuth()
+  @Get(":ref/phone")
+  @ApiOperation({ summary: "İlan sahibinin telefonu (giriş gerekli)" })
+  @ZodResponse({ status: 200, type: ListingPhoneDto })
+  phone(@Param() { ref }: ListingRefParamDto, @CurrentSession() session: AuthSession): Promise<ListingPhoneDto> {
+    return this.listings.phone(ref, session.user)
+  }
+
+  /** Görüntülenme kaydı (detay sayfası açılınca tarayıcıdan bir kez; detay okuması yan etkisiz kalsın diye ayrı). */
+  @Public()
+  @Post(":ref/views")
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({ summary: "Görüntülenme say" })
+  async view(@Param() { ref }: ListingRefParamDto, @CurrentSession() session: AuthSession | null): Promise<void> {
+    await this.listings.recordView(ref, session?.user ?? null)
   }
 
   /** Benzer ilanlar (aynı tür ve il, rastgele 4). */

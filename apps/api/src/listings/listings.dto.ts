@@ -107,9 +107,15 @@ export class ListingDetailDto extends createZodDto(
         image: z.string().nullable(),
         role: z.enum(["user", "clinic", "shelter", "admin"]),
         memberSince: z.iso.datetime(),
-        /** null: gizli ya da bakan giriş yapmamış. */
-        phone: z.string().nullable(),
+        /** Sahibinin yayındaki ilan sayısı ("Bireysel · 3 ilan"). */
+        activeListings: z.number().int(),
       }),
+      /**
+       * İletişim: "Telefonumu göster" açıksa maskeli numara (0532 *** ** 67). Tam numara yalnızca giriş yapmış
+       * kullanıcıya, ayrı uçtan (GET /listings/{ref}/phone) verilir; böylece detay herkese açık önbelleğe alınabilir
+       * ve numara sayfa kaynağında yer almaz.
+       */
+      contact: z.object({ showPhone: z.boolean(), phoneMasked: z.string().nullable() }),
       /** Yalnızca admin görür; diğerlerine null. */
       microchipNumber: z.string().nullable(),
     })
@@ -137,6 +143,9 @@ export class OwnListingDto extends createZodDto(
     })
     .meta({ id: "OwnListing" })
 ) {}
+
+/** GET /listings/{ref}/phone: ilan sahibinin tam telefon numarası (E.164, +90…). */
+export class ListingPhoneDto extends createZodDto(z.object({ phone: z.string() }).meta({ id: "ListingPhone" })) {}
 
 /** Admin onay kuyruğundaki ilan: kart + gönderen. */
 export class AdminListingPageDto extends createZodDto(

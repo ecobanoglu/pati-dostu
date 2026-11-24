@@ -4,12 +4,15 @@ import { ZodResponse } from "nestjs-zod"
 
 import type { AuthSession } from "../auth/auth.js"
 import { CurrentSession } from "../auth/decorators.js"
-import { MeResponseDto } from "./me.dto.js"
+import { MeResponseDto, MeSummaryDto } from "./me.dto.js"
+import { MeSummaryService } from "./me-summary.service.js"
 
 @ApiTags("users")
 @ApiCookieAuth()
 @Controller("me")
 export class MeController {
+  constructor(private readonly summaries: MeSummaryService) {}
+
   /** Oturumdaki kullanıcının profil bilgilerini döndürür (web ve mobil, girişten sonra bunu çağırır). */
   @Get()
   @ApiOperation({ summary: "Giriş yapmış kullanıcının bilgileri" })
@@ -29,5 +32,13 @@ export class MeController {
       marketingOptIn: u.marketingOptIn ?? false,
       termsAcceptedAt: u.termsAcceptedAt ? new Date(u.termsAcceptedAt).toISOString() : null,
     }
+  }
+
+  /** Hesabım › Panel özeti: ilan sayıları (duruma göre), favori sayısı, toplam görüntülenme. */
+  @Get("summary")
+  @ApiOperation({ summary: "Hesabım özeti" })
+  @ZodResponse({ status: 200, type: MeSummaryDto })
+  summary(@CurrentSession() session: AuthSession): Promise<MeSummaryDto> {
+    return this.summaries.summary(session.user.id)
   }
 }

@@ -1,3 +1,4 @@
+import { listingStatuses } from "@pati-dostu/validators"
 import { createZodDto } from "nestjs-zod"
 import { z } from "zod"
 
@@ -19,3 +20,21 @@ export const meResponseSchema = z
   .meta({ id: "Me" })
 
 export class MeResponseDto extends createZodDto(meResponseSchema) {}
+
+/** GET /me/summary: Hesabım › Panel özeti sayıları. */
+export const meSummarySchema = z
+  .object({
+    /** İlan sayısı, duruma göre (tüm durumlar; olmayan 0). */
+    listings: z.object(
+      Object.fromEntries(listingStatuses.map((s) => [s, z.number().int()])) as Record<
+        (typeof listingStatuses)[number],
+        z.ZodNumber
+      >
+    ),
+    favorites: z.number().int(),
+    /** İlanlarının toplam görüntülenme sayısı. */
+    views: z.number().int(),
+  })
+  .meta({ id: "MeSummary" })
+
+export class MeSummaryDto extends createZodDto(meSummarySchema) {}

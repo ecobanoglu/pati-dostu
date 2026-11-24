@@ -45,7 +45,9 @@
     "clinicAccount": "Veteriner kliniği",
     "shelterAccount": "Barınak",
     "signOut": "Çıkış yap",
-    "signOutFailed": "Çıkış yapılamadı. Lütfen tekrar deneyin."
+    "signOutFailed": "Çıkış yapılamadı. Lütfen tekrar deneyin.",
+    "messages": "Mesajlar",
+    "notifications": "Bildirimler"
   },
   "Footer": {
     "description": "Sahiplendirme, geçici yuva ve kayıp hayvan ilanları için ücretsiz topluluk platformu.",
@@ -520,6 +522,47 @@
     "shareText": "Pati Dostu'da bir ilan: {title}",
     "instagramHint": "Görsel indirildi. Instagram'da gönderi ya da hikâye olarak paylaşabilirsiniz.",
     "note": "Görselde telefon numarası yer almaz; QR kod ve bağlantı ilana yönlendirir."
+  },
+  "Account": {
+    "breadcrumb": "Hesabım",
+    "back": "Geri",
+    "navLabel": "Hesabım menüsü",
+    "role": {
+      "user": "Bireysel üye",
+      "clinic": "Veteriner kliniği",
+      "shelter": "Barınak",
+      "admin": "Yönetici"
+    }
+  },
+  "Dashboard": {
+    "metaTitle": "Panel özeti",
+    "crumb": "Panel özeti",
+    "greeting": "Merhaba {name}",
+    "newListing": "Yeni ilan ver",
+    "statActive": "Yayındaki ilan",
+    "statPending": "Onay bekleyen",
+    "statFavorites": "Favori",
+    "statViews": "Toplam görüntülenme",
+    "goListings": "İlanlarıma git",
+    "goFavorites": "Favorilere git",
+    "viewsHint": "Tüm ilanlarınızda",
+    "pendingHint": "Admin incelemesinde",
+    "todoTitle": "Yapılacaklar",
+    "todoRejected": "{count, plural, one {# ilanınız reddedildi} other {# ilanınız reddedildi}}",
+    "todoRejectedText": "Gerekçeyi okuyup ilanı düzenleyin ve tekrar gönderin.",
+    "todoChanges": "{count, plural, one {# ilanınız için düzeltme istendi} other {# ilanınız için düzeltme istendi}}",
+    "todoChangesText": "Admin notunu okuyup işaretli alanları güncelleyin.",
+    "todoDrafts": "{count, plural, one {# taslak ilanınız var} other {# taslak ilanınız var}}",
+    "todoDraftsText": "Kaldığınız yerden devam edip onaya gönderebilirsiniz.",
+    "todoVerify": "E-posta adresinizi doğrulayın",
+    "todoVerifyText": "İlan vermek için e-posta adresinizin doğrulanmış olması gerekir.",
+    "todoPhone": "Telefon numaranızı ekleyin",
+    "todoPhoneText": "İsterseniz ilanlarınızda gösterebilirsiniz; numaranız varsayılan olarak gizli kalır.",
+    "actionEdit": "Düzenle",
+    "actionContinue": "Devam et",
+    "actionVerify": "Doğrula",
+    "actionPhone": "Telefon ekle",
+    "todoEmpty": "Şu an yapılacak bir şey yok."
   },
   "HomePage": {
     "badge": "Ücretsiz sahiplendirme platformu",

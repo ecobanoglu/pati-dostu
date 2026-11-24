@@ -33,7 +33,7 @@ export function FavoritesList({ initial }: { initial: ListingCardData[] }) {
 
   if (items.length === 0) {
     return (
-      <div className="mt-6 flex flex-col items-center gap-3 rounded-card border border-border bg-background px-6 py-14 text-center">
+      <div className="flex flex-col items-center gap-3 rounded-card border border-border bg-background px-6 py-14 text-center">
         <PdMark className="size-16 opacity-30 grayscale" />
         <h2 className="text-xl font-extrabold text-heading">{t("emptyTitle")}</h2>
         <p className="max-w-sm text-body">{t("emptyText")}</p>
@@ -46,7 +46,7 @@ export function FavoritesList({ initial }: { initial: ListingCardData[] }) {
 
   return (
     <>
-      <div role="group" aria-label={t("tabsLabel")} className="mt-4 flex flex-wrap gap-2">
+      <div role="group" aria-label={t("tabsLabel")} className="flex flex-wrap gap-2">
         {(["all", "active", "inactive"] as const).map((key) => (
           <button
             key={key}

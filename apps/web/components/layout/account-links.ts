@@ -1,12 +1,12 @@
 import {
   Briefcase,
   CalendarClock,
+  Bell,
   Heart,
   House,
   LayoutGrid,
   type LucideIcon,
   MessageCircle,
-  Search,
   Settings,
 } from "lucide-react"
 
@@ -17,8 +17,8 @@ type AccountLink = {
     | "/account"
     | "/account/listings"
     | "/account/favorites"
-    | "/account/questions"
-    | "/account/saved-searches"
+    | "/account/messages"
+    | "/account/notifications"
     | "/account/settings"
     | "/organization"
     | "/organization/appointments"
@@ -27,8 +27,8 @@ type AccountLink = {
     | "dashboard"
     | "myListings"
     | "favorites"
-    | "myQuestions"
-    | "savedSearches"
+    | "messages"
+    | "notifications"
     | "settings"
     | "organizationPanel"
     | "appointments"
@@ -44,6 +44,7 @@ export function isOrganization(user: Pick<Me, "role">): boolean {
 /**
  * Profil menüsündeki bağlantılar, role göre (tasarım: 02-hesabim/07-ust-menu-giris-yapilmis).
  * Okunmamış/adet rozetleri ilgili modüller (ilanlar, favoriler, randevular) eklenince gelecek.
+ * Sorularım (4. aşama) ve Kayıtlı aramalar (v1.2) sayfaları yapılana kadar gizli (karar: yapılmamış sayfa menüde yok).
  */
 export function accountLinks(user: Pick<Me, "role">): AccountLink[] {
   if (isOrganization(user)) {
@@ -58,11 +59,22 @@ export function accountLinks(user: Pick<Me, "role">): AccountLink[] {
     { href: "/account", key: "dashboard", icon: House },
     { href: "/account/listings", key: "myListings", icon: LayoutGrid },
     { href: "/account/favorites", key: "favorites", icon: Heart },
-    { href: "/account/questions", key: "myQuestions", icon: MessageCircle },
-    { href: "/account/saved-searches", key: "savedSearches", icon: Search },
     { href: "/account/settings", key: "settings", icon: Settings },
   ]
 }
+
+/**
+ * Hesabım sol menüsü (tasarım 02-hesabim/01): tüm rollerde aynı. Sorularım ve Kayıtlı aramalar sayfaları yapılınca
+ * buraya eklenecek (şimdilik gizli — karar).
+ */
+export const accountNav: AccountLink[] = [
+  { href: "/account", key: "dashboard", icon: House },
+  { href: "/account/listings", key: "myListings", icon: LayoutGrid },
+  { href: "/account/messages", key: "messages", icon: MessageCircle },
+  { href: "/account/favorites", key: "favorites", icon: Heart },
+  { href: "/account/notifications", key: "notifications", icon: Bell },
+  { href: "/account/settings", key: "settings", icon: Settings },
+]
 
 /** Yalnızca bireysel kullanıcılar kurumsal başvuru yapabilir. */
 export const organizationApplyIcon = Briefcase

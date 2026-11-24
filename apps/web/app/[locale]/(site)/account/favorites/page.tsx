@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import { getLocale, getTranslations } from "next-intl/server"
 import { Suspense } from "react"
 
+import { AccountPageHeader } from "@/features/account/account-page-header"
 import { FavoritesList } from "@/features/favorites/favorites-list"
 import { getPathname, redirect } from "@/i18n/navigation"
 import type { Locale } from "@/i18n/routing"
@@ -36,7 +37,7 @@ async function Favorites() {
 function FavoritesFallback() {
   return (
     <div aria-hidden="true">
-      <div className="mt-4 h-11 w-72 rounded-full bg-smoke-2" />
+      <div className="h-11 w-72 rounded-full bg-smoke-2" />
       <div className="mt-5 grid gap-4 sm:grid-cols-2 sm:gap-5 xl:grid-cols-3">
         {Array.from({ length: 3 }, (_, i) => (
           <div key={i} className="aspect-[4/3] animate-pulse rounded-card bg-smoke-2" />
@@ -48,18 +49,16 @@ function FavoritesFallback() {
 
 /**
  * Hesabım › Favoriler — /hesabim/favoriler (tasarım 02-hesabim-favoriler, 09-mobil-favoriler).
- * Hesabım'ın sol menüsü 3. aşamada (Hesabım paneli) eklenecek.
+ * Zemin, kap ve sol menü Hesabım düzeninden (account/layout.tsx).
  */
 export default async function FavoritesPage() {
   const t = await getTranslations("Favorites")
   return (
-    <div className="min-h-full bg-canvas">
-      <div className="mx-auto max-w-site px-4 py-5 pb-10 lg:px-6 lg:py-8">
-        <h1 className="text-h2 text-heading lg:text-h1">{t("title")}</h1>
-        <Suspense fallback={<FavoritesFallback />}>
-          <Favorites />
-        </Suspense>
-      </div>
-    </div>
+    <>
+      <AccountPageHeader title={t("title")} crumb={t("title")} back="/account" />
+      <Suspense fallback={<FavoritesFallback />}>
+        <Favorites />
+      </Suspense>
+    </>
   )
 }

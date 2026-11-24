@@ -383,6 +383,7 @@ MVP için yaklaşık 60 uç nokta gerekiyor; hepsi NestJS API'de (api.pati-dostu
 | İlanlar | GET | `/api/og/listing/{no}?t=&f=&o=&l=` (web) | Herkes | Paylaşım görseli (PNG). API'de değil, web'deki Next.js route handler'da (`next/og`). `t` = classic, polaroid, poster, minimal, orange, character; `f` = post (1080×1080), story (1080×1920); `o=1` özellik çipleri. Yalnız yayındaki ilan (değilse 404). İstek anında üretilir, CDN önbelleği (s-maxage 1 sa); R2'ye yazılmaz, `listing_share_image` tablosu kullanılmaz |
 | İlanlar | POST | `/listings/{id}/report` | Giriş | Şikayet bildirimi |
 | İlanlar | GET | `/me/listings` | Giriş | Kendi ilanları, onay durumu ve red gerekçesiyle |
+| Hesabım | GET | `/me/summary` | Giriş | Panel özeti: durumlara göre ilan sayısı, favori sayısı, toplam görüntülenme |
 | Favoriler | GET | `/me/favorites` | Giriş | Favori ilanlar (en son eklenen önce): yayındakiler + sahiplendirilen/kapatılanlar |
 | Favoriler | GET | `/me/favorites/ids` | Giriş | Favorideki ilan numaraları (kart ve detaydaki kalplerin durumu) |
 | Favoriler | PUT / DELETE | `/listings/{id}/favorite` | Giriş | Favoriye ekle / çıkar |

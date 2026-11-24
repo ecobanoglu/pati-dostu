@@ -45,7 +45,9 @@
     "clinicAccount": "Veterinary clinic",
     "shelterAccount": "Shelter",
     "signOut": "Sign out",
-    "signOutFailed": "Couldn't sign out. Please try again."
+    "signOutFailed": "Couldn't sign out. Please try again.",
+    "messages": "Messages",
+    "notifications": "Notifications"
   },
   "Footer": {
     "description": "A free community platform for adoption, foster and lost pet listings.",
@@ -520,6 +522,47 @@
     "shareText": "A listing on Pati Dostu: {title}",
     "instagramHint": "Image downloaded. You can share it as a post or story on Instagram.",
     "note": "The phone number never appears on the image; the QR code and link lead to the listing."
+  },
+  "Account": {
+    "breadcrumb": "My account",
+    "back": "Back",
+    "navLabel": "Account menu",
+    "role": {
+      "user": "Individual member",
+      "clinic": "Vet clinic",
+      "shelter": "Shelter",
+      "admin": "Administrator"
+    }
+  },
+  "Dashboard": {
+    "metaTitle": "Dashboard",
+    "crumb": "Dashboard",
+    "greeting": "Hello {name}",
+    "newListing": "Post a listing",
+    "statActive": "Live listings",
+    "statPending": "Awaiting review",
+    "statFavorites": "Favorites",
+    "statViews": "Total views",
+    "goListings": "Go to my listings",
+    "goFavorites": "Go to favorites",
+    "viewsHint": "Across all your listings",
+    "pendingHint": "Being reviewed by an admin",
+    "todoTitle": "To do",
+    "todoRejected": "{count, plural, one {# listing was rejected} other {# listings were rejected}}",
+    "todoRejectedText": "Read the reason, edit the listing and submit it again.",
+    "todoChanges": "{count, plural, one {Changes requested for # listing} other {Changes requested for # listings}}",
+    "todoChangesText": "Read the admin's note and update the marked fields.",
+    "todoDrafts": "{count, plural, one {You have # draft} other {You have # drafts}}",
+    "todoDraftsText": "Pick up where you left off and submit for review.",
+    "todoVerify": "Verify your email address",
+    "todoVerifyText": "You need a verified email address to post listings.",
+    "todoPhone": "Add your phone number",
+    "todoPhoneText": "You can show it on your listings if you like; it stays hidden by default.",
+    "actionEdit": "Edit",
+    "actionContinue": "Continue",
+    "actionVerify": "Verify",
+    "actionPhone": "Add phone",
+    "todoEmpty": "Nothing to do right now."
   },
   "HomePage": {
     "badge": "Free adoption platform",

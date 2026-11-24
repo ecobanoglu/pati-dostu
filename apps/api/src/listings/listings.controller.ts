@@ -14,6 +14,7 @@ import {
   ListingPhoneDto,
   ListingQueryDto,
   ListingRefParamDto,
+  MyListingListDto,
   LocaleQueryDto,
   OwnListingDto,
   SaveListingDto,
@@ -149,8 +150,8 @@ export class MyListingsController {
   /** Kullanıcının kendi ilanları (taslak, onayda, yayında, reddedilen…). */
   @Get()
   @ApiOperation({ summary: "İlanlarım" })
-  @ZodResponse({ status: 200, type: ListingCardListDto })
-  mine(@CurrentSession() session: AuthSession, @Query() { locale }: LocaleQueryDto): Promise<ListingCardListDto> {
+  @ZodResponse({ status: 200, type: MyListingListDto })
+  mine(@CurrentSession() session: AuthSession, @Query() { locale }: LocaleQueryDto): Promise<MyListingListDto> {
     return this.listings.myListings(session.user.id, locale)
   }
 

@@ -105,3 +105,12 @@ export async function getSimilarListings(listingNo: number, locale: string): Pro
     return []
   }
 }
+
+/** GET /me/listings satırı (apps/api › MyListing): kart + görüntülenme, admin notu, red gerekçesi, son güncelleme. */
+export type MyListingData = ListingCardData & {
+  viewCount: number
+  reviewNote: string | null
+  reviewFields: string[] | null
+  rejectionReason: string | null
+  updatedAt: string
+}

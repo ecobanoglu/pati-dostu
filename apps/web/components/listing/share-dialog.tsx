@@ -1,6 +1,6 @@
 "use client"
 
-import { Download, Link2, LoaderCircle, Share2, X } from "lucide-react"
+import { Download, ImageIcon, Link2, LoaderCircle, Share2, X } from "lucide-react"
 import { useLocale, useTranslations } from "next-intl"
 import { useId, useRef, useState } from "react"
 
@@ -13,6 +13,7 @@ import {
   type ShareFormat,
   type ShareTemplate,
 } from "@/lib/share-image"
+import { getPathname } from "@/i18n/navigation"
 import { cn } from "@/lib/utils"
 
 type Props = {
@@ -20,8 +21,16 @@ type Props = {
   title: string
   /** İlan türü: kayıp/bulunanda "Afiş" varsayılan seçilir. */
   type: string
-  /** full: çerçeveli "Paylaş" butonu (detay kartı) · icon: mobil üst çubuktaki ikon. */
-  variant: "full" | "icon"
+  /**
+   * full: çerçeveli "Paylaş" butonu (detay kartı) · icon: mobil üst çubuktaki ikon · image: "Paylaşım görseli"
+   * butonu (İlanlarım).
+   */
+  variant: "full" | "icon" | "image"
+  /**
+   * İlan adresinin kısa adı ({slug}-{no}). Verilirse bağlantı kopyala / WhatsApp / X ilanın adresini paylaşır;
+   * verilmezse bulunulan sayfanın adresi (ilan detayı) kullanılır.
+   */
+  slug?: string
 }
 
 /**
@@ -31,7 +40,7 @@ type Props = {
  * WhatsApp, Instagram (dosya paylaşımı destekleniyorsa sistem penceresi, değilse indirir), X.
  * Görsel /api/og/listing/{no} adresinden gelir; telefon numarası görselde yer almaz.
  */
-export function ShareDialog({ listingNo, title, type, variant }: Props) {
+export function ShareDialog({ listingNo, title, type, variant, slug }: Props) {
   const t = useTranslations("ShareDialog")
   const locale = useLocale()
   const dialogRef = useRef<HTMLDialogElement>(null)
@@ -110,14 +119,19 @@ export function ShareDialog({ listingNo, title, type, variant }: Props) {
   /** Sayfanın adresini panoya kopyalar. */
   async function copyLink() {
     try {
-      await navigator.clipboard.writeText(window.location.href)
+      await navigator.clipboard.writeText(pageUrl)
       setNotice({ text: t("copied") })
     } catch {
       // Pano izni yok.
     }
   }
 
-  const pageUrl = typeof window === "undefined" ? "" : window.location.href
+  const pageUrl =
+    typeof window === "undefined"
+      ? ""
+      : slug
+        ? window.location.origin + getPathname({ href: { pathname: "/listing/[slug]", params: { slug } }, locale })
+        : window.location.href
   const text = t("shareText", { title })
   const formatLabel = format === "post" ? t("formatPost") : t("formatStory")
 
@@ -127,6 +141,11 @@ export function ShareDialog({ listingNo, title, type, variant }: Props) {
         <Button variant="outline" size="sm" onClick={show}>
           <Share2 aria-hidden="true" />
           {t("open")}
+        </Button>
+      ) : variant === "image" ? (
+        <Button variant="outline" size="sm" onClick={show}>
+          <ImageIcon aria-hidden="true" />
+          {t("title")}
         </Button>
       ) : (
         <Button variant="ghost" size="icon" onClick={show} aria-label={t("open")}>

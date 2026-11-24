@@ -29,7 +29,7 @@ import { ModerationService } from "../moderation/moderation.service.js"
 import { StorageService } from "../storage/storage.service.js"
 import { ListingImagesService } from "./listing-images.service.js"
 import { statusOnOwnerClose, statusOnReview, statusOnSave, type TransitionResult } from "./listing-status.js"
-import type { ListingCard } from "./listings.dto.js"
+import type { ListingCard, MyListing } from "./listings.dto.js"
 
 type Locale = "tr" | "en"
 type SessionUser = AuthSession["user"]
@@ -188,12 +188,43 @@ export class ListingsService {
     }
   }
 
-  /** Kullanıcının kendi ilanları (tüm durumlar), en son güncellenen önce. */
-  async myListings(ownerId: string, locale: Locale): Promise<ListingCard[]> {
+  /**
+   * Kullanıcının kendi ilanları (tüm durumlar, silinenler hariç), en son güncellenen önce. Kart verisine ek olarak
+   * görüntülenme, admin notu / düzeltilecek alanlar, red gerekçesi ve son güncelleme tarihi (İlanlarım sayfası).
+   */
+  async myListings(ownerId: string, locale: Locale): Promise<MyListing[]> {
     const rows = await this.cardQuery()
       .where(and(eq(listing.ownerId, ownerId), isNull(listing.deletedAt)))
       .orderBy(desc(listing.updatedAt))
-    return rows.map((r) => this.toCard(r, locale))
+    if (rows.length === 0) return []
+    const extras = await this.db
+      .select({
+        id: listing.id,
+        viewCount: listing.viewCount,
+        reviewNote: listing.reviewNote,
+        reviewFields: listing.reviewFields,
+        rejectionReason: listing.rejectionReason,
+        updatedAt: listing.updatedAt,
+      })
+      .from(listing)
+      .where(
+        inArray(
+          listing.id,
+          rows.map((r) => r.id)
+        )
+      )
+    const byId = new Map(extras.map((e) => [e.id, e]))
+    return rows.map((r) => {
+      const e = byId.get(r.id)
+      return {
+        ...this.toCard(r, locale),
+        viewCount: e?.viewCount ?? 0,
+        reviewNote: e?.reviewNote ?? null,
+        reviewFields: (e?.reviewFields as ReviewableField[] | null) ?? null,
+        rejectionReason: e?.rejectionReason ?? null,
+        updatedAt: (e?.updatedAt ?? new Date()).toISOString(),
+      }
+    })
   }
 
   /** Düzenleme formu için ilanın tamamı (yalnızca sahibine). */

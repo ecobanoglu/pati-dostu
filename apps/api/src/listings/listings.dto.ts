@@ -81,6 +81,22 @@ export class ListingPageDto extends createZodDto(
 
 export class ListingCardListDto extends createZodDto(z.array(listingCardSchema).meta({ id: "ListingCardList" })) {}
 
+/** İlanlarım satırı: kart + sahibinin görmesi gerekenler (görüntülenme, admin notu, red gerekçesi, son güncelleme). */
+export const myListingSchema = listingCardSchema
+  .extend({
+    viewCount: z.number().int(),
+    /** changes_requested: admin notu ve düzeltilecek alanlar. */
+    reviewNote: z.string().nullable(),
+    reviewFields: z.array(z.enum(reviewableFields)).nullable(),
+    /** rejected: gerekçe. */
+    rejectionReason: z.string().nullable(),
+    updatedAt: z.iso.datetime(),
+  })
+  .meta({ id: "MyListing" })
+export type MyListing = z.infer<typeof myListingSchema>
+
+export class MyListingListDto extends createZodDto(z.array(myListingSchema).meta({ id: "MyListingList" })) {}
+
 const detailFields = {
   description: z.string().nullable(),
   breed: named.nullable(),

@@ -7,7 +7,6 @@ import {
   listingFeatures,
   listingSources,
   listingTypes,
-  type ReviewableField,
   saveListingSchema,
   TITLE_MAX,
   TITLE_MIN,
@@ -28,6 +27,7 @@ import { Button, buttonVariants } from "@/components/ui/button"
 import { getPathname, Link, useRouter } from "@/i18n/navigation"
 import { apiFetch } from "@/lib/api-browser"
 import { type ErrorDetails, useErrorMessage } from "@/lib/errors"
+import { reviewFieldLabel } from "@/lib/review-fields"
 import { useDictionary } from "@/lib/use-dictionary"
 import { cn } from "@/lib/utils"
 
@@ -45,24 +45,6 @@ import {
 
 type Option = { id: string; name: string }
 type Breed = Option & { isMixed: boolean }
-
-/** Admin'in işaretlediği alanın formdaki etiketi (ListingForm anahtarı). */
-const reviewFieldLabel = {
-  type: "sectionType",
-  title: "listingTitle",
-  species: "species",
-  breed: "breed",
-  name: "name",
-  ageGroup: "ageGroup",
-  gender: "gender",
-  size: "size",
-  location: "sectionLocation",
-  images: "sectionPhotos",
-  description: "sectionDescription",
-  features: "sectionFeatures",
-  source: "sourceGroup",
-  contact: "sectionContact",
-} as const satisfies Record<ReviewableField, string>
 
 /**
  * İlan ver / ilan düzenle formu (YZ'siz; tasarım: 04-ilan-ver-yz-siz, mobil 21 ve 20).

@@ -30,6 +30,8 @@ export const routing = defineRouting({
   pathnames: {
     "/": "/",
     "/listings": { tr: "/ilanlar", en: "/listings" },
+    "/listings/[species]": { tr: "/ilanlar/[species]", en: "/listings/[species]" },
+    "/listings/[species]/[city]": { tr: "/ilanlar/[species]/[city]", en: "/listings/[species]/[city]" },
     "/listing/[slug]": { tr: "/ilan/[slug]", en: "/listing/[slug]" },
     "/post-listing": { tr: "/ilan-ver", en: "/post-listing" },
     "/community": { tr: "/topluluk", en: "/community" },

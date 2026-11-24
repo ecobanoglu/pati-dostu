@@ -23,6 +23,11 @@ export const ErrorCode = {
   PHONE_INVALID: "PHONE_INVALID",
   CITY_INVALID: "CITY_INVALID",
   LOCALE_INVALID: "LOCALE_INVALID",
+  /** E-postası doğrulanmamış kullanıcı içerik oluşturamaz (ilan, fotoğraf). */
+  EMAIL_NOT_VERIFIED: "EMAIL_NOT_VERIFIED",
+  // Dosya yükleme
+  IMAGE_TYPE_NOT_ALLOWED: "IMAGE_TYPE_NOT_ALLOWED",
+  IMAGE_TOO_LARGE: "IMAGE_TOO_LARGE",
 } as const
 
 export type ErrorCode = (typeof ErrorCode)[keyof typeof ErrorCode]

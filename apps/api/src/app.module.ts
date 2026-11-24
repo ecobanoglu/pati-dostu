@@ -8,10 +8,21 @@ import { DatabaseModule } from "./database/database.module.js"
 import { DictionaryModule } from "./dictionary/dictionary.module.js"
 import { HealthModule } from "./health/health.module.js"
 import { MailModule } from "./mail/mail.module.js"
+import { StorageModule } from "./storage/storage.module.js"
+import { UploadsModule } from "./uploads/uploads.module.js"
 import { UsersModule } from "./users/users.module.js"
 
 @Module({
-  imports: [DatabaseModule, MailModule, AuthModule, HealthModule, UsersModule, DictionaryModule],
+  imports: [
+    DatabaseModule,
+    MailModule,
+    StorageModule,
+    AuthModule,
+    HealthModule,
+    UsersModule,
+    DictionaryModule,
+    UploadsModule,
+  ],
   providers: [
     // Tüm girişler Zod şemalarıyla (createZodDto) doğrulanır.
     { provide: APP_PIPE, useClass: ZodValidationPipe },

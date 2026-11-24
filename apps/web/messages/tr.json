@@ -187,6 +187,22 @@
     "linkInvalidTitle": "Bağlantı geçersiz",
     "linkInvalidDescription": "Doğrulama bağlantısı geçersiz veya süresi dolmuş. E-posta adresini yaz, yenisini gönderelim."
   },
+  "ImageUploader": {
+    "counter": "{count} / {max} yüklendi",
+    "add": "Fotoğraf ekle",
+    "hint": "En fazla {max} fotoğraf · JPG, PNG veya HEIC · her biri en fazla 10 MB. İlk fotoğraf kapak olur; sürükleyerek ya da ⋯ menüsünden sırala.",
+    "cover": "Kapak",
+    "options": "{position}. fotoğraf: seçenekler",
+    "makeCover": "Kapak yap",
+    "moveLeft": "Sola taşı",
+    "moveRight": "Sağa taşı",
+    "remove": "Kaldır",
+    "removeLabel": "{position}. fotoğrafı kaldır",
+    "uploaded": "{name} yüklendi",
+    "madeCover": "Kapak fotoğrafı değişti",
+    "moved": "Fotoğraf {position}. sıraya taşındı",
+    "removed": "Fotoğraf kaldırıldı"
+  },
   "HomePage": {
     "title": "Pati Dostu",
     "comingSoon": "Yakında burada."
@@ -221,6 +237,11 @@
     "TOKEN_EXPIRED": "Bağlantının süresi dolmuş.",
     "PASSWORD_TOO_SHORT": "Şifre en az 8 karakter olmalı.",
     "PASSWORD_TOO_LONG": "Şifre en fazla 128 karakter olabilir.",
-    "EMAIL_ALREADY_VERIFIED": "E-posta adresiniz zaten doğrulanmış. Giriş yapabilirsiniz."
+    "EMAIL_ALREADY_VERIFIED": "E-posta adresiniz zaten doğrulanmış. Giriş yapabilirsiniz.",
+    "IMAGE_TYPE_NOT_ALLOWED": "Bu dosya türü desteklenmiyor. JPG, PNG veya HEIC yükleyin.",
+    "IMAGE_TOO_LARGE": "Fotoğraf en fazla 10 MB olabilir.",
+    "IMAGE_UNREADABLE": "Bu fotoğraf bu tarayıcıda açılamadı. JPG veya PNG olarak kaydedip tekrar deneyin.",
+    "TOO_MANY_IMAGES": "En fazla 5 fotoğraf ekleyebilirsiniz; fazlası eklenmedi.",
+    "UPLOAD_FAILED": "Fotoğraf yüklenemedi. Bağlantınızı kontrol edip tekrar deneyin."
   }
 }

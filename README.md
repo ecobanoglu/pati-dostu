@@ -62,7 +62,7 @@ Tamamen sosyal sorumluluk amaçlı bir platform — [pati-dostu.com](https://pat
    | Redis                  | `localhost:6379`                                                                                |
    | Upstash REST taklidi   | http://localhost:8079 (token: `dev-token`)                                                      |
    | Mailpit (e-postalar)   | http://localhost:8025                                                                           |
-   | RustFS (S3, R2 yerine) | API http://localhost:9000 · konsol http://localhost:9001 (`patidostu` / `patidostu-dev-secret`) |
+   | RustFS (S3, R2 yerine) | API http://localhost:9000 · konsol http://localhost:9001/rustfs/console/ (`patidostu` / `patidostu-dev-secret`) |
 
    `pati-dostu` bucket'ı `storage-init` servisiyle otomatik oluşturulur.
 

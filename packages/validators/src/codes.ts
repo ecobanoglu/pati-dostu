@@ -12,6 +12,8 @@ export const ValidationCode = {
   PHONE_INVALID: "PHONE_INVALID",
   CITY_INVALID: "CITY_INVALID",
   TERMS_NOT_ACCEPTED: "TERMS_NOT_ACCEPTED",
+  IMAGE_TYPE_NOT_ALLOWED: "IMAGE_TYPE_NOT_ALLOWED",
+  IMAGE_TOO_LARGE: "IMAGE_TOO_LARGE",
 } as const
 
 export type ValidationCode = (typeof ValidationCode)[keyof typeof ValidationCode]

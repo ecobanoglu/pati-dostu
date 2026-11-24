@@ -33,6 +33,15 @@ const envSchema = z.object({
   EMAIL_FROM: z.string().default("Pati Dostu <iletisim@pati-dostu.com>"),
   SMTP_HOST: optional,
   SMTP_PORT: z.coerce.number().int().default(1025),
+
+  // Dosya depolama (S3 uyumlu): yerelde RustFS, yayında Cloudflare R2
+  S3_ENDPOINT: z.url().default("http://localhost:9000"),
+  S3_REGION: z.string().default("us-east-1"),
+  S3_ACCESS_KEY_ID: z.string().min(1, "S3_ACCESS_KEY_ID tanımlı değil"),
+  S3_SECRET_ACCESS_KEY: z.string().min(1, "S3_SECRET_ACCESS_KEY tanımlı değil"),
+  S3_BUCKET: z.string().default("pati-dostu"),
+  /** Herkese açık dosya adresi (listings/ önekli nesneler); ör. https://cdn.pati-dostu.com */
+  S3_PUBLIC_URL: z.url().default("http://localhost:9000/pati-dostu"),
 })
 
 export type Env = z.infer<typeof envSchema>

@@ -44,7 +44,7 @@ services:
       MP_SMTP_AUTH_ALLOW_INSECURE: 1
     restart: unless-stopped
 
-  # Cloudflare R2 yerine S3 uyumlu yerel depolama · konsol: http://localhost:9001
+  # Cloudflare R2 yerine S3 uyumlu yerel depolama · konsol: http://localhost:9001/rustfs/console/
   storage:
     image: rustfs/rustfs:1.0.6
     ports:
@@ -58,7 +58,10 @@ services:
       - storage-data:/data
     restart: unless-stopped
 
-  # "pati-dostu" bucket'ını bir kez oluşturur, sonra kapanır
+  # "pati-dostu" bucket'ını oluşturur ve ayarlar, sonra kapanır (her "up"ta tekrar çalışır, tekrar çalışması zararsız):
+  # - CORS: tarayıcı imzalı URL ile doğrudan yükleyebilsin (web 3000; testler 3010)
+  # - Okuma izni: yalnızca listings/ herkese açık; tmp/ (henüz ilana bağlanmamış yüklemeler) gizli
+  # Yayında aynı ayarlar Cloudflare R2 panelinden yapılır (CORS + listings/ için özel alan adı).
   storage-init:
     image: amazon/aws-cli:2.42.1
     depends_on:
@@ -76,6 +79,11 @@ services:
         done
         aws --endpoint-url http://storage:9000 s3api head-bucket --bucket pati-dostu 2>/dev/null \
           || aws --endpoint-url http://storage:9000 s3 mb s3://pati-dostu
+        aws --endpoint-url http://storage:9000 s3api put-bucket-cors --bucket pati-dostu --cors-configuration \
+          '{"CORSRules":[{"AllowedOrigins":["http://localhost:3000","http://localhost:3010"],"AllowedMethods":["PUT","GET","HEAD"],"AllowedHeaders":["*"],"ExposeHeaders":["ETag"],"MaxAgeSeconds":3600}]}'
+        aws --endpoint-url http://storage:9000 s3api put-bucket-policy --bucket pati-dostu --policy \
+          '{"Version":"2012-10-17","Statement":[{"Sid":"PublicReadListingImages","Effect":"Allow","Principal":"*","Action":["s3:GetObject"],"Resource":["arn:aws:s3:::pati-dostu/listings/*"]}]}'
+        echo "pati-dostu bucket hazır"
     restart: "no"
 
 volumes:

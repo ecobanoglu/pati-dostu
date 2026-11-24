@@ -376,8 +376,8 @@ MVP için yaklaşık 60 uç nokta gerekiyor; hepsi NestJS API'de (api.pati-dostu
 | İlanlar | PATCH | `/listings/{id}` | Sahibi | Düzenleme; her düzenleme ilanı yeniden `pending` yapar |
 | İlanlar | DELETE | `/listings/{id}` | Sahibi, Admin | Yumuşak silme |
 | İlanlar | POST | `/listings/{id}/status` | Sahibi | Sahiplendirildi / kapatıldı olarak işaretleme |
-| İlanlar | POST | `/listings/{id}/images/upload-url` | Sahibi | Fotoğraf için imzalı link (en fazla 5) |
-| İlanlar | PUT | `/listings/{id}/images` | Sahibi | Fotoğraf sırası ve kapak seçimi |
+| Yükleme | POST | `/uploads/listing-image` | Giriş (doğrulanmış e-posta) | Fotoğraf için imzalı PUT linki; dosya `tmp/listing-images/{userId}/` altına yüklenir. İlan henüz yokken (form doldurulurken) çalışır |
+| İlanlar | PUT | `/listings/{id}/images` | Sahibi | Fotoğrafları ilana bağlar, sıralar (ilk = kapak; en fazla 5). API geçici dosyaları doğrulayıp `listings/{id}/` altına taşır. `POST/PATCH /listings` gövdesindeki `images` de aynı işi yapar |
 | İlanlar | GET | `/listings/{id}/share-image?template=` | Herkes | Paylaşım görseli (PNG); `template` = klasik, polaroid, afis, minimal, turuncu, karakter; `format` = post (1:1), story (9:16) |
 | İlanlar | POST | `/listings/{id}/report` | Giriş | Şikayet bildirimi |
 | İlanlar | GET | `/me/listings` | Giriş | Kendi ilanları, onay durumu ve red gerekçesiyle |

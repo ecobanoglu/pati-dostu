@@ -187,6 +187,22 @@
     "linkInvalidTitle": "Invalid link",
     "linkInvalidDescription": "The verification link is invalid or has expired. Enter your email and we'll send a new one."
   },
+  "ImageUploader": {
+    "counter": "{count} / {max} uploaded",
+    "add": "Add photo",
+    "hint": "Up to {max} photos · JPG, PNG or HEIC · max 10 MB each. The first photo is the cover; drag to reorder or use the ⋯ menu.",
+    "cover": "Cover",
+    "options": "Photo {position}: options",
+    "makeCover": "Make cover",
+    "moveLeft": "Move left",
+    "moveRight": "Move right",
+    "remove": "Remove",
+    "removeLabel": "Remove photo {position}",
+    "uploaded": "{name} uploaded",
+    "madeCover": "Cover photo changed",
+    "moved": "Photo moved to position {position}",
+    "removed": "Photo removed"
+  },
   "HomePage": {
     "title": "Pati Dostu",
     "comingSoon": "Coming soon."
@@ -221,6 +237,11 @@
     "TOKEN_EXPIRED": "The link has expired.",
     "PASSWORD_TOO_SHORT": "Password must be at least 8 characters.",
     "PASSWORD_TOO_LONG": "Password can be at most 128 characters.",
-    "EMAIL_ALREADY_VERIFIED": "Your email is already verified. You can sign in."
+    "EMAIL_ALREADY_VERIFIED": "Your email is already verified. You can sign in.",
+    "IMAGE_TYPE_NOT_ALLOWED": "This file type isn't supported. Upload JPG, PNG or HEIC.",
+    "IMAGE_TOO_LARGE": "Photos can be at most 10 MB.",
+    "IMAGE_UNREADABLE": "This photo couldn't be opened in this browser. Save it as JPG or PNG and try again.",
+    "TOO_MANY_IMAGES": "You can add up to 5 photos; the rest weren't added.",
+    "UPLOAD_FAILED": "The photo couldn't be uploaded. Check your connection and try again."
   }
 }

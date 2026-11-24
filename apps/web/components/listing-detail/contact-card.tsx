@@ -11,6 +11,8 @@ import { useErrorMessage } from "@/lib/errors"
 import type { ListingDetailData } from "@/lib/listings"
 import { cn } from "@/lib/utils"
 
+import { FavoriteButton } from "@/components/listing/favorite-button"
+
 import { ShareButton } from "./share-button"
 
 export type ContactProps = {
@@ -22,6 +24,8 @@ export type ContactProps = {
   viewer: "guest" | "user" | "owner"
   /** Giriş sonrası dönülecek adres (bu ilanın yolu). */
   next: string
+  /** Favori butonu gösterilsin mi (yayındaki ilan ve bakan sahibi değil). */
+  canFavorite: boolean
 }
 
 /** Rol → ilan sahibi kartındaki etiketin çeviri anahtarı. */
@@ -204,7 +208,7 @@ export function PrimaryAction({ listingId, viewer, next, className }: ContactPro
   )
 }
 
-/** Masaüstü ilan sahibi kartı (tasarım 03, sağ sütun): sahip, telefon, mesaj ve paylaş. */
+/** Masaüstü ilan sahibi kartı (tasarım 03, sağ sütun): sahip, telefon, mesaj, favori ve paylaş. */
 export function ContactCard(props: ContactProps) {
   return (
     <section aria-labelledby="owner-name" className="grid gap-4 rounded-card border border-border p-5">
@@ -214,7 +218,10 @@ export function ContactCard(props: ContactProps) {
       <OwnerHeading owner={props.owner} size="lg" />
       <PhoneBlock {...props} />
       <PrimaryAction {...props} />
-      <ShareButton title={props.title} variant="full" />
+      <div className={cn("grid gap-2.5", props.canFavorite && "grid-cols-2")}>
+        {props.canFavorite && <FavoriteButton listingNo={props.listingNo} title={props.title} variant="full" />}
+        <ShareButton title={props.title} variant="full" />
+      </div>
     </section>
   )
 }

@@ -442,6 +442,26 @@
     "previewStatus": "Önizleme: bu ilan henüz yayında değil ({status}). Yalnızca siz ve adminler görebilirsiniz.",
     "editListing": "İlanı düzenle"
   },
+  "Favorites": {
+    "add": "Favorilere ekle",
+    "remove": "Favorilerden çıkar",
+    "addNamed": "Favorilere ekle: {title}",
+    "short": "Favori",
+    "added": "Favorilere eklendi",
+    "removed": "Favorilerden çıkarıldı",
+    "failed": "İşlem yapılamadı. Lütfen tekrar deneyin.",
+    "metaTitle": "Favoriler",
+    "title": "Favoriler",
+    "tabsLabel": "Favorileri süz",
+    "tabAll": "Tümü",
+    "tabActive": "Yayında",
+    "tabInactive": "Yayında değil",
+    "inactive": "{status} · artık yayında değil",
+    "emptyTitle": "Henüz favori ilanınız yok",
+    "emptyText": "Beğendiğiniz ilanlardaki kalbe dokunun; burada toplansın.",
+    "emptyCta": "İlanlara göz atın",
+    "emptyFilter": "Bu grupta ilan yok."
+  },
   "HomePage": {
     "title": "Pati Dostu",
     "comingSoon": "Yakında burada."

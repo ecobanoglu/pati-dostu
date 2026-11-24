@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button"
 import { Link, useRouter } from "@/i18n/navigation"
 import { authClient } from "@/lib/auth-client"
 import { authErrorCode, safeNextPath, useErrorMessage } from "@/lib/errors"
+import { resetFavorites } from "@/lib/use-favorites"
 
 import { GoogleButton } from "./google-button"
 
@@ -51,6 +52,7 @@ export function SignInForm() {
       setFormError(errorMessage(code))
       return
     }
+    resetFavorites()
     // `next` zaten dile göre çevrilmiş tam yol (ör. /hesabim/ilanlarim); bu yüzden next/navigation yönlendiricisi.
     if (next)
       rawRouter.replace(next as Route) // safeNextPath ile doğrulandı

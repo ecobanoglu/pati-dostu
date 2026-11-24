@@ -383,7 +383,8 @@ MVP için yaklaşık 60 uç nokta gerekiyor; hepsi NestJS API'de (api.pati-dostu
 | İlanlar | GET | `/listings/{id}/share-image?template=` | Herkes | Paylaşım görseli (PNG); `template` = klasik, polaroid, afis, minimal, turuncu, karakter; `format` = post (1:1), story (9:16) |
 | İlanlar | POST | `/listings/{id}/report` | Giriş | Şikayet bildirimi |
 | İlanlar | GET | `/me/listings` | Giriş | Kendi ilanları, onay durumu ve red gerekçesiyle |
-| Favoriler | GET | `/me/favorites` | Giriş | Favori ilanlar |
+| Favoriler | GET | `/me/favorites` | Giriş | Favori ilanlar (en son eklenen önce): yayındakiler + sahiplendirilen/kapatılanlar |
+| Favoriler | GET | `/me/favorites/ids` | Giriş | Favorideki ilan numaraları (kart ve detaydaki kalplerin durumu) |
 | Favoriler | PUT / DELETE | `/listings/{id}/favorite` | Giriş | Favoriye ekle / çıkar |
 | Yorumlar | GET / POST | `/listings/{id}/comments` | Herkes / Giriş | İlan yorumlarını listeleme / yazma |
 | Yorumlar | DELETE | `/comments/{id}` | Sahibi, Admin | Yorum silme |
@@ -597,4 +598,5 @@ Her aşama sonunda çalışan bir sürüm preview ortamına çıkar; v1.1 ve son
 - İlanı onaya göndermek için en az 1 fotoğraf zorunludur (en fazla 5).
 - Şifre değiştiğinde (sıfırlama veya değiştirme) kullanıcının tüm oturumları otomatik kapanır; "Yeni şifre belirle" ekranındaki "Diğer tüm cihazlardaki oturumlarımı kapat" onay kutusu kaldırıldı, yerine bunu bildiren bir not gösterilir.
 - Site çok dilli kurulur (next-intl): varsayılan Türkçe, ikinci dil İngilizce. Yayına yalnızca Türkçe ile çıkılır; İngilizce kodda hazırdır ve `NEXT_PUBLIC_LOCALES` ile açılır. Türkçe adresler öneksiz (`/ilanlar`), İngilizce `/en` önekli ve çevrilmiş (`/en/listings`). Tarayıcı diline göre otomatik yönlendirme yapılmaz; dil, dil seçiciyle değişir. API hata kodu döndürür, metni istemci çevirir; e-postalar kullanıcının diline (`user.locale`) göre gönderilir. Kullanıcı içeriği (ilan, yorum, konu) çevrilmez.
+- Favoriler sayfası (`/hesabim/favoriler`) 2. aşamada yapılır; Hesabım sol menüsü 3. aşamada eklenir. Favorideki ilan sahiplendirilir ya da kapatılırsa listede "artık yayında değil" notuyla soluk ve bağlantısız kalır (kalple çıkarılabilir); silinen ilan listeden düşer. Onay bekleyen / düzeltme istenen / reddedilen ilan favorilerde gösterilmez (onaylanmamış içerik görünmesin); yeniden yayına girince geri gelir.
 - Dosyalar (ilan fotoğrafları, avatar, blog kapakları) Cloudflare R2'de tutulur; S3 API'siyle erişildiği için sağlayıcı değiştirilebilir. Geliştirmede docker-compose'daki RustFS (S3 uyumlu) kullanılır.

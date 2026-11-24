@@ -442,6 +442,26 @@
     "previewStatus": "Preview: this listing isn't live yet ({status}). Only you and admins can see it.",
     "editListing": "Edit listing"
   },
+  "Favorites": {
+    "add": "Add to favorites",
+    "remove": "Remove from favorites",
+    "addNamed": "Add to favorites: {title}",
+    "short": "Favorite",
+    "added": "Added to favorites",
+    "removed": "Removed from favorites",
+    "failed": "Something went wrong. Please try again.",
+    "metaTitle": "Favorites",
+    "title": "Favorites",
+    "tabsLabel": "Filter favorites",
+    "tabAll": "All",
+    "tabActive": "Live",
+    "tabInactive": "Not live",
+    "inactive": "{status} · no longer live",
+    "emptyTitle": "No favorites yet",
+    "emptyText": "Tap the heart on listings you like to collect them here.",
+    "emptyCta": "Browse listings",
+    "emptyFilter": "No listings in this group."
+  },
   "HomePage": {
     "title": "Pati Dostu",
     "comingSoon": "Coming soon."

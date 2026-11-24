@@ -61,7 +61,7 @@ async function loadListing(no: number, locale: Locale, signedIn: boolean) {
  * özellikler · ilan sahibi + benzer ilanlar. Mobilde sayfanın kendi üst çubuğu, kaydırmalı galeri, özellik
  * kutucukları ve altta sabit "Mesaj gönder". Yalnızca yayındaki ilan görünür (sahibi ve admin önizleyebilir);
  * eski/yanlış slug kalıcı olarak doğru adrese yönlendirilir. Oturuma baktığı için <Suspense> içinde render edilir.
- * Yorumlar (3. aşama), favori (8. adım) ve şikâyet (3. aşama) sonra eklenecek.
+ * Yorumlar ve şikâyet 3. aşamada eklenecek.
  */
 export async function ListingDetailView({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
@@ -98,11 +98,12 @@ export async function ListingDetailView({ params }: { params: Promise<{ slug: st
     contact: listing.contact,
     viewer: !user ? "guest" : user.id === listing.owner.id ? "owner" : "user",
     next: getPathname({ href: { pathname: "/listing/[slug]", params: { slug: canonical } }, locale }),
+    canFavorite: !preview && user?.id !== listing.owner.id,
   }
 
   return (
     <>
-      <MobileTopBar title={title} />
+      <MobileTopBar title={title} listingNo={listing.listingNo} canFavorite={contact.canFavorite} />
       {!preview && <ViewTracker listingNo={listing.listingNo} />}
 
       <div className="mx-auto max-w-site pb-28 lg:px-6 lg:py-8 lg:pb-16">

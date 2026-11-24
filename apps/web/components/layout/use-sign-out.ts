@@ -5,6 +5,7 @@ import { useState, useTransition } from "react"
 
 import { useRouter } from "@/i18n/navigation"
 import { authClient } from "@/lib/auth-client"
+import { resetFavorites } from "@/lib/use-favorites"
 
 /**
  * Çıkış işlemi: API'de oturumu kapatır, anasayfaya döner ve sunucu bileşenlerini (üst menü) yeniler.
@@ -25,6 +26,7 @@ export function useSignOut() {
         setError(t("signOutFailed"))
         return
       }
+      resetFavorites()
       router.replace("/")
       router.refresh()
     })

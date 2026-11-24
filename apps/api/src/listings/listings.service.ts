@@ -44,7 +44,7 @@ export function maskPhone(e164: string): string {
 }
 
 /** Kart satırı: ilan sütunları + birleştirilen tür/il/ilçe adları ve kapak fotoğrafı anahtarı. */
-type CardRow = {
+export type CardRow = {
   id: string
   listingNo: number
   slug: string | null
@@ -405,8 +405,8 @@ export class ListingsService {
 
   // --- Yardımcılar --------------------------------------------------------------------------------------------
 
-  /** Kart sorgusunun temeli: tür, il, ilçe ve kapak fotoğrafı birleştirilmiş. */
-  private cardQuery() {
+  /** Kart sorgusunun temeli: tür, il, ilçe ve kapak fotoğrafı birleştirilmiş (favoriler modülü de kullanır). */
+  cardQuery() {
     return this.db
       .select(cardColumns)
       .from(listing)
@@ -451,7 +451,7 @@ export class ListingsService {
   }
 
   /** Kart satırını yanıt biçimine çevirir (adlar istenen dilde, kapak herkese açık adres). */
-  private toCard(r: CardRow, locale: Locale): ListingCard {
+  toCard(r: CardRow, locale: Locale): ListingCard {
     return {
       id: r.id,
       listingNo: r.listingNo,
@@ -524,7 +524,7 @@ export class ListingsService {
   }
 
   /** İlan numarası (rakamlar) ya da uuid ile arama koşulu. */
-  private refCondition(ref: string): SQL {
+  refCondition(ref: string): SQL {
     return /^\d+$/.test(ref) ? eq(listing.listingNo, Number(ref)) : eq(listing.id, ref)
   }
 
@@ -635,7 +635,8 @@ export class ListingsService {
     throw new AppException(HttpStatus.CONFLICT, ErrorCode[result.error], "Bu işlem ilanın şu anki durumunda yapılamaz.")
   }
 
-  private notFound() {
+  /** "İlan bulunamadı" (404) hatası; yetkisiz erişimde de bu döner ki ilanın varlığı sızmasın. */
+  notFound() {
     return new AppException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND, "İlan bulunamadı.")
   }
 }

@@ -47,6 +47,9 @@ export const ErrorCode = {
   PHONE_REQUIRED: "PHONE_REQUIRED",
   /** Fotoğraf anahtarı geçersiz: başkasına ait, yüklenmemiş, bozuk ya da desteklenmeyen dosya. */
   IMAGE_INVALID: "IMAGE_INVALID",
+  // Hesap
+  /** Hesap silme onayında mevcut şifre hatalı. */
+  INVALID_PASSWORD: "INVALID_PASSWORD",
 } as const
 
 export type ErrorCode = (typeof ErrorCode)[keyof typeof ErrorCode]

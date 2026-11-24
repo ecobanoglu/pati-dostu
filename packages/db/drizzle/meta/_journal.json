@@ -43,6 +43,13 @@
       "when": 1795503330733,
       "tag": "0005_listing_drafts",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1795539813152,
+      "tag": "0006_profile_settings",
+      "breakpoints": true
     }
   ]
 }

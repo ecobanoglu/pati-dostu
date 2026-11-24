@@ -59,8 +59,11 @@ export type FormValues = {
 
 export type FieldName = keyof FormValues
 
-/** Formun başlangıç değerleri: yeni ilan ya da mevcut ilan. Mevcut ilanda onaylar yeniden istenir. */
-export function initialValues(listing?: OwnListing | null): FormValues {
+/**
+ * Formun başlangıç değerleri: yeni ilan ya da mevcut ilan. Mevcut ilanda onaylar yeniden istenir. Yeni ilanda
+ * "Telefonumu göster", kullanıcının Profil ve ayarlar › Gizlilik tercihiyle başlar (`defaultShowPhone`).
+ */
+export function initialValues(listing?: OwnListing | null, defaultShowPhone = false): FormValues {
   return {
     type: listing?.type ?? "adoption",
     title: listing?.title ?? "",
@@ -80,7 +83,7 @@ export function initialValues(listing?: OwnListing | null): FormValues {
     cityId: listing?.cityId ?? "",
     districtId: listing?.districtId ?? "",
     lastSeenAddress: listing?.lastSeenAddress ?? "",
-    showPhone: listing?.showPhone ?? false,
+    showPhone: listing?.showPhone ?? defaultShowPhone,
     images: listing?.images.map((i) => i.key) ?? [],
     confirmNoFee: false,
     acceptTerms: false,

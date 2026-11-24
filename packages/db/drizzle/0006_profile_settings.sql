@@ -1,0 +1,1 @@
+ALTER TABLE "user" ADD COLUMN "show_phone_by_default" boolean DEFAULT false NOT NULL;

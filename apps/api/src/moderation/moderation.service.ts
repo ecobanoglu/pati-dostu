@@ -11,7 +11,14 @@ import { InjectRedis } from "../redis/redis.module.js"
 import { type BannedTermRule, findBannedTerm, findPattern, type PatternKind } from "./matchers.js"
 
 /** İçeriğin gönderildiği yer (moderation_area enum'u). */
-export type ModerationArea = "listing" | "comment" | "topic" | "reply" | "message" | "contact"
+/**
+ * Denetlenen alan. "profile" (Hakkımda metni) için ayrı kural yoktur: ilan metniyle aynı kurallar uygulanır
+ * (veritabanındaki moderation_area enum'una eklenmedi; admin "listing" kurallarını değiştirince ikisi birlikte değişir).
+ */
+export type ModerationArea = "listing" | "comment" | "topic" | "reply" | "message" | "contact" | "profile"
+
+/** Kural tablosunda aranacak alan: profil, ilan kurallarını kullanır. */
+const ruleArea = (area: ModerationArea) => (area === "profile" ? "listing" : area)
 
 /** Engellenme nedeni: kalıp kuralı, tekrar ya da yasaklı kelime. */
 export type BlockReason = PatternKind | "duplicate" | "banned_term"
@@ -24,7 +31,7 @@ const DUPLICATE_WINDOW_SECONDS = 10 * 60
 
 type Rules = {
   /** Kural adı → id; yalnızca açık kurallar. */
-  enabled: Map<PatternKind | "duplicate", { id: string; areas: Set<ModerationArea> }>
+  enabled: Map<PatternKind | "duplicate", { id: string; areas: Set<string> }>
   terms: BannedTermRule[]
   loadedAt: number
 }
@@ -57,7 +64,7 @@ export class ModerationService {
     const rules = await this.loadRules()
     const kinds = new Set<PatternKind>()
     for (const [kind, rule] of rules.enabled) {
-      if (kind !== "duplicate" && rule.areas.has(area)) kinds.add(kind)
+      if (kind !== "duplicate" && rule.areas.has(ruleArea(area))) kinds.add(kind)
     }
 
     for (const [field, value] of Object.entries(input)) {
@@ -72,7 +79,7 @@ export class ModerationService {
     }
 
     const duplicate = rules.enabled.get("duplicate")
-    if (duplicate?.areas.has(area) && (await this.isDuplicate(area, userId, input))) {
+    if (duplicate?.areas.has(ruleArea(area)) && (await this.isDuplicate(area, userId, input))) {
       await this.block(area, Object.keys(input)[0] ?? "body", "duplicate", { ruleId: duplicate.id })
     }
   }
@@ -103,7 +110,8 @@ export class ModerationService {
     source: { ruleId?: string; termId?: string }
   ): Promise<never> {
     try {
-      await this.db.insert(moderationHit).values({ area, ruleId: source.ruleId, termId: source.termId })
+      // Profil engelleri ayrı enum değeri olmadığı için "listing" altında sayılır.
+      await this.db.insert(moderationHit).values({ area: ruleArea(area), ruleId: source.ruleId, termId: source.termId })
     } catch (error) {
       // Sayaç yazılamasa da içerik engellenmeye devam eder.
       this.logger.warn(`moderation_hit yazılamadı: ${String(error)}`)

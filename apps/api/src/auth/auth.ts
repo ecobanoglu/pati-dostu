@@ -88,6 +88,7 @@ export function createAuth(db: Database, mail: MailService) {
         bio: { type: "string", required: false, input: true },
         locale: { type: "string", required: false, defaultValue: "tr", input: true },
         marketingOptIn: { type: "boolean", required: false, defaultValue: false, input: true },
+        showPhoneByDefault: { type: "boolean", required: false, defaultValue: false, input: false },
         termsAcceptedAt: { type: "date", required: false, input: false },
       },
     },
@@ -120,6 +121,19 @@ export function createAuth(db: Database, mail: MailService) {
           if (typeof body.newPassword !== "string" || !isStrongPassword(body.newPassword)) {
             throw invalid(ErrorCode.PASSWORD_WEAK, "Şifre en az 8 karakter olmalı; harf ve rakam içermelidir.")
           }
+        }
+
+        // Profil güncellemesi yalnızca PATCH /api/v1/me ile (içerik filtresi, şehir/telefon doğrulaması orada).
+        if (ctx.path === "/update-user") {
+          throw new APIError("FORBIDDEN", {
+            code: ErrorCode.FORBIDDEN,
+            message: "Profil PATCH /api/v1/me ile güncellenir.",
+          })
+        }
+
+        // Karar: şifre değişince diğer tüm oturumlar kapanır — istemcinin gönderdiğine bakılmaz.
+        if (ctx.path === "/change-password") {
+          return { context: { body: { ...body, revokeOtherSessions: true } } }
         }
 
         if (ctx.path === "/sign-up/email" || ctx.path === "/update-user") {

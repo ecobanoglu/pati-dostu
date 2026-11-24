@@ -19,5 +19,10 @@ export type Me = {
   cityId: string | null
   locale: "tr" | "en"
   marketingOptIn: boolean
+  /** Yeni ilanlarda "Telefonumu göster" varsayılanı. */
+  showPhoneByDefault: boolean
+  bio: string | null
+  /** Şifreli hesap mı (yalnız Google ile girişte false: şifre değiştirme yok). */
+  hasPassword: boolean
   termsAcceptedAt: string | null
 }

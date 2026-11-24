@@ -57,12 +57,15 @@ export function ListingForm({
   species,
   cities,
   userHasPhone,
+  defaultShowPhone,
 }: {
   /** Düzenlemede mevcut ilan; yeni ilanda yok. */
   listing?: OwnListing | null
   species: Option[]
   cities: Option[]
   userHasPhone: boolean
+  /** Yeni ilanda "Telefonumu göster" başlangıç değeri (kullanıcı tercihi; telefonu yoksa false). */
+  defaultShowPhone: boolean
 }) {
   const t = useTranslations("ListingForm")
   const tl = useTranslations("Listing")
@@ -83,7 +86,7 @@ export function ListingForm({
   })
   const topRef = useRef<HTMLDivElement>(null)
 
-  const form = useForm<FormValues>({ defaultValues: initialValues(listing) })
+  const form = useForm<FormValues>({ defaultValues: initialValues(listing, defaultShowPhone) })
   const { register, control, setValue, setError, clearErrors, formState } = form
   const values = useWatch({ control }) as FormValues
   const isLocationType = LOCATION_TYPES.includes(values.type)

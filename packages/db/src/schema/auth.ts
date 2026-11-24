@@ -28,6 +28,8 @@ export const user = pgTable(
     locale: localeEnum().notNull().default("tr"),
     /** Yeni ilan ve blog e-postaları (kayıt formundaki isteğe bağlı onay). */
     marketingOptIn: boolean().notNull().default(false),
+    /** Yeni ilan formunda "Telefonumu göster" bu değerle başlar (Profil ve ayarlar › Gizlilik). */
+    showPhoneByDefault: boolean().notNull().default(false),
     /** KVKK aydınlatma metni ve kullanım şartlarının kabul edildiği an (kayıtta zorunlu). */
     termsAcceptedAt: timestamp({ withTimezone: true }),
     createdAt: createdAt(),

@@ -61,6 +61,7 @@ export async function ListingFormPage({ listingId }: { listingId?: string }) {
       species={species.map(({ id, name }) => ({ id, name }))}
       cities={cities.map(({ id, name }) => ({ id, name }))}
       userHasPhone={Boolean(user.phone)}
+      defaultShowPhone={Boolean(user.phone) && user.showPhoneByDefault}
     />
   )
 }

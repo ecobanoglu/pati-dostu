@@ -11,8 +11,9 @@ export class ImageDecodeError extends Error {}
  * JPEG'e çevirir. Telefon fotoğrafları böylece ~10 MB'tan ~1 MB'a iner; HEIC (iPhone) tarayıcı açabiliyorsa JPEG'e
  * dönüşür. Şeffaf PNG'lerde zemin beyaz yapılır (JPEG şeffaflık taşımaz).
  * Tarayıcı dosyayı açamazsa (ör. Windows Chrome'da HEIC) ImageDecodeError fırlatır.
+ * `maxDimension`: uzun kenar sınırı (profil fotoğrafında 512).
  */
-export async function prepareImage(file: File): Promise<Blob> {
+export async function prepareImage(file: File, maxDimension = MAX_DIMENSION): Promise<Blob> {
   let bitmap: ImageBitmap
   try {
     bitmap = await createImageBitmap(file, { imageOrientation: "from-image" })
@@ -20,7 +21,7 @@ export async function prepareImage(file: File): Promise<Blob> {
     throw new ImageDecodeError(file.name)
   }
 
-  const scale = Math.min(1, MAX_DIMENSION / Math.max(bitmap.width, bitmap.height))
+  const scale = Math.min(1, maxDimension / Math.max(bitmap.width, bitmap.height))
   const width = Math.round(bitmap.width * scale)
   const height = Math.round(bitmap.height * scale)
 

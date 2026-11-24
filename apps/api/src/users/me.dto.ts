@@ -1,4 +1,4 @@
-import { listingStatuses } from "@pati-dostu/validators"
+import { avatarSchema, deleteAccountSchema, listingStatuses, updateMeSchema } from "@pati-dostu/validators"
 import { createZodDto } from "nestjs-zod"
 import { z } from "zod"
 
@@ -14,6 +14,12 @@ export const meResponseSchema = z
     cityId: z.uuid().nullable(),
     locale: z.enum(["tr", "en"]),
     marketingOptIn: z.boolean(),
+    /** Yeni ilanlarda "Telefonumu göster" varsayılanı. */
+    showPhoneByDefault: z.boolean(),
+    /** Hakkımda (en fazla 300 karakter). */
+    bio: z.string().nullable(),
+    /** E-posta/şifre hesabı mı (yalnız Google ile girişte false). */
+    hasPassword: z.boolean(),
     /** Boşsa (Google ile ilk giriş) web KVKK onay ekranını gösterir. */
     termsAcceptedAt: z.iso.datetime().nullable(),
   })
@@ -38,3 +44,12 @@ export const meSummarySchema = z
   .meta({ id: "MeSummary" })
 
 export class MeSummaryDto extends createZodDto(meSummarySchema) {}
+
+/** PATCH /me: profil, telefon, tercihler (alt küme). */
+export class UpdateMeDto extends createZodDto(updateMeSchema) {}
+/** PUT /me/avatar: yüklenen geçici dosyanın anahtarı. */
+export class AvatarDto extends createZodDto(avatarSchema) {}
+/** PUT /me/avatar yanıtı: profil fotoğrafının herkese açık adresi. */
+export class AvatarResponseDto extends createZodDto(z.object({ image: z.url() }).meta({ id: "AvatarResponse" })) {}
+/** DELETE /me: mevcut şifre (Google hesabında boş) + onay. */
+export class DeleteAccountDto extends createZodDto(deleteAccountSchema) {}

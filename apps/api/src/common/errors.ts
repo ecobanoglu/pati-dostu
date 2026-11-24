@@ -33,6 +33,20 @@ export const ErrorCode = {
    * banned_term; details.field: takılan alan (ör. title, description). Web: Errors.CONTENT_BLOCKED_<REASON>.
    */
   CONTENT_BLOCKED: "CONTENT_BLOCKED",
+  // İlanlar (durum geçişleri: listings/listing-status.ts)
+  LISTING_NOT_DRAFT: "LISTING_NOT_DRAFT",
+  LISTING_NOT_EDITABLE: "LISTING_NOT_EDITABLE",
+  LISTING_STATUS_INVALID: "LISTING_STATUS_INVALID",
+  LISTING_NOT_PENDING: "LISTING_NOT_PENDING",
+  /** Seçilen ırk seçilen türe ait değil. */
+  BREED_MISMATCH: "BREED_MISMATCH",
+  /** Seçilen ilçe seçilen ile ait değil. */
+  DISTRICT_MISMATCH: "DISTRICT_MISMATCH",
+  SPECIES_INVALID: "SPECIES_INVALID",
+  /** "Telefonumu göster" açık ama profilde telefon yok. */
+  PHONE_REQUIRED: "PHONE_REQUIRED",
+  /** Fotoğraf anahtarı geçersiz: başkasına ait, yüklenmemiş, bozuk ya da desteklenmeyen dosya. */
+  IMAGE_INVALID: "IMAGE_INVALID",
 } as const
 
 export type ErrorCode = (typeof ErrorCode)[keyof typeof ErrorCode]

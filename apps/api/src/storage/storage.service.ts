@@ -1,6 +1,7 @@
 import {
   CopyObjectCommand,
   DeleteObjectCommand,
+  GetObjectCommand,
   HeadObjectCommand,
   NotFound,
   PutObjectCommand,
@@ -74,6 +75,14 @@ export class StorageService {
       if (error instanceof NotFound || (error as { name?: string }).name === "NotFound") return null
       throw error
     }
+  }
+
+  /** Nesnenin ilk `bytes` baytını okur (dosya türünü imzasından doğrulamak için). */
+  async readStart(key: string, bytes: number): Promise<Uint8Array> {
+    const res = await this.s3.send(
+      new GetObjectCommand({ Bucket: env.S3_BUCKET, Key: key, Range: `bytes=0-${bytes - 1}` })
+    )
+    return res.Body ? await res.Body.transformToByteArray() : new Uint8Array()
   }
 
   /** Nesneyi yeni anahtara kopyalar ve eskisini siler (tmp/ → listings/). */

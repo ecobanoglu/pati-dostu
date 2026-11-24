@@ -2,6 +2,7 @@ import { type SQL, sql } from "drizzle-orm"
 import {
   type AnyPgColumn,
   boolean,
+  check,
   doublePrecision,
   index,
   integer,
@@ -41,15 +42,15 @@ export const listing = pgTable(
       .notNull()
       .references(() => user.id),
     type: listingTypeEnum().notNull(),
-    /** 10–80 karakter (doğrulama Zod şemasında). */
-    title: text().notNull(),
-    slug: text().notNull(),
-    description: text().notNull(),
+    // Taslakta (status = draft) boş olabilir; diğer durumlarda zorunlu (listing_complete_unless_draft kısıtı).
+    /** 10–80 karakter (doğrulama packages/validators › listings.ts). */
+    title: text(),
+    /** URL'deki kısa ad (başlıktan); adres: /ilan/{slug}-{listingNo}. */
+    slug: text(),
+    description: text(),
 
     // Hayvan
-    speciesId: uuid()
-      .notNull()
-      .references(() => species.id),
+    speciesId: uuid().references(() => species.id),
     breedId: uuid().references(() => breed.id),
     /** Hayvanın adı; bulunan hayvan ilanlarında isteğe bağlı. */
     name: text(),
@@ -65,9 +66,7 @@ export const listing = pgTable(
     source: listingSourceEnum(),
 
     // Konum
-    cityId: uuid()
-      .notNull()
-      .references(() => city.id),
+    cityId: uuid().references(() => city.id),
     districtId: uuid().references(() => district.id),
     /** Kayıp / bulunan: son görüldüğü ya da bulunduğu yer. */
     lastSeenAddress: text(),
@@ -99,6 +98,10 @@ export const listing = pgTable(
     ...timestamps,
   },
   (t) => [
+    check(
+      "listing_complete_unless_draft",
+      sql`${t.status} = 'draft' or (${t.title} is not null and ${t.slug} is not null and ${t.description} is not null and ${t.speciesId} is not null and ${t.cityId} is not null)`
+    ),
     index("listing_public_idx").on(t.status, t.speciesId, t.cityId, t.publishedAt.desc()),
     index().on(t.ownerId),
     index("listing_search_idx").using("gin", t.searchVector),

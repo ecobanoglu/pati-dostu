@@ -372,8 +372,8 @@ MVP için yaklaşık 60 uç nokta gerekiyor; hepsi NestJS API'de (api.pati-dostu
 | İlanlar | GET | `/listings` | Herkes | Filtreler: type, species, breed, city, district, gender, age, size, source (kimden), features, q, sort; yalnız onaylı ilanlar |
 | İlanlar | GET | `/listings/{id}` | Herkes | Detay; telefon yalnız `showPhone` açıksa ve oturum varsa döner |
 | İlanlar | GET | `/listings/{id}/similar` | Herkes | Aynı tür/şehirden rastgele 4 ilan |
-| İlanlar | POST | `/listings` | Giriş | İlan oluşturur, `status = pending` (admin onayına düşer) |
-| İlanlar | PATCH | `/listings/{id}` | Sahibi | Düzenleme; her düzenleme ilanı yeniden `pending` yapar |
+| İlanlar | POST | `/listings` | Giriş (doğrulanmış e-posta) | İlan oluşturur. Gövdede `submit`: `false` → taslak (`draft`, yalnızca tür zorunlu), `true` → onaya gönderim (`pending`; tüm zorunlu alanlar, en az 1 fotoğraf, ücretsiz onayı). `images`: sıralı yükleme anahtarları |
+| İlanlar | PATCH | `/listings/{id}` | Sahibi | Düzenleme; form ilanın tamamını gönderir (gövde POST ile aynı). Onaya gönderimde ilan her zaman yeniden `pending` olur; yayına girmiş ilan taslağa çevrilemez, sahiplendirilen/kapatılan düzenlenemez |
 | İlanlar | DELETE | `/listings/{id}` | Sahibi, Admin | Yumuşak silme |
 | İlanlar | POST | `/listings/{id}/status` | Sahibi | Sahiplendirildi / kapatıldı olarak işaretleme |
 | Yükleme | POST | `/uploads/listing-image` | Giriş (doğrulanmış e-posta) | Fotoğraf için imzalı PUT linki; dosya `tmp/listing-images/{userId}/` altına yüklenir. İlan henüz yokken (form doldurulurken) çalışır |
@@ -591,6 +591,8 @@ Her aşama sonunda çalışan bir sürüm preview ortamına çıkar; v1.1 ve son
 - Geliştirmede veritabanı ve dosya depolama yerelde çalışır; yayına alırken Supabase'e, uygulamalar Vercel'e geçer. Bağlantı bilgileri yalnızca `.env` dosyalarındadır.
 - Supabase yalnızca yönetilen PostgreSQL olarak kullanılır; Supabase Auth, Storage ve Realtime kullanılmaz. Geliştirmede bilgisayardaki yerel PostgreSQL 17 kullanılır, Supabase CLI gerekmez.
 - Çevrilebilir sözlük adları (tür, ırk; ileride kategori) veritabanında `{ tr, en }` biçiminde jsonb tutulur; Türkçe zorunlu, çevirisi olmayan dilde Türkçe gösterilir. API `?locale=` ile tek dilde döndürür. İl/ilçe adları özel isimdir, çevrilmez.
+- İlan taslakları sunucuda tutulur (`draft`): kullanıcı başka cihazdan devam eder ve "İlanlarım"da görür; taslakta yalnızca ilan türü zorunludur, diğer zorunlu alanlar "Onaya gönder"de denetlenir.
+- İlanı onaya göndermek için en az 1 fotoğraf zorunludur (en fazla 5).
 - Şifre değiştiğinde (sıfırlama veya değiştirme) kullanıcının tüm oturumları otomatik kapanır; "Yeni şifre belirle" ekranındaki "Diğer tüm cihazlardaki oturumlarımı kapat" onay kutusu kaldırıldı, yerine bunu bildiren bir not gösterilir.
 - Site çok dilli kurulur (next-intl): varsayılan Türkçe, ikinci dil İngilizce. Yayına yalnızca Türkçe ile çıkılır; İngilizce kodda hazırdır ve `NEXT_PUBLIC_LOCALES` ile açılır. Türkçe adresler öneksiz (`/ilanlar`), İngilizce `/en` önekli ve çevrilmiş (`/en/listings`). Tarayıcı diline göre otomatik yönlendirme yapılmaz; dil, dil seçiciyle değişir. API hata kodu döndürür, metni istemci çevirir; e-postalar kullanıcının diline (`user.locale`) göre gönderilir. Kullanıcı içeriği (ilan, yorum, konu) çevrilmez.
 - Dosyalar (ilan fotoğrafları, avatar, blog kapakları) Cloudflare R2'de tutulur; S3 API'siyle erişildiği için sağlayıcı değiştirilebilir. Geliştirmede docker-compose'daki RustFS (S3 uyumlu) kullanılır.

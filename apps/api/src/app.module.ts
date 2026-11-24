@@ -7,6 +7,7 @@ import { HttpExceptionFilter } from "./common/http-exception.filter.js"
 import { DatabaseModule } from "./database/database.module.js"
 import { DictionaryModule } from "./dictionary/dictionary.module.js"
 import { HealthModule } from "./health/health.module.js"
+import { ListingsModule } from "./listings/listings.module.js"
 import { MailModule } from "./mail/mail.module.js"
 import { ModerationModule } from "./moderation/moderation.module.js"
 import { RedisModule } from "./redis/redis.module.js"
@@ -26,6 +27,7 @@ import { UsersModule } from "./users/users.module.js"
     UsersModule,
     DictionaryModule,
     UploadsModule,
+    ListingsModule,
   ],
   providers: [
     // Tüm girişler Zod şemalarıyla (createZodDto) doğrulanır.

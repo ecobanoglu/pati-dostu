@@ -1,8 +1,8 @@
 import type { Metadata } from "next"
 import { Suspense } from "react"
 
-import { ListingsFallback } from "@/components/listings/listings-fallback"
-import { listingsMetadata, ListingsView } from "@/components/listings/listings-view"
+import { ListingsFallback } from "@/features/listings/listings-fallback"
+import { listingsMetadata, ListingsView } from "@/features/listings/listings-view"
 
 /** Sekme başlığı ("Kedi ilanları · Pati Dostu"). */
 export async function generateMetadata({ params }: PageProps<"/[locale]/listings/[species]">): Promise<Metadata> {

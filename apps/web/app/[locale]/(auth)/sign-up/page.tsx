@@ -2,8 +2,8 @@ import type { Metadata } from "next"
 import { getTranslations } from "next-intl/server"
 import { Suspense } from "react"
 
-import { AuthShell } from "@/components/auth/auth-shell"
-import { SignUpForm } from "@/components/auth/sign-up-form"
+import { AuthShell } from "@/features/auth/auth-shell"
+import { SignUpForm } from "@/features/auth/sign-up-form"
 import { Link } from "@/i18n/navigation"
 import { getCities } from "@/lib/dictionary"
 

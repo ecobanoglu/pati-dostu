@@ -2,8 +2,8 @@ import type { Metadata } from "next"
 import { getTranslations } from "next-intl/server"
 import { Suspense } from "react"
 
-import { AuthShell } from "@/components/auth/auth-shell"
-import { SignInForm } from "@/components/auth/sign-in-form"
+import { AuthShell } from "@/features/auth/auth-shell"
+import { SignInForm } from "@/features/auth/sign-in-form"
 import { Link } from "@/i18n/navigation"
 
 /** Sekme başlığı ("Giriş yap · Pati Dostu"); arama motorları giriş sayfasını dizinlemez. */

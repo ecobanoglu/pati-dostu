@@ -3,8 +3,8 @@ import type { Metadata } from "next"
 import { getTranslations } from "next-intl/server"
 import { Suspense } from "react"
 
-import { AuthShell } from "@/components/auth/auth-shell"
-import { ForgotPasswordForm } from "@/components/auth/forgot-password-form"
+import { AuthShell } from "@/features/auth/auth-shell"
+import { ForgotPasswordForm } from "@/features/auth/forgot-password-form"
 import { site } from "@/lib/site"
 
 /** Sekme başlığı; arama motorları bu sayfayı dizinlemez. */

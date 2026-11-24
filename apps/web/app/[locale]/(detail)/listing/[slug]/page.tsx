@@ -5,7 +5,7 @@ import {
   ListingDetailFallback,
   listingDetailMetadata,
   ListingDetailView,
-} from "@/components/listing-detail/listing-detail-view"
+} from "@/features/listing-detail/listing-detail-view"
 
 /** Sekme başlığı ve paylaşım önizlemesi (ilan başlığı, açıklama, kapak fotoğrafı). */
 export async function generateMetadata({ params }: PageProps<"/[locale]/listing/[slug]">): Promise<Metadata> {

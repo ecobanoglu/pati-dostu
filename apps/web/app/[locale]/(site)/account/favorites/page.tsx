@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import { getLocale, getTranslations } from "next-intl/server"
 import { Suspense } from "react"
 
-import { FavoritesList } from "@/components/favorites/favorites-list"
+import { FavoritesList } from "@/features/favorites/favorites-list"
 import { getPathname, redirect } from "@/i18n/navigation"
 import type { Locale } from "@/i18n/routing"
 import type { ListingCardData } from "@/lib/listings"

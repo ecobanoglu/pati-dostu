@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import { getTranslations } from "next-intl/server"
 import { Suspense } from "react"
 
-import { ListingFormFallback, ListingFormPage } from "@/components/listing-form/listing-form-page"
+import { ListingFormFallback, ListingFormPage } from "@/features/listing-form/listing-form-page"
 
 /** Sekme başlığı; arama motorları form sayfasını dizinlemez. */
 export async function generateMetadata(): Promise<Metadata> {

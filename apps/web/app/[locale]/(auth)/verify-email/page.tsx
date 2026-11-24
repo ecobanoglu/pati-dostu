@@ -3,8 +3,8 @@ import type { Metadata } from "next"
 import { getTranslations } from "next-intl/server"
 import { Suspense } from "react"
 
-import { AuthShell } from "@/components/auth/auth-shell"
-import { VerifyEmailPanel } from "@/components/auth/verify-email-panel"
+import { AuthShell } from "@/features/auth/auth-shell"
+import { VerifyEmailPanel } from "@/features/auth/verify-email-panel"
 
 /** Sekme başlığı; arama motorları bu sayfayı dizinlemez. */
 export async function generateMetadata(): Promise<Metadata> {

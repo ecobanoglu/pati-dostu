@@ -86,7 +86,7 @@ Tüm renk, yazı ölçeği, köşe yuvarlaklığı ve gölgeler `apps/web/app/gl
 | Avatar, yükleme iskeletleri | `Avatar`, `Skeleton` | Yükleme ve boş durumlar henüz tasarlanmadı |
 | Admin grafikleri | `Chart` (Recharts) | `--chart-1` … `--chart-5` sırasıyla |
 | Haftalık saat düzenleyici, fotoğraf yükleyici, harita | Özel: `WeeklyHoursEditor`, `ImageUploader`, `MapView` (MapLibre) |  |
-| Paylaşım görseli şablonları | API'de Satori + resvg ile PNG | 6 şablon, 1:1 ve 9:16 |
+| Paylaşım görseli şablonları | Web'de `next/og` (Satori) ile PNG | 6 şablon, 1:1 ve 9:16 |
 
 Kurulum: `pnpm dlx shadcn@latest add button input textarea select field toggle-group radio-group switch checkbox badge card tabs dialog drawer dropdown-menu popover sheet accordion breadcrumb pagination table sidebar alert sonner avatar skeleton chart`
 
@@ -322,7 +322,7 @@ pati-dostu/
     web/                      # Next.js 16: sayfalar, API istemcisiyle veri çeker
       app/
         (public)/  (auth)/  (dashboard)/  admin/
-        api/og/listing/[id]/  # paylaşım görseli (next/og)
+        api/og/listing/[no]/  # paylaşım görseli (next/og)
       features/  components/
     mobile/                   # Expo (React Native), MVP sonrası
   packages/
@@ -380,7 +380,7 @@ MVP için yaklaşık 60 uç nokta gerekiyor; hepsi NestJS API'de (api.pati-dostu
 | İlanlar | POST | `/listings/{id}/status` | Sahibi | Sahiplendirildi / kapatıldı olarak işaretleme |
 | Yükleme | POST | `/uploads/listing-image` | Giriş (doğrulanmış e-posta) | Fotoğraf için imzalı PUT linki; dosya `tmp/listing-images/{userId}/` altına yüklenir. İlan henüz yokken (form doldurulurken) çalışır |
 | İlanlar | PUT | `/listings/{id}/images` | Sahibi | Fotoğrafları ilana bağlar, sıralar (ilk = kapak; en fazla 5). API geçici dosyaları doğrulayıp `listings/{id}/` altına taşır. `POST/PATCH /listings` gövdesindeki `images` de aynı işi yapar |
-| İlanlar | GET | `/listings/{id}/share-image?template=` | Herkes | Paylaşım görseli (PNG); `template` = klasik, polaroid, afis, minimal, turuncu, karakter; `format` = post (1:1), story (9:16) |
+| İlanlar | GET | `/api/og/listing/{no}?t=&f=&o=&l=` (web) | Herkes | Paylaşım görseli (PNG). API'de değil, web'deki Next.js route handler'da (`next/og`). `t` = classic, polaroid, poster, minimal, orange, character; `f` = post (1080×1080), story (1080×1920); `o=1` özellik çipleri. Yalnız yayındaki ilan (değilse 404). İstek anında üretilir, CDN önbelleği (s-maxage 1 sa); R2'ye yazılmaz, `listing_share_image` tablosu kullanılmaz |
 | İlanlar | POST | `/listings/{id}/report` | Giriş | Şikayet bildirimi |
 | İlanlar | GET | `/me/listings` | Giriş | Kendi ilanları, onay durumu ve red gerekçesiyle |
 | Favoriler | GET | `/me/favorites` | Giriş | Favori ilanlar (en son eklenen önce): yayındakiler + sahiplendirilen/kapatılanlar |
@@ -587,7 +587,7 @@ Her aşama sonunda çalışan bir sürüm preview ortamına çıkar; v1.1 ve son
 - Yorumlar, topluluk konuları ve cevaplar admin onayı beklemez: otomatik içerik filtresinden (yasaklı kelimeler, telefon, e-posta, bağlantı, IBAN, fiyat ifadesi) geçen içerik hemen yayınlanır, takılan içerik gönderilemez ve kullanıcıya nedeni gösterilir.
 - Düzenlenen ilan, değişiklik ne kadar küçük olursa olsun yeniden admin onayına gider.
 - Klinik 48 saat içinde yanıtlamazsa randevu talebi "yanıtsız" olarak kapanır.
-- Paylaşım görseli için 6 şablon var (Klasik, Polaroid, Afiş, Minimal, Turuncu, Karakter); kullanıcı seçer, kayıp/bulunan ilanlarında Afiş varsayılan gelir. Görselde telefon numarası yer almaz.
+- Paylaşım görseli için 6 şablon var (Klasik, Polaroid, Afiş, Minimal, Turuncu, Karakter); kullanıcı seçer, kayıp/bulunan ilanlarında Afiş varsayılan gelir. Görselde telefon numarası yer almaz. Pencere ilan detayındaki "Paylaş"tan açılır ve herkes kullanabilir (3. aşamada "İlanlarım"dan da). Karakter şablonu ilanın mevcut özelliklerini (aşılı, kısır, mikroçipli, çocuk dostu) gösterir; ayrı karakter alanı yok. Görseller depolanmaz, istek anında üretilip önbelleğe alınır; ilan detayının Open Graph görseli de budur.
 - İçerik filtresinde yalnızca "engelle" vardır; şüpheli içeriği admin'e düşüren bir seçenek yoktur.
 - Kurum kampanyaları v1.1'de yayına alınır. MVP'de kodlanır ama `campaigns` özellik bayrağı kapalı kalır: Kurum paneli menüsündeki "Kampanyalar", klinik profilindeki kampanya kutusu ve randevu formundaki kampanya seçimi görünmez.
 - E-posta servisi Resend (doğrulama, şifre sıfırlama, bildirim e-postaları).

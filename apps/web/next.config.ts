@@ -10,6 +10,8 @@ const nextConfig: NextConfig = {
   cacheComponents: true,
   partialPrefetching: true,
   typedRoutes: true,
+  // Paylaşım görseli fontları fs ile okunur; Vercel paketine dahil edilsin.
+  outputFileTracingIncludes: { "/api/og/listing/[no]": ["./assets/fonts/**"] },
 }
 
 const withNextIntl = createNextIntlPlugin("./i18n/request.ts")

@@ -9,6 +9,7 @@ import { getPathname, Link, permanentRedirect } from "@/i18n/navigation"
 import type { Locale } from "@/i18n/routing"
 import { getListing, getSimilarListings, type ListingDetailData } from "@/lib/listings"
 import { apiServer } from "@/lib/server-api"
+import { defaultTemplate, shareImagePath } from "@/lib/share-image"
 import { getCurrentUser } from "@/lib/session"
 
 import { ContactCard, ContactCardCompact, type ContactProps } from "./contact-card"
@@ -25,7 +26,7 @@ export function parseListingNo(slug: string): number | null {
   return match ? Number(match[1]) : null
 }
 
-/** Sekme başlığı ve paylaşım önizlemesi: ilan başlığı, açıklamanın ilk ~160 karakteri ve kapak fotoğrafı. */
+/** Sekme başlığı ve paylaşım önizlemesi: ilan başlığı, açıklamanın ilk ~160 karakteri ve ilanın paylaşım görseli. */
 export async function listingDetailMetadata(slug: string): Promise<Metadata> {
   const locale = (await getLocale()) as Locale
   const t = await getTranslations("ListingDetail")
@@ -36,11 +37,12 @@ export async function listingDetailMetadata(slug: string): Promise<Metadata> {
   const title = listing.title ?? t("pageTitle")
   const text = (listing.description ?? "").replace(/\s+/g, " ").trim()
   const description = text.length > 160 ? `${text.slice(0, 157).trimEnd()}…` : text
-  const cover = listing.images[0]?.url
+  // Paylaşım önizlemesi: ilanın paylaşım görseli (kayıp/bulunanda Afiş, diğerlerinde Klasik; 1080×1080).
+  const image = shareImagePath(listing.listingNo, { template: defaultTemplate(listing.type), format: "post", locale })
   return {
     title,
     description,
-    openGraph: { title, description, type: "article", images: cover ? [{ url: cover }] : undefined },
+    openGraph: { title, description, type: "article", images: [{ url: image, width: 1080, height: 1080 }] },
   }
 }
 
@@ -93,6 +95,7 @@ export async function ListingDetailView({ params }: { params: Promise<{ slug: st
   const contact: ContactProps = {
     listingNo: listing.listingNo,
     listingId: listing.id,
+    type: listing.type,
     title,
     owner: listing.owner,
     contact: listing.contact,
@@ -103,7 +106,7 @@ export async function ListingDetailView({ params }: { params: Promise<{ slug: st
 
   return (
     <>
-      <MobileTopBar title={title} listingNo={listing.listingNo} canFavorite={contact.canFavorite} />
+      <MobileTopBar title={title} type={listing.type} listingNo={listing.listingNo} canFavorite={contact.canFavorite} />
       {!preview && <ViewTracker listingNo={listing.listingNo} />}
 
       <div className="mx-auto max-w-site pb-28 lg:px-6 lg:py-8 lg:pb-16">

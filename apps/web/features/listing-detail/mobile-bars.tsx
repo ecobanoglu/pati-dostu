@@ -4,22 +4,24 @@ import { ArrowLeft } from "lucide-react"
 import { useTranslations } from "next-intl"
 
 import { FavoriteButton } from "@/components/listing/favorite-button"
+import { ShareDialog } from "@/components/listing/share-dialog"
 import { Button } from "@/components/ui/button"
 import { useRouter } from "@/i18n/navigation"
 
 import { PrimaryAction, type ContactProps } from "./contact-card"
-import { ShareButton } from "./share-button"
 
 /**
- * Mobil üst çubuk (tasarım 19): geri, "İlan detayı" ve paylaş. Geri, siteden gelindiyse önceki sayfaya;
+ * Mobil üst çubuk (tasarım 19): geri, "İlan detayı", paylaşım görseli penceresi ve favori. Geri, siteden gelindiyse önceki sayfaya;
  * doğrudan açıldıysa ilanlar sayfasına gider. Sağda paylaş ve (yayındaki, başkasının ilanıysa) favori.
  */
 export function MobileTopBar({
   title,
+  type,
   listingNo,
   canFavorite,
 }: {
   title: string
+  type: string
   listingNo: number
   canFavorite: boolean
 }) {
@@ -38,7 +40,7 @@ export function MobileTopBar({
         <ArrowLeft aria-hidden="true" className="size-6" />
       </Button>
       <p className="flex-1 font-extrabold text-heading">{t("pageTitle")}</p>
-      <ShareButton title={title} variant="icon" />
+      <ShareDialog listingNo={listingNo} title={title} type={type} variant="icon" />
       {canFavorite && <FavoriteButton listingNo={listingNo} title={title} variant="icon" />}
     </header>
   )

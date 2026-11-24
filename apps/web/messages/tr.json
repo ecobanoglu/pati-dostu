@@ -435,9 +435,6 @@
     "phoneHidden": "İlan sahibi telefon numarasını paylaşmıyor. Site içi mesajla iletişime geçebilirsiniz.",
     "phoneHiddenShort": "Telefon paylaşılmıyor",
     "sendMessage": "Mesaj gönder",
-    "share": "Paylaş",
-    "shareCopied": "Bağlantı kopyalandı",
-    "shareText": "Pati Dostu'da bir ilan: {title}",
     "similar": "Benzer ilanlar",
     "previewStatus": "Önizleme: bu ilan henüz yayında değil ({status}). Yalnızca siz ve adminler görebilirsiniz.",
     "editListing": "İlanı düzenle"
@@ -461,6 +458,68 @@
     "emptyText": "Beğendiğiniz ilanlardaki kalbe dokunun; burada toplansın.",
     "emptyCta": "İlanlara göz atın",
     "emptyFilter": "Bu grupta ilan yok."
+  },
+  "ShareImage": {
+    "status": {
+      "adoption": "Yuva arıyor",
+      "foster": "Geçici yuva arıyor",
+      "lost": "Kayıp",
+      "found": "Bulundu"
+    },
+    "tagline": {
+      "adoption": "Bir yuva arıyorum!",
+      "foster": "Geçici bir yuva arıyorum!",
+      "lost": "Beni gördünüz mü?",
+      "found": "Ailemi arıyorum!"
+    },
+    "cta": {
+      "adoption": "Yuva olmak için:",
+      "foster": "Geçici yuva olmak için:",
+      "lost": "Gördüyseniz:",
+      "found": "Sahibini tanıyorsanız:"
+    },
+    "lastSeen": {
+      "lost": "Son görülme:",
+      "found": "Bulunduğu yer:"
+    },
+    "ageShort": {
+      "puppy": "Yavru",
+      "young": "Genç",
+      "adult": "Yetişkin",
+      "senior": "Yaşlı"
+    }
+  },
+  "ShareDialog": {
+    "title": "Paylaşım görseli",
+    "open": "Paylaş",
+    "close": "Kapat",
+    "template": "Şablon",
+    "templates": {
+      "classic": "Klasik",
+      "polaroid": "Polaroid",
+      "poster": "Afiş",
+      "minimal": "Minimal",
+      "orange": "Turuncu",
+      "character": "Karakter"
+    },
+    "format": "Boyut",
+    "formatPost": "Gönderi 1:1",
+    "formatStory": "Hikâye 9:16",
+    "posterHint": "Kayıp ve bulunan ilanlarında \"Afiş\" varsayılan gelir.",
+    "showFeatures": "Özellikleri göster (aşılı, kısır…)",
+    "preview": "Önizleme: {template}, {format}",
+    "loading": "Görsel hazırlanıyor…",
+    "loadFailed": "Görsel oluşturulamadı. Lütfen tekrar deneyin.",
+    "download": "Görseli indir (PNG)",
+    "downloading": "Hazırlanıyor…",
+    "copyLink": "Bağlantıyı kopyala",
+    "copied": "Bağlantı kopyalandı",
+    "whatsapp": "WhatsApp",
+    "instagram": "Instagram",
+    "x": "X",
+    "shareText": "Pati Dostu'da bir ilan: {title}",
+    "instagramHint": "Görsel indirildi. Instagram'da gönderi ya da hikâye olarak paylaşabilirsiniz.",
+    "note": "Görselde telefon numarası yer almaz; QR kod ve bağlantı ilana yönlendirir."
   },
   "HomePage": {
     "title": "Pati Dostu",

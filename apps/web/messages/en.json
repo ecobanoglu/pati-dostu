@@ -435,9 +435,6 @@
     "phoneHidden": "The owner doesn't share a phone number. You can contact them through on-site messages.",
     "phoneHiddenShort": "Phone not shared",
     "sendMessage": "Send message",
-    "share": "Share",
-    "shareCopied": "Link copied",
-    "shareText": "A listing on Pati Dostu: {title}",
     "similar": "Similar listings",
     "previewStatus": "Preview: this listing isn't live yet ({status}). Only you and admins can see it.",
     "editListing": "Edit listing"
@@ -461,6 +458,68 @@
     "emptyText": "Tap the heart on listings you like to collect them here.",
     "emptyCta": "Browse listings",
     "emptyFilter": "No listings in this group."
+  },
+  "ShareImage": {
+    "status": {
+      "adoption": "Looking for a home",
+      "foster": "Needs a foster home",
+      "lost": "Lost",
+      "found": "Found"
+    },
+    "tagline": {
+      "adoption": "I'm looking for a home!",
+      "foster": "I need a foster home!",
+      "lost": "Have you seen me?",
+      "found": "I'm looking for my family!"
+    },
+    "cta": {
+      "adoption": "To adopt:",
+      "foster": "To foster:",
+      "lost": "If you've seen me:",
+      "found": "If you know the owner:"
+    },
+    "lastSeen": {
+      "lost": "Last seen:",
+      "found": "Found at:"
+    },
+    "ageShort": {
+      "puppy": "Puppy/kitten",
+      "young": "Young",
+      "adult": "Adult",
+      "senior": "Senior"
+    }
+  },
+  "ShareDialog": {
+    "title": "Share image",
+    "open": "Share",
+    "close": "Close",
+    "template": "Template",
+    "templates": {
+      "classic": "Classic",
+      "polaroid": "Polaroid",
+      "poster": "Poster",
+      "minimal": "Minimal",
+      "orange": "Orange",
+      "character": "Character"
+    },
+    "format": "Size",
+    "formatPost": "Post 1:1",
+    "formatStory": "Story 9:16",
+    "posterHint": "\"Poster\" is the default for lost and found listings.",
+    "showFeatures": "Show details (vaccinated, neutered…)",
+    "preview": "Preview: {template}, {format}",
+    "loading": "Preparing image…",
+    "loadFailed": "Couldn't create the image. Please try again.",
+    "download": "Download image (PNG)",
+    "downloading": "Preparing…",
+    "copyLink": "Copy link",
+    "copied": "Link copied",
+    "whatsapp": "WhatsApp",
+    "instagram": "Instagram",
+    "x": "X",
+    "shareText": "A listing on Pati Dostu: {title}",
+    "instagramHint": "Image downloaded. You can share it as a post or story on Instagram.",
+    "note": "The phone number never appears on the image; the QR code and link lead to the listing."
   },
   "HomePage": {
     "title": "Pati Dostu",

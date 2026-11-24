@@ -12,12 +12,13 @@ import type { ListingDetailData } from "@/lib/listings"
 import { cn } from "@/lib/utils"
 
 import { FavoriteButton } from "@/components/listing/favorite-button"
-
-import { ShareButton } from "./share-button"
+import { ShareDialog } from "@/components/listing/share-dialog"
 
 export type ContactProps = {
   listingNo: number
   listingId: string
+  /** İlan türü (paylaşım görselinde varsayılan şablon için). */
+  type: string
   title: string
   owner: ListingDetailData["owner"]
   contact: ListingDetailData["contact"]
@@ -220,7 +221,7 @@ export function ContactCard(props: ContactProps) {
       <PrimaryAction {...props} />
       <div className={cn("grid gap-2.5", props.canFavorite && "grid-cols-2")}>
         {props.canFavorite && <FavoriteButton listingNo={props.listingNo} title={props.title} variant="full" />}
-        <ShareButton title={props.title} variant="full" />
+        <ShareDialog listingNo={props.listingNo} title={props.title} type={props.type} variant="full" />
       </div>
     </section>
   )

@@ -522,8 +522,28 @@
     "note": "Görselde telefon numarası yer almaz; QR kod ve bağlantı ilana yönlendirir."
   },
   "HomePage": {
-    "title": "Pati Dostu",
-    "comingSoon": "Yakında burada."
+    "badge": "Ücretsiz sahiplendirme platformu",
+    "title": "Her dosta <accent>sıcak bir yuva</accent>",
+    "intro": "Sahiplendirme, geçici yuva, kayıp ve bulunan hayvan ilanlarını tek yerde ara. Yeni dostunu bul ya da bir dosta yuva ol.",
+    "introShort": "Sahiplendirme, geçici yuva, kayıp ve bulunan hayvan ilanlarını tek yerde ara.",
+    "searchTitle": "İlan ara",
+    "city": "Şehir",
+    "allCities": "Tüm şehirler",
+    "species": "Tür",
+    "allSpecies": "Tüm türler",
+    "gender": "Cinsiyet",
+    "allGenders": "Hepsi",
+    "age": "Yaş",
+    "allAges": "Tüm yaşlar",
+    "search": "Ara",
+    "quickSearch": "Şehir, tür veya ırk ara",
+    "filters": "Detaylı filtreler",
+    "quickLinks": "Hızlı bağlantılar",
+    "latestTitle": "En yeni ilanlar",
+    "allListings": "Tüm ilanlar",
+    "allListingsShort": "Tümü",
+    "latestEmpty": "Henüz yayında ilan yok. İlk ilanı siz verin!",
+    "postListing": "İlan ver"
   },
   "Errors": {
     "BAD_REQUEST": "İstek geçersiz.",

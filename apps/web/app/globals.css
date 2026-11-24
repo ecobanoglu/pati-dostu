@@ -200,7 +200,7 @@
   --text-article--line-height: 1.8;
 
   /* Yerleşim */
-  --container-site: 75rem;     /* 1200px içerik genişliği (max-w-site) */
+  --container-site: 82.5rem;   /* 1320px kap genişliği, iç boşluk dahil (max-w-site; masaüstünde içerik 1272px) */
   --container-prose: 47.5rem;  /* 760px makale sütunu (max-w-prose) */
   --spacing-tap: 2.75rem;      /* 44px: en küçük dokunma hedefi (min-h-tap, size-tap) */
 }

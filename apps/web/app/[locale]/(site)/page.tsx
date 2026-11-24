@@ -1,12 +1,19 @@
-import { useTranslations } from "next-intl"
+import { Suspense } from "react"
 
-/** Anasayfa (şimdilik yer tutucu). */
+import { Hero } from "@/features/home/hero"
+import { LatestListings, LatestListingsFallback } from "@/features/home/latest-listings"
+
+/**
+ * Anasayfa — / (tasarım 01-anasayfa, 16-mobil-anasayfa): hero arama ve "En yeni ilanlar".
+ * "Topluluktan sorular" ve "Blogdan son yazılar" 4. aşamada eklenecek. Sekme başlığı ve açıklama kök düzenden.
+ */
 export default function HomePage() {
-  const t = useTranslations("HomePage")
   return (
-    <div className="mx-auto flex min-h-[50dvh] max-w-site flex-col items-center justify-center gap-4 px-4 py-16 text-center">
-      <h1 className="text-h1 text-heading">{t("title")}</h1>
-      <p className="text-body">{t("comingSoon")}</p>
-    </div>
+    <>
+      <Hero />
+      <Suspense fallback={<LatestListingsFallback />}>
+        <LatestListings />
+      </Suspense>
+    </>
   )
 }

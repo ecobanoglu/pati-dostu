@@ -117,7 +117,7 @@ export function parseFilters(path: { species?: string; city?: string }, search: 
 }
 
 /** API değerini URL'deki Türkçe karşılığına çevirir. */
-function toUrlValue<K extends ListFilter>(key: K, value: ApiValue<K>): string {
+export function toUrlValue<K extends ListFilter>(key: K, value: ApiValue<K>): string {
   const entry = Object.entries(VALUE_MAPS[key]).find(([, v]) => v === value)
   return entry ? entry[0] : String(value)
 }

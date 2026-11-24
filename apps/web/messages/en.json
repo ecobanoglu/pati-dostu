@@ -522,8 +522,28 @@
     "note": "The phone number never appears on the image; the QR code and link lead to the listing."
   },
   "HomePage": {
-    "title": "Pati Dostu",
-    "comingSoon": "Coming soon."
+    "badge": "Free adoption platform",
+    "title": "A warm home for <accent>every friend</accent>",
+    "intro": "Search adoption, foster, lost and found pet listings in one place. Find a new friend or become a home for one.",
+    "introShort": "Search adoption, foster, lost and found pet listings in one place.",
+    "searchTitle": "Search listings",
+    "city": "City",
+    "allCities": "All cities",
+    "species": "Species",
+    "allSpecies": "All species",
+    "gender": "Sex",
+    "allGenders": "Any",
+    "age": "Age",
+    "allAges": "All ages",
+    "search": "Search",
+    "quickSearch": "Search city, species or breed",
+    "filters": "Detailed filters",
+    "quickLinks": "Quick links",
+    "latestTitle": "Latest listings",
+    "allListings": "All listings",
+    "allListingsShort": "All",
+    "latestEmpty": "No live listings yet. Be the first to post one!",
+    "postListing": "Post a listing"
   },
   "Errors": {
     "BAD_REQUEST": "The request is invalid.",

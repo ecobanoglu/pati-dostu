@@ -108,7 +108,7 @@ Proje Kasım 2026 itibarıyla güncel sürümlerle başlar: Next.js 16.4 + React
 | ORM | [Drizzle ORM](https://orm.drizzle.team/docs/upgrade-v1) + drizzle-kit | 0.45.x (drizzle-kit 0.31.x) | Şema, migration, seed, `drizzle-zod` |
 | Veritabanı | PostgreSQL 17 (yayında Supabase, yalnızca veritabanı) | yönetilen servis | Full-text search (tsvector), pg\_trgm, ileride PostGIS |
 | Dosya | Cloudflare R2 (S3 API) | – | İlan görselleri, avatar, blog kapakları; geliştirmede RustFS |
-| Gerçek zamanlı | Socket.IO (NestJS Gateway) + Upstash Redis adaptörü | – | Mesajlaşmada anlık olaylar (yeni mesaj, okundu, yazıyor) |
+| Gerçek zamanlı | MVP: polling (karar). İleride: Socket.IO (ayrı sunucu) + Upstash Redis adaptörü | – | Mesajlaşmada anlık olaylar (yeni mesaj, okundu, yazıyor) |
 | Zengin metin | Tiptap | son sürüm | Blog/haber editörü (admin) |
 | Görsel üretimi | next/og (Satori) | Next.js ile gelir | İlan paylaşım görseli (Instagram/WhatsApp kartı) |
 | E-posta | Resend + React Email | son sürüm | Doğrulama, şifre sıfırlama, ilan onay/red bildirimi |
@@ -347,7 +347,7 @@ pati-dostu/
 9. **Bildirimler.** Web için e-posta ve site içi bildirim; mobil için Expo Push (`push_token` tablosu). Gönderimi API servisleri yapar.
 10. **TypeScript sürümü.** NestJS 12'nin yükseltme aracı TypeScript 6'yı hedefliyor ve Swagger CLI eklentisi TypeScript derleyici API'sine ihtiyaç duyuyor (TypeScript 7'de bu API yok). Bu yüzden tüm monorepo (api, web, mobil) TypeScript 6 ile derlenir.
 11. **CORS ve güvenlik.** API yalnızca `pati-dostu.com` ve geliştirme adreslerine CORS izni verir; `helmet`, istek sınırı (Upstash Ratelimit) ve global hata filtresi tanımlıdır.
-12. **Mesajlaşma: REST + WebSocket.** Mesaj `POST /conversations/{id}/messages` ile veritabanına kaydedilir; asıl kaynak bu kayıttır. WebSocket yalnızca anlık olayları iletir (yeni mesaj, okundu, yazıyor). NestJS `MessagingGateway` (Socket.IO) her konuşmayı bir oda olarak yönetir; bağlantıda web cookie, mobil Better Auth token'ı ile kimlik doğrulanır. Instance'lar arası iletim Upstash Redis ile Socket.IO Redis adaptörüyle yapılır. Vercel'de bağlantı fonksiyon süresi dolunca (yaklaşık 5 dakika) kapanır; istemci otomatik yeniden bağlanır. WebSocket kurulamazsa istemci kısa aralıklarla sorgulamaya (polling) geçer; uygulama arka plandayken mobil bildirim Expo Push ile gider. Supabase Realtime kullanılmaz.
+12. **Mesajlaşma: REST + WebSocket.** _(MVP kararı: WebSocket yerine polling — bkz. Alınan kararlar; aşağıdaki WebSocket tasarımı ileride ayrı sunucu/servisle eklenirse geçerli.)_ Mesaj `POST /conversations/{id}/messages` ile veritabanına kaydedilir; asıl kaynak bu kayıttır. WebSocket yalnızca anlık olayları iletir (yeni mesaj, okundu, yazıyor). NestJS `MessagingGateway` (Socket.IO) her konuşmayı bir oda olarak yönetir; bağlantıda web cookie, mobil Better Auth token'ı ile kimlik doğrulanır. Instance'lar arası iletim Upstash Redis ile Socket.IO Redis adaptörüyle yapılır. Vercel'de bağlantı fonksiyon süresi dolunca (yaklaşık 5 dakika) kapanır; istemci otomatik yeniden bağlanır. WebSocket kurulamazsa istemci kısa aralıklarla sorgulamaya (polling) geçer; uygulama arka plandayken mobil bildirim Expo Push ile gider. Supabase Realtime kullanılmaz.
 
 ## API uç noktaları (/api/v1)
 
@@ -424,7 +424,7 @@ MVP için yaklaşık 60 uç nokta gerekiyor; hepsi NestJS API'de (api.pati-dostu
 
 Web arayüzü bu uçların aynısını kullanır; mobil uygulama için ek uç gerekmez, yalnızca push token kaydı mobile özgüdür.
 
-**WebSocket (mesajlaşma):** `wss://api.pati-dostu.com` üzerinde Socket.IO `/messaging` namespace'i. İstemci olayları: `conversation:join`, `conversation:leave`, `typing`. Sunucu olayları: `message:new`, `message:read`, `typing`, `conversation:updated` (okunmamış sayısı). Mesaj gönderme REST ile yapılır, WebSocket yalnızca bildirir.
+**WebSocket (mesajlaşma) — ileride; MVP polling (Alınan kararlar):** `wss://api.pati-dostu.com` üzerinde Socket.IO `/messaging` namespace'i. İstemci olayları: `conversation:join`, `conversation:leave`, `typing`. Sunucu olayları: `message:new`, `message:read`, `typing`, `conversation:updated` (okunmamış sayısı). Mesaj gönderme REST ile yapılır, WebSocket yalnızca bildirir.
 
 ### Genişletme önerileri için uç noktalar
 
@@ -576,7 +576,8 @@ Her aşama sonunda çalışan bir sürüm preview ortamına çıkar; v1.1 ve son
 - Teknolojiler Kasım 2026 itibarıyla son sürümleriyle kullanılır.
 - Kapsam dışı: favori karşılaştırma, uyum testi, dijital pet pasaportu.
 - Proje mobil uygulamaya hazır kurulur: monorepo ve ayrı bir NestJS API (`/api/v1`); iş kuralları yalnızca API'de.
-- Mesajlaşma REST + WebSocket (NestJS Gateway, Socket.IO, Upstash Redis adaptörü) ile yapılır; yedek olarak polling. Supabase Realtime kullanılmaz.
+- Mesajlaşma MVP'de REST + polling ile yapılır (karar, 3. aşama): API Vercel Function olarak çalıştığı için kalıcı WebSocket bağlantısı tutulamaz. Açık konuşma birkaç saniyede bir yeni mesajları sorgular. Anlık iletim (Socket.IO ayrı sunucuda ya da yönetilen servis) ileride eklenebilir. Supabase Realtime kullanılmaz.
+- Hesabım menüsünde henüz yapılmamış sayfalar (Sorularım, Kayıtlı aramalar) gizlenir; sayfa yapılınca menüye eklenir.
 - Tüm monorepo TypeScript 6 ile derlenir.
 - Pati Dostu tamamen bir sosyal sorumluluk projesidir; gelir modeli (öne çıkan ilan, premium, bağış) yoktur. Gerekirse sonraki bir aşamada eklenir.
 - İlan formunda ayrı bir başlık alanı var; yaş dört grupla seçilir (Yavru 0–6 ay, Genç 6 ay–2 yaş, Yetişkin 2–7 yaş, Yaşlı 7+).

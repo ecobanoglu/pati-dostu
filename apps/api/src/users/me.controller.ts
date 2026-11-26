@@ -36,7 +36,7 @@ export class MeController {
       marketingOptIn: u.marketingOptIn ?? false,
       showPhoneByDefault: u.showPhoneByDefault ?? false,
       bio: u.bio ?? null,
-      hasPassword: await this.profile.hasPassword(u.id),
+      ...(await this.profile.extras(u.id)),
       termsAcceptedAt: u.termsAcceptedAt ? new Date(u.termsAcceptedAt).toISOString() : null,
     }
   }

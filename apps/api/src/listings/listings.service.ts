@@ -2,6 +2,7 @@ import { HttpStatus, Injectable } from "@nestjs/common"
 import {
   auditLog,
   breed,
+  favorite,
   city,
   type Database,
   district,
@@ -26,6 +27,7 @@ import type { AuthSession } from "../auth/auth.js"
 import { AppException, ErrorCode } from "../common/errors.js"
 import { InjectDb } from "../database/database.module.js"
 import { ModerationService } from "../moderation/moderation.service.js"
+import { NotificationsService } from "../notifications/notifications.service.js"
 import { StorageService } from "../storage/storage.service.js"
 import { ListingImagesService } from "./listing-images.service.js"
 import { statusOnOwnerClose, statusOnReview, statusOnSave, type TransitionResult } from "./listing-status.js"
@@ -96,7 +98,8 @@ export class ListingsService {
     @InjectDb() private readonly db: Database,
     private readonly images: ListingImagesService,
     private readonly moderation: ModerationService,
-    private readonly storage: StorageService
+    private readonly storage: StorageService,
+    private readonly notifications: NotificationsService
   ) {}
 
   // --- Sahibi --------------------------------------------------------------------------------------------------
@@ -172,6 +175,22 @@ export class ListingsService {
     const current = await this.findOwned(owner.id, id)
     const status = this.unwrap(statusOnOwnerClose(current.status, target))
     await this.db.update(listing).set({ status, closedAt: new Date() }).where(eq(listing.id, id))
+
+    // Favoriye ekleyenlere bildirim: sahiplendirildi / kavuştu / yayından kaldırıldı (sahibi hariç).
+    const fans = await this.db
+      .select({ userId: favorite.userId })
+      .from(favorite)
+      .where(and(eq(favorite.listingId, id), ne(favorite.userId, owner.id)))
+    const reunion = current.type === "lost" || current.type === "found"
+    await this.notifications.notify(
+      fans.map((f) => f.userId),
+      {
+        type: "favorite_closed",
+        listingNo: current.listingNo,
+        title: current.title ?? "",
+        outcome: target === "closed" ? "closed" : reunion ? "reunited" : "adopted",
+      }
+    )
     return this.getOwn(owner.id, id, locale)
   }
 
@@ -416,7 +435,14 @@ export class ListingsService {
       | { kind: "request_changes"; note: string; fields: ReviewableField[] }
   ): Promise<void> {
     const [row] = await this.db
-      .select({ status: listing.status, publishedAt: listing.publishedAt })
+      .select({
+        status: listing.status,
+        publishedAt: listing.publishedAt,
+        ownerId: listing.ownerId,
+        listingNo: listing.listingNo,
+        slug: listing.slug,
+        title: listing.title,
+      })
       .from(listing)
       .where(and(eq(listing.id, id), isNull(listing.deletedAt)))
     if (!row) throw this.notFound()
@@ -436,8 +462,18 @@ export class ListingsService {
             : { reviewNote: decision.note, reviewFields: decision.fields }),
       })
       .where(eq(listing.id, id))
-    // Kullanıcıya bildirim (e-posta / bildirim merkezi) 3. aşamada eklenecek.
     await this.audit(admin.id, `listing.${decision.kind}`, id, decision)
+
+    // İlan sahibine bildirim (site içi + e-posta, tercihine göre).
+    const base = { listingId: id, listingNo: row.listingNo, title: row.title ?? "" }
+    await this.notifications.notify(
+      row.ownerId,
+      decision.kind === "approve"
+        ? { type: "listing_approved", ...base, slug: row.slug }
+        : decision.kind === "reject"
+          ? { type: "listing_rejected", ...base, reason: decision.reason }
+          : { type: "listing_changes_requested", ...base, note: decision.note }
+    )
   }
 
   // --- Yardımcılar --------------------------------------------------------------------------------------------
@@ -637,7 +673,7 @@ export class ListingsService {
   /** Sahibinin silinmemiş ilanı; yoksa ya da başkasınınsa 404 (varlığı sızdırılmaz). */
   private async findOwned(ownerId: string, id: string) {
     const [row] = await this.db
-      .select({ status: listing.status })
+      .select({ status: listing.status, type: listing.type, listingNo: listing.listingNo, title: listing.title })
       .from(listing)
       .where(and(eq(listing.id, id), eq(listing.ownerId, ownerId), isNull(listing.deletedAt)))
     if (!row) throw this.notFound()

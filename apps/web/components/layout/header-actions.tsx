@@ -1,4 +1,4 @@
-import { Bell, MessageCircle } from "lucide-react"
+import { MessageCircle } from "lucide-react"
 import { getTranslations } from "next-intl/server"
 
 import { buttonVariants } from "@/components/ui/button"
@@ -7,6 +7,7 @@ import { getCurrentUser } from "@/lib/session"
 import { cn } from "@/lib/utils"
 
 import { MobileMenu } from "./mobile-menu"
+import { NotificationBell } from "./notification-bell"
 import { UserMenu } from "./user-menu"
 
 const iconLink = cn(buttonVariants({ variant: "ghost", size: "icon" }), "text-heading hover:text-primary")
@@ -15,7 +16,7 @@ const iconLink = cn(buttonVariants({ variant: "ghost", size: "icon" }), "text-he
  * Üst menünün oturuma bağlı sağ tarafı. Misafir: Giriş yap / Kayıt ol; giriş yapılmış: mesajlar, bildirimler,
  * profil menüsü. Her durumda "İlan Ver" ve (lg altı) hamburger menü.
  * cookies() okuduğu için SiteHeader'da <Suspense> içinde render edilir; sayfanın geri kalanı beklemez.
- * Okunmamış sayısı rozetleri ve bildirim açılır paneli, mesajlaşma/bildirim modülleriyle gelecek.
+ * Zil okunmamış bildirim sayısını gösterir (mobilde de, hamburgerin yanında); mesaj sayısı mesajlaşmayla gelecek.
  */
 export async function HeaderActions() {
   const [user, t] = await Promise.all([getCurrentUser(), getTranslations("Nav")])
@@ -27,9 +28,7 @@ export async function HeaderActions() {
           <Link href="/account/messages" aria-label={t("messages")} className={iconLink}>
             <MessageCircle aria-hidden="true" />
           </Link>
-          <Link href="/account/notifications" aria-label={t("notifications")} className={iconLink}>
-            <Bell aria-hidden="true" />
-          </Link>
+          <NotificationBell />
           <UserMenu user={user} />
         </div>
       ) : (
@@ -46,6 +45,7 @@ export async function HeaderActions() {
       <Link href="/post-listing" className={cn(buttonVariants({ variant: "secondary" }), "hidden md:inline-flex")}>
         {t("postListing")}
       </Link>
+      {user && <NotificationBell className="lg:hidden" />}
       <MobileMenu user={user} />
     </div>
   )

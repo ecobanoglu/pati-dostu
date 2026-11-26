@@ -50,6 +50,13 @@
       "when": 1795539813152,
       "tag": "0006_profile_settings",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1795542368604,
+      "tag": "0007_notification_prefs",
+      "breakpoints": true
     }
   ]
 }

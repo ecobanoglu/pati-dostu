@@ -1,3 +1,5 @@
+import type { NotificationPrefs } from "@pati-dostu/validators"
+
 /**
  * API adresleri. Sunucuda (Server Component, Route Handler) API_URL, tarayıcıda NEXT_PUBLIC_API_URL kullanılır;
  * ikisi de tanımlı değilse yerel geliştirme adresi.
@@ -24,5 +26,7 @@ export type Me = {
   bio: string | null
   /** Şifreli hesap mı (yalnız Google ile girişte false: şifre değiştirme yok). */
   hasPassword: boolean
+  /** Bildirim tercihleri: konu → { inApp, email } (validators › notifications). */
+  notificationPrefs: NotificationPrefs
   termsAcceptedAt: string | null
 }

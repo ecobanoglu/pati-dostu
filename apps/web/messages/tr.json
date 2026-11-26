@@ -640,9 +640,7 @@
     "passwordHint": "En az 8 karakter; harf ve rakam içermeli.",
     "passwordSaved": "Şifreniz değiştirildi. Diğer cihazlardaki oturumlarınız kapatıldı.",
     "noPassword": "Google hesabınızla giriş yaptığınız için şifreniz yok.",
-    "emailPrefsTitle": "E-posta tercihleri",
     "newsletter": "Bülten (haftalık)",
-    "newsletterHint": "Yeni ilanlardan ve blog yazılarından bir seçki.",
     "privacyTitle": "Gizlilik",
     "showPhoneDefault": "Yeni ilanlarda telefonumu varsayılan olarak göster",
     "showPhoneDefaultHint": "Her ilanda ayrıca değiştirebilirsiniz.",
@@ -657,7 +655,60 @@
     "deletePassword": "Onaylamak için mevcut şifrenizi yazın",
     "deleteConfirmGoogle": "Hesabımın kalıcı olarak silineceğini anlıyorum",
     "deleteConfirm": "Hesabımı kalıcı olarak sil",
-    "cancel": "Vazgeç"
+    "cancel": "Vazgeç",
+    "notifPrefsTitle": "Bildirim tercihleri",
+    "colTopic": "Bildirim",
+    "colInApp": "Site içi",
+    "colEmail": "E-posta",
+    "topicListingReview": "İlan onay / red sonucu",
+    "topicFavoriteUpdate": "Favori ilanımın durumu",
+    "channelNotAvailable": "Bu kanal yok"
+  },
+  "Notifications": {
+    "metaTitle": "Bildirimler",
+    "title": "Bildirimler",
+    "tabsLabel": "Bildirimleri süz",
+    "tabAll": "Tümü",
+    "tabUnread": "Okunmamış",
+    "markAll": "Tümünü okundu işaretle",
+    "today": "Bugün",
+    "yesterday": "Dün",
+    "thisWeek": "Bu hafta",
+    "older": "Daha eski",
+    "empty": "Henüz bildiriminiz yok. İlanlarınız onaylandığında ya da favorilerinizde bir gelişme olduğunda burada görürsünüz.",
+    "emptyUnread": "Okunmamış bildiriminiz yok.",
+    "loadMore": "Daha fazla göster",
+    "unread": "Okunmadı",
+    "prefsLink": "Bildirim tercihlerini değiştir",
+    "bell": "Bildirimler",
+    "bellUnread": "{count, plural, one {Bildirimler, # okunmamış} other {Bildirimler, # okunmamış}}",
+    "loadFailed": "Bildirimler yüklenemedi. Lütfen tekrar deneyin.",
+    "item": {
+      "listing_approved": {
+        "title": "İlanınız onaylandı",
+        "body": "\"{title}\" yayına girdi."
+      },
+      "listing_rejected": {
+        "title": "İlanınız reddedildi",
+        "body": "\"{title}\": {reason}"
+      },
+      "listing_changes_requested": {
+        "title": "İlanınız için düzeltme istendi",
+        "body": "\"{title}\": {note}"
+      },
+      "favorite_closed_adopted": {
+        "title": "Favori ilanınız sahiplendirildi",
+        "body": "\"{title}\" yeni yuvasına kavuştu."
+      },
+      "favorite_closed_reunited": {
+        "title": "Favori ilanınızda mutlu son",
+        "body": "\"{title}\" ailesine kavuştu."
+      },
+      "favorite_closed_closed": {
+        "title": "Favori ilanınız yayından kaldırıldı",
+        "body": "\"{title}\" artık yayında değil."
+      }
+    }
   },
   "HomePage": {
     "badge": "Ücretsiz sahiplendirme platformu",

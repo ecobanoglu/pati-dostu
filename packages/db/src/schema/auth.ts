@@ -1,4 +1,4 @@
-import { boolean, index, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core"
+import { boolean, index, jsonb, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core"
 
 import { createdAt, localeEnum, roleEnum, updatedAt } from "./_common.js"
 import { city } from "./dictionary.js"
@@ -30,6 +30,8 @@ export const user = pgTable(
     marketingOptIn: boolean().notNull().default(false),
     /** Yeni ilan formunda "Telefonumu göster" bu değerle başlar (Profil ve ayarlar › Gizlilik). */
     showPhoneByDefault: boolean().notNull().default(false),
+    /** Bildirim tercihleri: konu → { inApp, email } (eksik konular varsayılanla tamamlanır — validators › notifications). */
+    notificationPrefs: jsonb().$type<Record<string, { inApp?: boolean; email?: boolean }>>().notNull().default({}),
     /** KVKK aydınlatma metni ve kullanım şartlarının kabul edildiği an (kayıtta zorunlu). */
     termsAcceptedAt: timestamp({ withTimezone: true }),
     createdAt: createdAt(),

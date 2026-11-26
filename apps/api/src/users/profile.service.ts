@@ -8,6 +8,8 @@ import {
   imageExtensions,
   MAX_IMAGE_UPLOAD_BYTES,
   normalizeTurkishMobile,
+  type NotificationPrefs,
+  resolveNotificationPrefs,
   type UpdateMeInput,
 } from "@pati-dostu/validators"
 import { and, eq, isNull } from "drizzle-orm"
@@ -50,6 +52,7 @@ export class ProfileService {
     if (body.name !== undefined) set.name = body.name
     if (body.marketingOptIn !== undefined) set.marketingOptIn = body.marketingOptIn
     if (body.showPhoneByDefault !== undefined) set.showPhoneByDefault = body.showPhoneByDefault
+    if (body.notificationPrefs !== undefined) set.notificationPrefs = body.notificationPrefs
     if (body.phone !== undefined) set.phone = body.phone === "" ? null : normalizeTurkishMobile(body.phone)
     if (body.cityId !== undefined) {
       if (body.cityId !== "") {
@@ -141,13 +144,19 @@ export class ProfileService {
     await this.deleteOwnAvatar(me.image)
   }
 
-  /** Kullanıcının e-posta/şifre ile giriş hesabı var mı (yalnız Google ile girenlerde yok). */
-  async hasPassword(userId: string): Promise<boolean> {
-    const [row] = await this.db
-      .select({ id: account.id })
-      .from(account)
-      .where(and(eq(account.userId, userId), eq(account.providerId, "credential")))
-    return Boolean(row)
+  /**
+   * /me yanıtının oturumda olmayan parçaları: e-posta/şifre hesabı var mı (yalnız Google ile girenlerde yok) ve
+   * bildirim tercihleri (eksik konular varsayılanla tamamlanmış).
+   */
+  async extras(userId: string): Promise<{ hasPassword: boolean; notificationPrefs: NotificationPrefs }> {
+    const [[credential], [row]] = await Promise.all([
+      this.db
+        .select({ id: account.id })
+        .from(account)
+        .where(and(eq(account.userId, userId), eq(account.providerId, "credential"))),
+      this.db.select({ prefs: user.notificationPrefs }).from(user).where(eq(user.id, userId)),
+    ])
+    return { hasPassword: Boolean(credential), notificationPrefs: resolveNotificationPrefs(row?.prefs) }
   }
 
   /** Adres bizim depodaki bir profil fotoğrafıysa nesneyi siler (Google profil fotoğrafı gibi dış adreslere dokunmaz). */

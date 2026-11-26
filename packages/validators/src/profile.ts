@@ -2,6 +2,7 @@ import { z } from "zod"
 
 import { isStrongPassword, normalizeTurkishMobile } from "./auth.js"
 import { ValidationCode as C } from "./codes.js"
+import { notificationPrefsSchema } from "./notifications.js"
 
 /** "Hakkımda" metninin en fazla uzunluğu (tasarım: "38 / 300"). */
 export const BIO_MAX = 300
@@ -30,8 +31,12 @@ export const preferencesSchema = z.object({
 })
 export type PreferencesInput = z.infer<typeof preferencesSchema>
 
-/** PATCH /me gövdesi: yukarıdaki formların herhangi bir alt kümesi (her bölüm kendi alanlarını gönderir). */
-export const updateMeSchema = profileSchema.extend(contactSchema.shape).extend(preferencesSchema.shape).partial()
+/** PATCH /me gövdesi: yukarıdaki formların ve bildirim tercihlerinin herhangi bir alt kümesi. */
+export const updateMeSchema = profileSchema
+  .extend(contactSchema.shape)
+  .extend(preferencesSchema.shape)
+  .extend({ notificationPrefs: notificationPrefsSchema })
+  .partial()
 export type UpdateMeInput = z.infer<typeof updateMeSchema>
 
 /** Şifre değiştirme formu. Mevcut şifre burada kurala göre denetlenmez (eski kuralla konmuş olabilir). */

@@ -6,6 +6,8 @@ import {
   changePasswordSchema,
   type ContactInput,
   contactSchema,
+  type NotificationPrefs,
+  type NotificationTopic,
   type PreferencesInput,
 } from "@pati-dostu/validators"
 import { LoaderCircle } from "lucide-react"
@@ -190,18 +192,21 @@ export function PasswordSection({ user }: { user: Me }) {
   )
 }
 
-/** Tek bir tercihi anında kaydeden anahtarlar (bülten, telefon varsayılanı). Hata olursa eski hâline döner. */
+type Preferences = PreferencesInput & { notificationPrefs: NotificationPrefs }
+
+/** Tercihleri anında kaydeden kanca (bülten, telefon varsayılanı, bildirim kanalları). Hata olursa eski hâline döner. */
 function usePreference(user: Me) {
   const t = useTranslations("Settings")
   const errorMessage = useErrorMessage()
-  const [values, setValues] = useState<PreferencesInput>({
+  const [values, setValues] = useState<Preferences>({
     marketingOptIn: user.marketingOptIn,
     showPhoneByDefault: user.showPhoneByDefault,
+    notificationPrefs: user.notificationPrefs,
   })
   const [status, setStatus] = useState<Status>(null)
 
   /** Bir tercihi değiştirir ve PATCH /me ile kaydeder. */
-  async function set<K extends keyof PreferencesInput>(key: K, value: PreferencesInput[K]) {
+  async function set<K extends keyof Preferences>(key: K, value: Preferences[K]) {
     const previous = values[key]
     setValues((v) => ({ ...v, [key]: value }))
     setStatus(null)
@@ -215,23 +220,107 @@ function usePreference(user: Me) {
   return { values, set, status }
 }
 
+/** Tablodaki onay kutusu: 44 px dokunma alanı, erişilebilir ad "Satır — Kanal". */
+function PrefCheckbox({
+  label,
+  checked,
+  onChange,
+}: {
+  label: string
+  checked: boolean
+  onChange: (checked: boolean) => void
+}) {
+  return (
+    <label className="flex size-tap cursor-pointer items-center justify-center">
+      <input
+        type="checkbox"
+        aria-label={label}
+        checked={checked}
+        onChange={(e) => onChange(e.target.checked)}
+        className="size-5 cursor-pointer accent-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+      />
+    </label>
+  )
+}
+
 /**
- * E-posta tercihleri ve Gizlilik (tasarım 02-hesabim/06). Bildirim tercihleri tablosu bildirimlerle birlikte
- * (3. aşama 4. adım) gelecek — karar; şimdilik yalnızca bülten. Telefon yoksa "telefonumu göster" kapalıdır.
+ * Bildirim tercihleri (tasarım 02-hesabim/06), Gizlilik. Tablo: konu × kanal (site içi, e-posta); yalnızca çalışan
+ * konular var — yeni mesaj, sorularıma cevap ve kayıtlı arama özellikleri gelince, mobil bildirim kanalı v2'de eklenir.
+ * Bülten yalnızca e-posta. Telefon yoksa "telefonumu göster" kapalıdır. Her değişiklik anında kaydedilir.
  */
 export function PreferencesSections({ user }: { user: Me }) {
   const t = useTranslations("Settings")
   const { values, set, status } = usePreference(user)
+  const topics: Array<{ key: NotificationTopic; label: string }> = [
+    { key: "listing_review", label: t("topicListingReview") },
+    { key: "favorite_update", label: t("topicFavoriteUpdate") },
+  ]
+
+  /** Bir konunun bir kanalını değiştirir (tüm tercih nesnesi gönderilir). */
+  const setChannel = (topic: NotificationTopic, channel: "inApp" | "email", on: boolean) =>
+    set("notificationPrefs", {
+      ...values.notificationPrefs,
+      [topic]: { ...values.notificationPrefs[topic], [channel]: on },
+    })
+
+  const th = "px-2 pb-2 text-center text-sm font-bold text-body"
   return (
     <>
-      <SettingsCard title={t("emailPrefsTitle")}>
-        <Switch
-          id="settings-newsletter"
-          checked={values.marketingOptIn}
-          onChange={(v) => set("marketingOptIn", v)}
-          label={t("newsletter")}
-          description={t("newsletterHint")}
-        />
+      <SettingsCard title={t("notifPrefsTitle")}>
+        <table className="w-full border-collapse">
+          <thead>
+            <tr className="border-b border-border">
+              <th scope="col" className={cn(th, "text-left")}>
+                {t("colTopic")}
+              </th>
+              <th scope="col" className={cn(th, "w-20 sm:w-28")}>
+                {t("colInApp")}
+              </th>
+              <th scope="col" className={cn(th, "w-20 sm:w-28")}>
+                {t("colEmail")}
+              </th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-border">
+            {topics.map(({ key, label }) => (
+              <tr key={key}>
+                <th scope="row" className="py-1 pr-2 text-left text-[15px] font-bold text-heading">
+                  {label}
+                </th>
+                <td>
+                  <PrefCheckbox
+                    label={`${label} — ${t("colInApp")}`}
+                    checked={values.notificationPrefs[key].inApp}
+                    onChange={(v) => setChannel(key, "inApp", v)}
+                  />
+                </td>
+                <td>
+                  <PrefCheckbox
+                    label={`${label} — ${t("colEmail")}`}
+                    checked={values.notificationPrefs[key].email}
+                    onChange={(v) => setChannel(key, "email", v)}
+                  />
+                </td>
+              </tr>
+            ))}
+            <tr>
+              <th scope="row" className="py-1 pr-2 text-left text-[15px] font-bold text-heading">
+                {t("newsletter")}
+              </th>
+              <td className="text-center text-body">
+                <span aria-hidden="true">—</span>
+                <span className="sr-only">{t("channelNotAvailable")}</span>
+              </td>
+              <td>
+                <PrefCheckbox
+                  label={`${t("newsletter")} — ${t("colEmail")}`}
+                  checked={values.marketingOptIn}
+                  onChange={(v) => set("marketingOptIn", v)}
+                />
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </SettingsCard>
       <SettingsCard title={t("privacyTitle")}>
         <Switch

@@ -1,4 +1,10 @@
-import { avatarSchema, deleteAccountSchema, listingStatuses, updateMeSchema } from "@pati-dostu/validators"
+import {
+  avatarSchema,
+  deleteAccountSchema,
+  listingStatuses,
+  notificationPrefsSchema,
+  updateMeSchema,
+} from "@pati-dostu/validators"
 import { createZodDto } from "nestjs-zod"
 import { z } from "zod"
 
@@ -20,6 +26,8 @@ export const meResponseSchema = z
     bio: z.string().nullable(),
     /** E-posta/şifre hesabı mı (yalnız Google ile girişte false). */
     hasPassword: z.boolean(),
+    /** Bildirim tercihleri: konu → { inApp, email } (varsayılanlarla tamamlanmış). */
+    notificationPrefs: notificationPrefsSchema,
     /** Boşsa (Google ile ilk giriş) web KVKK onay ekranını gösterir. */
     termsAcceptedAt: z.iso.datetime().nullable(),
   })

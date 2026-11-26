@@ -640,9 +640,7 @@
     "passwordHint": "At least 8 characters, with letters and numbers.",
     "passwordSaved": "Your password was changed. You've been signed out on other devices.",
     "noPassword": "You sign in with Google, so there's no password.",
-    "emailPrefsTitle": "Email preferences",
     "newsletter": "Newsletter (weekly)",
-    "newsletterHint": "A selection of new listings and blog posts.",
     "privacyTitle": "Privacy",
     "showPhoneDefault": "Show my phone number on new listings by default",
     "showPhoneDefaultHint": "You can change it on each listing.",
@@ -657,7 +655,60 @@
     "deletePassword": "Enter your current password to confirm",
     "deleteConfirmGoogle": "I understand my account will be permanently deleted",
     "deleteConfirm": "Permanently delete my account",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "notifPrefsTitle": "Notification preferences",
+    "colTopic": "Notification",
+    "colInApp": "On site",
+    "colEmail": "Email",
+    "topicListingReview": "Listing review result",
+    "topicFavoriteUpdate": "Updates on saved listings",
+    "channelNotAvailable": "Not available"
+  },
+  "Notifications": {
+    "metaTitle": "Notifications",
+    "title": "Notifications",
+    "tabsLabel": "Filter notifications",
+    "tabAll": "All",
+    "tabUnread": "Unread",
+    "markAll": "Mark all as read",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "thisWeek": "This week",
+    "older": "Older",
+    "empty": "No notifications yet. You'll see them here when your listings are reviewed or a saved listing has news.",
+    "emptyUnread": "No unread notifications.",
+    "loadMore": "Show more",
+    "unread": "Unread",
+    "prefsLink": "Change notification preferences",
+    "bell": "Notifications",
+    "bellUnread": "{count, plural, one {Notifications, # unread} other {Notifications, # unread}}",
+    "loadFailed": "Couldn't load notifications. Please try again.",
+    "item": {
+      "listing_approved": {
+        "title": "Your listing was approved",
+        "body": "\"{title}\" is now live."
+      },
+      "listing_rejected": {
+        "title": "Your listing was rejected",
+        "body": "\"{title}\": {reason}"
+      },
+      "listing_changes_requested": {
+        "title": "Changes requested for your listing",
+        "body": "\"{title}\": {note}"
+      },
+      "favorite_closed_adopted": {
+        "title": "A saved listing was adopted",
+        "body": "\"{title}\" found a new home."
+      },
+      "favorite_closed_reunited": {
+        "title": "A happy ending in a saved listing",
+        "body": "\"{title}\" is back with its family."
+      },
+      "favorite_closed_closed": {
+        "title": "A saved listing was taken down",
+        "body": "\"{title}\" is no longer live."
+      }
+    }
   },
   "HomePage": {
     "badge": "Free adoption platform",

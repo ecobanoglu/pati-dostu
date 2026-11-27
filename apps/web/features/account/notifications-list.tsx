@@ -126,7 +126,8 @@ function targetOf(n: NotificationItem) {
   }
   if (n.type === "forum_reply" || n.type === "forum_best_answer") {
     const slug = str(n.payload, "topicSlug")
-    if (slug) return { pathname: "/community/[slug]" as const, params: { slug } }
+    const category = str(n.payload, "categorySlug")
+    if (slug && category) return { pathname: "/community/[category]/[slug]" as const, params: { category, slug } }
     return "/community" as const
   }
   if (n.type === "favorite_closed") return "/account/favorites" as const

@@ -370,7 +370,13 @@ export class ForumService {
     await this.moderation.remember("reply", me.id, { body })
 
     const preview = body.length > PREVIEW_LENGTH ? `${body.slice(0, PREVIEW_LENGTH - 1)}…` : body
-    const base = { topicSlug: topic.slug, title: topic.title, authorName: me.name, preview }
+    const base = {
+      topicSlug: topic.slug,
+      categorySlug: topic.categorySlug,
+      title: topic.title,
+      authorName: me.name,
+      preview,
+    }
     if (topic.authorId !== me.id) {
       await this.notifications.notify(topic.authorId, { type: "forum_reply", ...base, own: true })
     }
@@ -462,6 +468,7 @@ export class ForumService {
       await this.notifications.notify(reply.authorId, {
         type: "forum_best_answer",
         topicSlug: topic.slug,
+        categorySlug: topic.categorySlug,
         title: topic.title,
       })
     }
@@ -522,8 +529,15 @@ export class ForumService {
   /** Yayındaki konuyu id ile okur; yoksa 404. */
   private async visibleTopicById(id: string) {
     const [row] = await this.db
-      .select({ id: forumTopic.id, authorId: forumTopic.authorId, slug: forumTopic.slug, title: forumTopic.title })
+      .select({
+        id: forumTopic.id,
+        authorId: forumTopic.authorId,
+        slug: forumTopic.slug,
+        title: forumTopic.title,
+        categorySlug: forumCategory.slug,
+      })
       .from(forumTopic)
+      .innerJoin(forumCategory, eq(forumCategory.id, forumTopic.categoryId))
       .where(and(eq(forumTopic.id, id), visibleTopic))
     if (!row) throw this.topicNotFound()
     return row

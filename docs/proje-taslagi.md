@@ -158,8 +158,8 @@ Sayfalar üç route grubunda toplanır: herkese açık `(public)`, giriş gerekt
 | `/` | Anasayfa | Cache Components (`"use cache"`, 60 sn) | Herkes |
 | `/ilanlar`, `/ilanlar/[kategori]`, `/ilanlar/[kategori]/[sehir]` | İlan listeleme (SEO dostu kategori/şehir sayfaları) | SSR + TanStack Query | Herkes |
 | `/ilan/[slug]-[id]` | İlan detay (yalnızca onaylanmış ilanlar) | SSR | Herkes |
-| `/topluluk`, `/topluluk/[kategori]` | Topluluk listeleme | SSR | Herkes |
-| `/topluluk/[slug]` | Topluluk konu detay | SSR | Herkes |
+| `/topluluk`, `/topluluk/[kategori]` | Topluluk listeleme (`ara`, `sirala`, `sayfa` sorguda) | SSR | Herkes |
+| `/topluluk/[kategori]/[konu]` | Topluluk konu detay | SSR | Herkes |
 | `/topluluk/soru-sor` | Yeni konu (soru sor) formu; yazarken benzer konular | CSR | Giriş |
 | `/blog`, `/blog/[slug]` | Blog | Önbellekli (`cacheTag`) | Herkes |
 | `/haberler`, `/haberler/[slug]` | Haberler | Önbellekli (`cacheTag`) | Herkes |
@@ -620,6 +620,7 @@ Her aşama sonunda çalışan bir sürüm preview ortamına çıkar; v1.1 ve son
 - Şikayet (3. aşama): hazır nedenler (hedefe göre) + isteğe bağlı açıklama ("Diğer"de zorunlu). Şikayet edilen içerik otomatik gizlenmez; admin karar verir. Yeni şikayette admin'lere site içi bildirim gider (e-posta kapalı). Kullanıcı şikayeti Mesajlar'daki konuşma başlığından yapılır (engelleme v1.1). Aynı kişi aynı içeriği açık şikayeti varken tekrar şikayet edemez; kendi içeriğini şikayet edemez.
 - Topluluk ve içerik (4. aşama): konuya en fazla 3 fotoğraf, konu takibi ve cevap bildirimi, isteğe bağlı hayvan türü bu aşamada; etiketler ve "Yanıtla"/@bahsetme v1.1'e kaldı. Konu ve cevap metinlerinde yalnız kalın, italik ve liste biçimi vardır (bağlantı yok). Blog/haber editörü (Tiptap) bu aşamada admin için tek sayfa olarak yapılır, 5. aşamada admin paneline taşınır; klinik ve barınakların yazı önermesi sonraya kaldı.
 - Topluluk API'si (4. aşama): soru sahibine yeni cevap bildirimi her durumda gider, takip edenlere de gider (varsayılan site içi; e-posta tercihten). Soru sahibi konusunu otomatik takip eder. Kendi cevabı "Faydalı" işaretlenemez. Hesap silindiğinde topluluk konu ve cevapları kalır, yazar "Silinmiş kullanıcı" görünür (başkalarının cevapları kaybolmasın).
+- Topluluk adresleri: kategori `/topluluk/[kategori]`, konu `/topluluk/[kategori]/[konu]` (konu sayfası mobilde ayrı düzen kullandığı için). Toplulukta bireysel üyelerin adı "Ad S." biçiminde, kurum hesaplarının adı tam gösterilir (tasarım).
 - Sayfa kabı 1320 px'tir (`--container-site`, iç boşluk dahil; masaüstünde içerik 1272 px). Tasarım görselleri 1200 px içerikle çizildi; genişlikte görseller değil bu karar geçerlidir.
 - Favoriler sayfası (`/hesabim/favoriler`) 2. aşamada yapılır; Hesabım sol menüsü 3. aşamada eklenir. Favorideki ilan sahiplendirilir ya da kapatılırsa listede "artık yayında değil" notuyla soluk ve bağlantısız kalır (kalple çıkarılabilir); silinen ilan listeden düşer. Onay bekleyen / düzeltme istenen / reddedilen ilan favorilerde gösterilmez (onaylanmamış içerik görünmesin); yeniden yayına girince geri gelir.
 - Dosyalar (ilan fotoğrafları, avatar, blog kapakları) Cloudflare R2'de tutulur; S3 API'siyle erişildiği için sağlayıcı değiştirilebilir. Geliştirmede docker-compose'daki RustFS (S3 uyumlu) kullanılır.

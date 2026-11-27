@@ -46,13 +46,15 @@ export type NotificationPayload =
   | {
       type: "forum_reply"
       topicSlug: string
+      /** Konu adresi /topluluk/{kategori}/{konu}. */
+      categorySlug: string
       title: string
       authorName: string
       preview: string
       /** true: soru sahibine ("Sorunuza yeni cevap"); false: takip edene ("Takip ettiğiniz konuya…"). */
       own: boolean
     }
-  | { type: "forum_best_answer"; topicSlug: string; title: string }
+  | { type: "forum_best_answer"; topicSlug: string; categorySlug: string; title: string }
   | {
       type: "report_created"
       reportId: string
@@ -255,13 +257,13 @@ export class NotificationsService {
           senderName: payload.authorName,
           preview: payload.preview,
           own: payload.own,
-          url: `${web}${WEB_PATHS.community[locale]}/${payload.topicSlug}`,
+          url: `${web}${WEB_PATHS.community[locale]}/${payload.categorySlug}/${payload.topicSlug}`,
         }
       case "forum_best_answer":
         return {
           type: payload.type,
           title: payload.title,
-          url: `${web}${WEB_PATHS.community[locale]}/${payload.topicSlug}`,
+          url: `${web}${WEB_PATHS.community[locale]}/${payload.categorySlug}/${payload.topicSlug}`,
         }
       case "report_created":
         // E-posta varsayılan kapalı (karar); açılırsa bildirimler sayfasına yönlendirir (admin paneli 5. aşamada).

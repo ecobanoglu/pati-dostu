@@ -2,7 +2,14 @@ import { relations } from "drizzle-orm"
 
 import { adoptionApplication, successStory } from "./adoption.js"
 import { account, session, user } from "./auth.js"
-import { forumCategory, forumReply, forumReplyLike, forumTopic } from "./community.js"
+import {
+  forumCategory,
+  forumReply,
+  forumReplyLike,
+  forumTopic,
+  forumTopicFollow,
+  forumTopicImage,
+} from "./community.js"
 import { post, postCategory, postTag, tag } from "./content.js"
 import { breed, city, district, species } from "./dictionary.js"
 import { favorite, listing, listingComment, listingImage, listingShareImage, savedSearch } from "./listing.js"
@@ -144,7 +151,19 @@ export const forumCategoryRelations = relations(forumCategory, ({ many }) => ({
 export const forumTopicRelations = relations(forumTopic, ({ one, many }) => ({
   category: one(forumCategory, { fields: [forumTopic.categoryId], references: [forumCategory.id] }),
   author: one(user, { fields: [forumTopic.authorId], references: [user.id] }),
+  species: one(species, { fields: [forumTopic.speciesId], references: [species.id] }),
   replies: many(forumReply),
+  images: many(forumTopicImage),
+  follows: many(forumTopicFollow),
+}))
+
+export const forumTopicImageRelations = relations(forumTopicImage, ({ one }) => ({
+  topic: one(forumTopic, { fields: [forumTopicImage.topicId], references: [forumTopic.id] }),
+}))
+
+export const forumTopicFollowRelations = relations(forumTopicFollow, ({ one }) => ({
+  topic: one(forumTopic, { fields: [forumTopicFollow.topicId], references: [forumTopic.id] }),
+  user: one(user, { fields: [forumTopicFollow.userId], references: [user.id] }),
 }))
 
 export const forumReplyRelations = relations(forumReply, ({ one, many }) => ({

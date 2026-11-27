@@ -6,7 +6,15 @@ import type { AuthSession } from "../auth/auth.js"
 import { CurrentSession } from "../auth/decorators.js"
 import { CommentIdParamDto } from "../comments/comments.dto.js"
 import { ListingRefParamDto } from "../listings/listings.dto.js"
-import { CommentReportDto, ListingReportDto, ReportResultDto, UserIdParamDto, UserReportDto } from "./reports.dto.js"
+import {
+  CommentReportDto,
+  ListingReportDto,
+  ReplyReportDto,
+  ReportResultDto,
+  TopicReportDto,
+  UserIdParamDto,
+  UserReportDto,
+} from "./reports.dto.js"
 import { ReportsService } from "./reports.service.js"
 
 @ApiTags("reports")
@@ -39,6 +47,32 @@ export class ReportsController {
     @Body() body: CommentReportDto
   ): Promise<ReportResultDto> {
     return this.reports.reportComment(session.user, id, body)
+  }
+
+  /** Topluluk konusunu şikâyet et. */
+  @Post("forum/topics/:id/report")
+  @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({ summary: "Topluluk konusunu şikâyet et" })
+  @ZodResponse({ status: 201, type: ReportResultDto })
+  topic(
+    @CurrentSession() session: AuthSession,
+    @Param() { id }: CommentIdParamDto,
+    @Body() body: TopicReportDto
+  ): Promise<ReportResultDto> {
+    return this.reports.reportTopic(session.user, id, body)
+  }
+
+  /** Topluluk cevabını şikâyet et. */
+  @Post("forum/replies/:id/report")
+  @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({ summary: "Topluluk cevabını şikâyet et" })
+  @ZodResponse({ status: 201, type: ReportResultDto })
+  reply(
+    @CurrentSession() session: AuthSession,
+    @Param() { id }: CommentIdParamDto,
+    @Body() body: ReplyReportDto
+  ): Promise<ReportResultDto> {
+    return this.reports.reportReply(session.user, id, body)
   }
 
   /** Kullanıcıyı şikâyet et (Mesajlar'daki konuşmadan). */

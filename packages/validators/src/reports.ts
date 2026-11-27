@@ -6,8 +6,8 @@ import { ValidationCode as C } from "./codes.js"
 export const REPORT_DETAILS_MAX = 500
 export const REPORT_DETAILS_MIN = 10
 
-/** Şikâyet edilebilen hedefler (bu aşamada; topluluk konusu/cevabı 4. aşamada). */
-export const reportTargets = ["listing", "comment", "user"] as const
+/** Şikâyet edilebilen hedefler. */
+export const reportTargets = ["listing", "comment", "user", "topic", "reply"] as const
 export type ReportTarget = (typeof reportTargets)[number]
 
 /**
@@ -18,6 +18,8 @@ export const reportReasons = {
   listing: ["sale", "fake", "animal_abuse", "inappropriate", "spam", "other"],
   comment: ["inappropriate", "spam", "sale", "misinformation", "other"],
   user: ["harassment", "fake_account", "sale", "spam", "other"],
+  topic: ["inappropriate", "spam", "sale", "misinformation", "other"],
+  reply: ["inappropriate", "spam", "sale", "misinformation", "other"],
 } as const satisfies Record<ReportTarget, readonly string[]>
 export type ReportReason = (typeof reportReasons)[ReportTarget][number]
 

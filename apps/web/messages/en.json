@@ -668,7 +668,8 @@
     "channelNotAvailable": "Not available",
     "topicNewMessage": "New message",
     "topicListingComment": "Comments on my listings",
-    "topicAdminReport": "New reports (admin)"
+    "topicAdminReport": "New reports (admin)",
+    "topicCommunity": "Community: answers to my questions and followed topics"
   },
   "Notifications": {
     "metaTitle": "Notifications",
@@ -725,6 +726,18 @@
       "report_created": {
         "title": "New report",
         "body": "{target} · {reason}: \"{title}\""
+      },
+      "forum_reply_own": {
+        "title": "New answer to your question",
+        "body": "{sender}: {preview}"
+      },
+      "forum_reply_follow": {
+        "title": "New reply in a topic you follow",
+        "body": "{sender}: {preview}"
+      },
+      "forum_best_answer": {
+        "title": "Your answer was chosen as the best",
+        "body": "In \"{title}\". Thank you!"
       }
     }
   },
@@ -794,7 +807,9 @@
     "open": {
       "listing": "Report listing",
       "comment": "Report comment",
-      "user": "Report user"
+      "user": "Report user",
+      "topic": "Report topic",
+      "reply": "Report reply"
     },
     "short": "Report",
     "reasonLabel": "Reason",
@@ -812,7 +827,9 @@
     "targets": {
       "listing": "Listing",
       "comment": "Comment",
-      "user": "User"
+      "user": "User",
+      "topic": "Topic",
+      "reply": "Reply"
     },
     "detailsLabel": "Details (optional)",
     "detailsLabelRequired": "Details",
@@ -924,6 +941,13 @@
     "COMMENT_TOO_LONG": "A comment can be at most 1,000 characters.",
     "CANNOT_REPORT_SELF": "You can't report your own content.",
     "REPORT_DETAILS_REQUIRED": "When you choose \"Other\", please write at least 10 characters.",
-    "REPORT_DETAILS_TOO_LONG": "Details can be at most 500 characters."
+    "REPORT_DETAILS_TOO_LONG": "Details can be at most 500 characters.",
+    "CATEGORY_INVALID": "Please choose a category.",
+    "CANNOT_LIKE_OWN": "You can't mark your own answer as helpful.",
+    "TOPIC_TITLE_TOO_SHORT": "The title must be at least 10 characters.",
+    "TOPIC_TITLE_TOO_LONG": "The title can be at most 120 characters.",
+    "TOPIC_BODY_TOO_SHORT": "Details must be at least 20 characters.",
+    "TOPIC_BODY_TOO_LONG": "Details can be at most 5,000 characters.",
+    "REPLY_TOO_LONG": "A reply can be at most 3,000 characters."
   }
 }

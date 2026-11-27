@@ -10,6 +10,7 @@ export const notificationTopics = [
   "favorite_update",
   "new_message",
   "listing_comment",
+  "community",
   "admin_report",
 ] as const
 export type NotificationTopic = (typeof notificationTopics)[number]
@@ -34,6 +35,10 @@ export const notificationTypes = {
   new_message: "new_message",
   /** İlanıma yorum yazıldı (sahibin kendi yorumu bildirilmez). */
   listing_comment: "listing_comment",
+  /** Topluluk: soruma ya da takip ettiğim konuya yeni cevap. */
+  forum_reply: "community",
+  /** Topluluk: cevabım en iyi cevap seçildi. */
+  forum_best_answer: "community",
   /** Yeni şikâyet — yalnız admin'lere (ayarlarda yalnız admin görür). */
   report_created: "admin_report",
 } as const satisfies Record<string, NotificationTopic>
@@ -49,6 +54,7 @@ export const defaultNotificationPrefs: Record<NotificationTopic, NotificationCha
   favorite_update: { inApp: true, email: false },
   new_message: { inApp: true, email: true },
   listing_comment: { inApp: true, email: false },
+  community: { inApp: true, email: false },
   admin_report: { inApp: true, email: false },
 }
 

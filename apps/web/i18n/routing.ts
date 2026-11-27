@@ -35,6 +35,7 @@ export const routing = defineRouting({
     "/listing/[slug]": { tr: "/ilan/[slug]", en: "/listing/[slug]" },
     "/post-listing": { tr: "/ilan-ver", en: "/post-listing" },
     "/community": { tr: "/topluluk", en: "/community" },
+    "/community/[slug]": { tr: "/topluluk/[slug]", en: "/community/[slug]" },
     "/veterinarians": { tr: "/veterinerler", en: "/veterinarians" },
     "/shelters": { tr: "/barinaklar", en: "/shelters" },
     "/blog": "/blog",

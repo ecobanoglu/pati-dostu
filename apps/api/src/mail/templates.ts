@@ -148,6 +148,18 @@ const notificationStrings = {
       detail: "Yorum",
       button: "Yorumu görüntüle",
     },
+    forum_reply: {
+      subjectOwn: (sender: string) => `${sender} sorunuza cevap yazdı`,
+      subjectFollow: (sender: string) => `${sender} takip ettiğiniz konuya cevap yazdı`,
+      text: (sender: string, title: string) => `${sender}, "${title}" konusuna cevap yazdı.`,
+      detail: "Cevap",
+      button: "Cevabı görüntüle",
+    },
+    forum_best_answer: {
+      subject: "Cevabınız en iyi cevap seçildi",
+      text: (title: string) => `"${title}" konusundaki cevabınız en iyi cevap seçildi. Teşekkürler!`,
+      button: "Konuyu görüntüle",
+    },
     report_created: {
       subject: "Yeni şikayet",
       text: (title: string) => `"${title}" için yeni bir şikayet var.`,
@@ -193,6 +205,18 @@ const notificationStrings = {
       detail: "Comment",
       button: "View comment",
     },
+    forum_reply: {
+      subjectOwn: (sender: string) => `${sender} answered your question`,
+      subjectFollow: (sender: string) => `${sender} replied to a topic you follow`,
+      text: (sender: string, title: string) => `${sender} replied to "${title}".`,
+      detail: "Reply",
+      button: "View reply",
+    },
+    forum_best_answer: {
+      subject: "Your answer was chosen as the best answer",
+      text: (title: string) => `Your answer in "${title}" was chosen as the best answer. Thank you!`,
+      button: "View topic",
+    },
     report_created: {
       subject: "New report",
       text: (title: string) => `There's a new report about "${title}".`,
@@ -209,6 +233,8 @@ export type NotificationMailData =
   | { type: "favorite_closed"; title: string; url: string; outcome: "adopted" | "reunited" | "closed" }
   | { type: "new_message"; title: string; url: string; senderName: string; preview: string }
   | { type: "listing_comment"; title: string; url: string; senderName: string; preview: string }
+  | { type: "forum_reply"; title: string; url: string; senderName: string; preview: string; own: boolean }
+  | { type: "forum_best_answer"; title: string; url: string }
   | { type: "report_created"; title: string; url: string }
 
 /** Bildirim e-postası (ilan sonucu, favori güncellemesi, yeni mesaj, ilan yorumu): kullanıcının dilinde, tek butonlu. */
@@ -254,6 +280,16 @@ export function notificationMail(
       buttonLabel = n.listing_comment.button
       text = n.listing_comment.text(data.senderName, data.title)
       detail = { label: n.listing_comment.detail, value: data.preview }
+      break
+    case "forum_reply":
+      subject = data.own ? n.forum_reply.subjectOwn(data.senderName) : n.forum_reply.subjectFollow(data.senderName)
+      buttonLabel = n.forum_reply.button
+      text = n.forum_reply.text(data.senderName, data.title)
+      detail = { label: n.forum_reply.detail, value: data.preview }
+      break
+    case "forum_best_answer":
+      ;({ subject, button: buttonLabel } = n.forum_best_answer)
+      text = n.forum_best_answer.text(data.title)
       break
     case "report_created":
       ;({ subject, button: buttonLabel } = n.report_created)

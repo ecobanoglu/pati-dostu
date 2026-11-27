@@ -44,9 +44,19 @@ export type NotificationPayload =
       preview: string
     }
   | {
+      type: "forum_reply"
+      topicSlug: string
+      title: string
+      authorName: string
+      preview: string
+      /** true: soru sahibine ("Sorunuza yeni cevap"); false: takip edene ("Takip ettiğiniz konuya…"). */
+      own: boolean
+    }
+  | { type: "forum_best_answer"; topicSlug: string; title: string }
+  | {
       type: "report_created"
       reportId: string
-      targetType: "listing" | "comment" | "user"
+      targetType: "listing" | "comment" | "user" | "topic" | "reply"
       reason: string
       /** İlan ve yorum şikâyetinde ilgili ilan. */
       listingNo: number | null
@@ -62,6 +72,7 @@ const WEB_PATHS = {
   listing: { tr: "/ilan", en: "/en/listing" },
   messages: { tr: "/hesabim/mesajlar", en: "/en/account/messages" },
   notifications: { tr: "/hesabim/bildirimler", en: "/en/account/notifications" },
+  community: { tr: "/topluluk", en: "/en/community" },
 } as const
 
 /**
@@ -236,6 +247,21 @@ export class NotificationsService {
           senderName: payload.authorName,
           preview: payload.preview,
           url: `${web}${WEB_PATHS.listing[locale]}/${payload.slug ? `${payload.slug}-` : ""}${payload.listingNo}#comments`,
+        }
+      case "forum_reply":
+        return {
+          type: payload.type,
+          title: payload.title,
+          senderName: payload.authorName,
+          preview: payload.preview,
+          own: payload.own,
+          url: `${web}${WEB_PATHS.community[locale]}/${payload.topicSlug}`,
+        }
+      case "forum_best_answer":
+        return {
+          type: payload.type,
+          title: payload.title,
+          url: `${web}${WEB_PATHS.community[locale]}/${payload.topicSlug}`,
         }
       case "report_created":
         // E-posta varsayılan kapalı (karar); açılırsa bildirimler sayfasına yönlendirir (admin paneli 5. aşamada).

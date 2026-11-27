@@ -14,6 +14,8 @@ import { ImageUploadRequestDto, PresignedUploadDto } from "./uploads.dto.js"
 
 /** Henüz bir ilana bağlanmamış yüklemelerin öneki; okuma izni yoktur. R2'de bu önek için 1 günlük silme kuralı kurulur. */
 export const TMP_LISTING_IMAGES = "tmp/listing-images"
+/** Topluluk konusu fotoğraflarının geçici öneki; konu açılınca forum/{konuId}/ altına taşınır. */
+export const TMP_TOPIC_IMAGES = "tmp/topic-images"
 
 @ApiTags("uploads")
 @ApiCookieAuth()
@@ -38,6 +40,25 @@ export class UploadsController {
       throw new AppException(HttpStatus.FORBIDDEN, ErrorCode.EMAIL_NOT_VERIFIED, "E-posta adresiniz doğrulanmamış.")
     }
     const key = `${TMP_LISTING_IMAGES}/${session.user.id}/${randomUUID()}.${imageExtensions[contentType]}`
+    return this.storage.presignPut(key, contentType, size)
+  }
+
+  /**
+   * Topluluk konusu fotoğrafı için imzalı yükleme adresi (tmp/topic-images/{userId}/…; en fazla 3, konu açılınca
+   * doğrulanıp forum/{konuId}/ altına taşınır). E-postası doğrulanmamış kullanıcı konu açamayacağı için yükleyemez.
+   */
+  @Post("topic-image")
+  @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({ summary: "Topluluk konusu fotoğrafı için imzalı yükleme adresi" })
+  @ZodResponse({ status: 201, type: PresignedUploadDto })
+  async topicImage(
+    @CurrentSession() session: AuthSession,
+    @Body() { contentType, size }: ImageUploadRequestDto
+  ): Promise<PresignedUploadDto> {
+    if (!session.user.emailVerified) {
+      throw new AppException(HttpStatus.FORBIDDEN, ErrorCode.EMAIL_NOT_VERIFIED, "E-posta adresiniz doğrulanmamış.")
+    }
+    const key = `${TMP_TOPIC_IMAGES}/${session.user.id}/${randomUUID()}.${imageExtensions[contentType]}`
     return this.storage.presignPut(key, contentType, size)
   }
 

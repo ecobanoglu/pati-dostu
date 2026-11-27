@@ -19,6 +19,8 @@ const endpoint: Record<ReportTarget, (id: string) => string> = {
   listing: (id) => `/listings/${id}/report`,
   comment: (id) => `/comments/${id}/report`,
   user: (id) => `/users/${id}/report`,
+  topic: (id) => `/forum/topics/${id}/report`,
+  reply: (id) => `/forum/replies/${id}/report`,
 }
 
 /**

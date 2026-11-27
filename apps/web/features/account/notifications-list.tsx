@@ -1,12 +1,14 @@
 "use client"
 
 import {
+  Award,
   Check,
   FilePen,
   Flag,
   Heart,
   MessageCircle,
   MessageSquareText,
+  MessagesSquare,
   TriangleAlert,
   type LucideIcon,
 } from "lucide-react"
@@ -27,6 +29,8 @@ export type NotificationItem = {
     | "favorite_closed"
     | "new_message"
     | "listing_comment"
+    | "forum_reply"
+    | "forum_best_answer"
     | "report_created"
   payload: Record<string, unknown>
   readAt: string | null
@@ -68,6 +72,8 @@ const tones: Record<NotificationItem["type"], { icon: LucideIcon; className: str
   favorite_closed: { icon: Heart, className: "text-success-text" },
   new_message: { icon: MessageCircle, className: "text-primary" },
   listing_comment: { icon: MessageSquareText, className: "text-primary" },
+  forum_reply: { icon: MessagesSquare, className: "text-primary" },
+  forum_best_answer: { icon: Award, className: "text-success-text" },
   report_created: { icon: Flag, className: "text-danger" },
 }
 
@@ -77,8 +83,12 @@ function str(payload: Record<string, unknown>, key: string): string {
   return typeof v === "string" ? v : typeof v === "number" ? String(v) : ""
 }
 
-/** Çeviri anahtarı: favori bildiriminde sonuca göre (sahiplendirildi / kavuştu / kaldırıldı) ayrı metin. */
+/**
+ * Çeviri anahtarı: favori bildiriminde sonuca göre (sahiplendirildi / kavuştu / kaldırıldı), topluluk cevabında
+ * soru sahibine mi takip edene mi gittiğine göre ayrı metin.
+ */
 function messageKey(n: NotificationItem): string {
+  if (n.type === "forum_reply") return n.payload.own === false ? "forum_reply_follow" : "forum_reply_own"
   if (n.type !== "favorite_closed") return n.type
   const outcome = str(n.payload, "outcome")
   return `favorite_closed_${outcome === "adopted" || outcome === "reunited" ? outcome : "closed"}`
@@ -113,6 +123,11 @@ function targetOf(n: NotificationItem) {
       }
     }
     return "/account/notifications" as const
+  }
+  if (n.type === "forum_reply" || n.type === "forum_best_answer") {
+    const slug = str(n.payload, "topicSlug")
+    if (slug) return { pathname: "/community/[slug]" as const, params: { slug } }
+    return "/community" as const
   }
   if (n.type === "favorite_closed") return "/account/favorites" as const
   if (n.type === "new_message") {

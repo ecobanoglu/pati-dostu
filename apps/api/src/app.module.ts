@@ -8,6 +8,7 @@ import { HttpExceptionFilter } from "./common/http-exception.filter.js"
 import { DatabaseModule } from "./database/database.module.js"
 import { DictionaryModule } from "./dictionary/dictionary.module.js"
 import { FavoritesModule } from "./favorites/favorites.module.js"
+import { ForumModule } from "./forum/forum.module.js"
 import { HealthModule } from "./health/health.module.js"
 import { ListingsModule } from "./listings/listings.module.js"
 import { MailModule } from "./mail/mail.module.js"
@@ -38,6 +39,7 @@ import { UsersModule } from "./users/users.module.js"
     MessagingModule,
     CommentsModule,
     ReportsModule,
+    ForumModule,
   ],
   providers: [
     // Tüm girişler Zod şemalarıyla (createZodDto) doğrulanır.

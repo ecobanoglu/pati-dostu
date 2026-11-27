@@ -1,5 +1,5 @@
 import { HttpStatus, Injectable } from "@nestjs/common"
-import { type Database, listing, listingComment, report, user } from "@pati-dostu/db"
+import { type Database, forumReply, forumTopic, listing, listingComment, report, user } from "@pati-dostu/db"
 import type { ReportInput, ReportTarget } from "@pati-dostu/validators"
 import { and, eq, isNull, ne } from "drizzle-orm"
 
@@ -76,6 +76,35 @@ export class ReportsService {
       )
     if (!row) throw new AppException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND, "Yorum bulunamadı.")
     return this.create(me, "comment", row, input)
+  }
+
+  /** Yayındaki topluluk konusunu şikâyet eder. */
+  async reportTopic(me: SessionUser, id: string, input: ReportInput) {
+    const [row] = await this.db
+      .select({ id: forumTopic.id, ownerId: forumTopic.authorId, title: forumTopic.title })
+      .from(forumTopic)
+      .where(and(eq(forumTopic.id, id), eq(forumTopic.status, "published"), isNull(forumTopic.deletedAt)))
+    if (!row) throw new AppException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND, "Konu bulunamadı.")
+    return this.create(me, "topic", row, input)
+  }
+
+  /** Yayındaki konunun görünen cevabını şikâyet eder. */
+  async reportReply(me: SessionUser, id: string, input: ReportInput) {
+    const [row] = await this.db
+      .select({ id: forumReply.id, ownerId: forumReply.authorId, title: forumTopic.title })
+      .from(forumReply)
+      .innerJoin(forumTopic, eq(forumTopic.id, forumReply.topicId))
+      .where(
+        and(
+          eq(forumReply.id, id),
+          eq(forumReply.status, "published"),
+          isNull(forumReply.deletedAt),
+          eq(forumTopic.status, "published"),
+          isNull(forumTopic.deletedAt)
+        )
+      )
+    if (!row) throw new AppException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND, "Cevap bulunamadı.")
+    return this.create(me, "reply", row, input)
   }
 
   /** Kullanıcıyı şikâyet eder (Mesajlar'daki konuşma başlığından). Hesabını kapatmış kişi şikâyet edilemez. */

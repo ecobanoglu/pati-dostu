@@ -58,6 +58,11 @@ export const ErrorCode = {
   // Şikâyet
   /** Kendi ilanını, yorumunu ya da kendini şikâyet edemez. */
   CANNOT_REPORT_SELF: "CANNOT_REPORT_SELF",
+  // Topluluk
+  /** Seçilen topluluk kategorisi yok. */
+  CATEGORY_INVALID: "CATEGORY_INVALID",
+  /** Kendi cevabını "Faydalı" işaretleyemez. */
+  CANNOT_LIKE_OWN: "CANNOT_LIKE_OWN",
 } as const
 
 export type ErrorCode = (typeof ErrorCode)[keyof typeof ErrorCode]

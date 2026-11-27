@@ -668,7 +668,8 @@
     "channelNotAvailable": "Bu kanal yok",
     "topicNewMessage": "Yeni mesaj",
     "topicListingComment": "İlanıma yorum",
-    "topicAdminReport": "Yeni şikayet (admin)"
+    "topicAdminReport": "Yeni şikayet (admin)",
+    "topicCommunity": "Topluluk: soruma ve takip ettiğim konulara cevap"
   },
   "Notifications": {
     "metaTitle": "Bildirimler",
@@ -725,6 +726,18 @@
       "report_created": {
         "title": "Yeni şikayet",
         "body": "{target} · {reason}: \"{title}\""
+      },
+      "forum_reply_own": {
+        "title": "Sorunuza yeni cevap",
+        "body": "{sender}: {preview}"
+      },
+      "forum_reply_follow": {
+        "title": "Takip ettiğiniz konuya yeni cevap",
+        "body": "{sender}: {preview}"
+      },
+      "forum_best_answer": {
+        "title": "Cevabınız en iyi cevap seçildi",
+        "body": "\"{title}\" konusunda. Teşekkürler!"
       }
     }
   },
@@ -794,7 +807,9 @@
     "open": {
       "listing": "İlanı şikayet et",
       "comment": "Yorumu şikayet et",
-      "user": "Kullanıcıyı şikayet et"
+      "user": "Kullanıcıyı şikayet et",
+      "topic": "Konuyu şikayet et",
+      "reply": "Cevabı şikayet et"
     },
     "short": "Şikayet",
     "reasonLabel": "Şikayet nedeni",
@@ -812,7 +827,9 @@
     "targets": {
       "listing": "İlan",
       "comment": "Yorum",
-      "user": "Kullanıcı"
+      "user": "Kullanıcı",
+      "topic": "Konu",
+      "reply": "Cevap"
     },
     "detailsLabel": "Açıklama (isteğe bağlı)",
     "detailsLabelRequired": "Açıklama",
@@ -924,6 +941,13 @@
     "COMMENT_TOO_LONG": "Yorum en fazla 1000 karakter olabilir.",
     "CANNOT_REPORT_SELF": "Kendi içeriğinizi şikayet edemezsiniz.",
     "REPORT_DETAILS_REQUIRED": "\"Diğer\" seçtiğinizde lütfen en az 10 karakterlik bir açıklama yazın.",
-    "REPORT_DETAILS_TOO_LONG": "Açıklama en fazla 500 karakter olabilir."
+    "REPORT_DETAILS_TOO_LONG": "Açıklama en fazla 500 karakter olabilir.",
+    "CATEGORY_INVALID": "Lütfen bir kategori seçin.",
+    "CANNOT_LIKE_OWN": "Kendi cevabınızı faydalı olarak işaretleyemezsiniz.",
+    "TOPIC_TITLE_TOO_SHORT": "Başlık en az 10 karakter olmalı.",
+    "TOPIC_TITLE_TOO_LONG": "Başlık en fazla 120 karakter olabilir.",
+    "TOPIC_BODY_TOO_SHORT": "Ayrıntılar en az 20 karakter olmalı.",
+    "TOPIC_BODY_TOO_LONG": "Ayrıntılar en fazla 5000 karakter olabilir.",
+    "REPLY_TOO_LONG": "Cevap en fazla 3000 karakter olabilir."
   }
 }

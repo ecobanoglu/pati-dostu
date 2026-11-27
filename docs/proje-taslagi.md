@@ -400,12 +400,16 @@ MVP için yaklaşık 60 uç nokta gerekiyor; hepsi NestJS API'de (api.pati-dostu
 | Mesajlar | GET / POST | `/conversations/{id}/messages` | Katılımcı | Listeleme (`before` eskiler, `after` yeniler — polling; `readUpTo`) / gönderme |
 | Mesajlar | POST | `/conversations/{id}/read` | Katılımcı | Okundu işareti (konuşmanın "yeni mesaj" bildirimleri de) |
 | Topluluk | GET | `/forum/categories` | Herkes | Kategoriler |
-| Topluluk | GET | `/forum/topics` | Herkes | Filtreler: category, q, sort (yeni, popüler, cevapsız) |
-| Topluluk | GET | `/forum/topics/{slug}`, `/forum/topics/{id}/similar` | Herkes | Konu detayı + cevaplar; benzer konular |
+| Topluluk | GET | `/forum/topics` | Herkes | Filtreler: category, species, q, sort (yeni, popüler, cevapsız), page |
+| Topluluk | GET | `/forum/topics/{slug}`, `/forum/similar?title=&categoryId=&exclude=` | Herkes | Konu detayı + cevaplar; benzer konular (soru sorarken de) |
+| Topluluk | GET | `/forum/topics/{id}/viewer` | Giriş | Bakan kişinin durumu: soru sahibi mi, takip, beğendiği cevaplar |
+| Topluluk | POST | `/forum/topics/{id}/views` | Herkes | Görüntülenme (oturum başına bir kez; yazarınki sayılmaz) |
+| Topluluk | PUT / DELETE | `/forum/topics/{id}/follow` | Giriş | Konu takibi (yeni cevapta bildirim) |
+| Topluluk | DELETE | `/forum/topics/{id}`, `/forum/replies/{id}` | Yazan, Admin | Konu / cevap silme (yumuşak) |
 | Topluluk | POST | `/forum/topics` | Giriş | Soru sorma (kategori zorunlu, görsel isteğe bağlı); içerik filtresinden geçerse anında yayınlanır |
 | Topluluk | POST | `/forum/topics/{id}/replies` | Giriş | Cevap yazma; içerik filtresinden geçerse anında yayınlanır |
 | Topluluk | PUT / DELETE | `/forum/replies/{id}/like` | Giriş | Beğen / beğeniyi geri al |
-| Topluluk | POST | `/forum/replies/{id}/best-answer` | Soru sahibi | En iyi cevap işaretleme |
+| Topluluk | POST / DELETE | `/forum/replies/{id}/best-answer` | Soru sahibi | En iyi cevap işaretleme / kaldırma (konu Çözüldü) |
 | İçerik | GET | `/posts?type=blog\|news`, `/posts/{slug}` | Herkes | Blog ve haber listesi / detayı |
 | Kurumlar | GET | `/organizations?type=clinic\|shelter`, `/organizations/{slug}` | Herkes | Veteriner ve barınak dizini / profili |
 | Kurumlar | POST | `/organizations/applications` | Giriş | Klinik veya barınak başvurusu (belge yok: vergi/kütük no, adres, konum, hizmetler, çalışma saatleri) |
@@ -440,7 +444,7 @@ Genişletme önerileri ve Patipetra karşılaştırmasındaki sonraki sürüm ö
 
 | Özellik | Yöntem | Uç nokta | Yetki | Açıklama | Aşama |
 | --- | --- | --- | --- | --- | --- |
-| Topluluk görseli | POST | `/forum/topics/upload-url` | Giriş | Konuya görsel ekleme için imzalı link (anasayfa kartı görsel istiyor) | MVP |
+| Topluluk görseli | POST | `/uploads/topic-image` | Giriş | Konuya görsel ekleme için imzalı link (en fazla 3; anasayfa kartı görsel istiyor) | MVP (yapıldı) |
 | Mutlu sonlar | GET | `/success-stories`, `/success-stories/{id}` | Herkes | Sahiplendirme hikayeleri | v1.1 |
 | Mutlu sonlar | POST | `/listings/{id}/success-story` | Sahibi | "Sahiplendirildi" ilana hikaye + fotoğraf ekleme (admin onayıyla) | v1.1 |
 | Sahiplendirme sonrası takip | POST | `/jobs/adoption-follow-up` | Cron | 1. hafta, 1. ay ve 3. ayda takip e-postası | v1.1 |
@@ -615,6 +619,7 @@ Her aşama sonunda çalışan bir sürüm preview ortamına çıkar; v1.1 ve son
 - İlan yorumları (3. aşama): düz liste (cevap yok; ilan sahibinin yorumu "İlan sahibi" rozetiyle). Yorumu yazan, ilan sahibi ve admin silebilir. İlan sahibine "İlanıma yorum" bildirimi gider (varsayılan site içi; e-posta tercihten açılır). Yorumlar yalnız yayındaki ilanda görünür ve yazılır; hesap silinince kişinin yorumları da gizlenir.
 - Şikayet (3. aşama): hazır nedenler (hedefe göre) + isteğe bağlı açıklama ("Diğer"de zorunlu). Şikayet edilen içerik otomatik gizlenmez; admin karar verir. Yeni şikayette admin'lere site içi bildirim gider (e-posta kapalı). Kullanıcı şikayeti Mesajlar'daki konuşma başlığından yapılır (engelleme v1.1). Aynı kişi aynı içeriği açık şikayeti varken tekrar şikayet edemez; kendi içeriğini şikayet edemez.
 - Topluluk ve içerik (4. aşama): konuya en fazla 3 fotoğraf, konu takibi ve cevap bildirimi, isteğe bağlı hayvan türü bu aşamada; etiketler ve "Yanıtla"/@bahsetme v1.1'e kaldı. Konu ve cevap metinlerinde yalnız kalın, italik ve liste biçimi vardır (bağlantı yok). Blog/haber editörü (Tiptap) bu aşamada admin için tek sayfa olarak yapılır, 5. aşamada admin paneline taşınır; klinik ve barınakların yazı önermesi sonraya kaldı.
+- Topluluk API'si (4. aşama): soru sahibine yeni cevap bildirimi her durumda gider, takip edenlere de gider (varsayılan site içi; e-posta tercihten). Soru sahibi konusunu otomatik takip eder. Kendi cevabı "Faydalı" işaretlenemez. Hesap silindiğinde topluluk konu ve cevapları kalır, yazar "Silinmiş kullanıcı" görünür (başkalarının cevapları kaybolmasın).
 - Sayfa kabı 1320 px'tir (`--container-site`, iç boşluk dahil; masaüstünde içerik 1272 px). Tasarım görselleri 1200 px içerikle çizildi; genişlikte görseller değil bu karar geçerlidir.
 - Favoriler sayfası (`/hesabim/favoriler`) 2. aşamada yapılır; Hesabım sol menüsü 3. aşamada eklenir. Favorideki ilan sahiplendirilir ya da kapatılırsa listede "artık yayında değil" notuyla soluk ve bağlantısız kalır (kalple çıkarılabilir); silinen ilan listeden düşer. Onay bekleyen / düzeltme istenen / reddedilen ilan favorilerde gösterilmez (onaylanmamış içerik görünmesin); yeniden yayına girince geri gelir.
 - Dosyalar (ilan fotoğrafları, avatar, blog kapakları) Cloudflare R2'de tutulur; S3 API'siyle erişildiği için sağlayıcı değiştirilebilir. Geliştirmede docker-compose'daki RustFS (S3 uyumlu) kullanılır.

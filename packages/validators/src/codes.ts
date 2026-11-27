@@ -33,6 +33,12 @@ export const ValidationCode = {
   // Şikâyet
   REPORT_DETAILS_REQUIRED: "REPORT_DETAILS_REQUIRED",
   REPORT_DETAILS_TOO_LONG: "REPORT_DETAILS_TOO_LONG",
+  // Topluluk
+  TOPIC_TITLE_TOO_SHORT: "TOPIC_TITLE_TOO_SHORT",
+  TOPIC_TITLE_TOO_LONG: "TOPIC_TITLE_TOO_LONG",
+  TOPIC_BODY_TOO_SHORT: "TOPIC_BODY_TOO_SHORT",
+  TOPIC_BODY_TOO_LONG: "TOPIC_BODY_TOO_LONG",
+  REPLY_TOO_LONG: "REPLY_TOO_LONG",
 } as const
 
 export type ValidationCode = (typeof ValidationCode)[keyof typeof ValidationCode]

@@ -60,8 +60,8 @@ services:
 
   # "pati-dostu" bucket'ını oluşturur ve ayarlar, sonra kapanır (her "up"ta tekrar çalışır, tekrar çalışması zararsız):
   # - CORS: tarayıcı imzalı URL ile doğrudan yükleyebilsin (web 3000; testler 3010)
-  # - Okuma izni: listings/ (ilan fotoğrafları) ve avatars/ (profil fotoğrafları) herkese açık; tmp/ (henüz bağlanmamış yüklemeler) gizli
-  # Yayında aynı ayarlar Cloudflare R2 panelinden yapılır (CORS + listings/ ve avatars/ için özel alan adı).
+  # - Okuma izni: listings/ (ilan), avatars/ (profil), forum/ (topluluk konusu) ve posts/ (blog/haber kapakları) herkese açık; tmp/ (henüz bağlanmamış yüklemeler) gizli
+  # Yayında aynı ayarlar Cloudflare R2 panelinden yapılır (CORS + listings/, avatars/, forum/, posts/ için özel alan adı).
   storage-init:
     image: amazon/aws-cli:2.42.1
     depends_on:
@@ -82,7 +82,7 @@ services:
         aws --endpoint-url http://storage:9000 s3api put-bucket-cors --bucket pati-dostu --cors-configuration \
           '{"CORSRules":[{"AllowedOrigins":["http://localhost:3000","http://localhost:3010"],"AllowedMethods":["PUT","GET","HEAD"],"AllowedHeaders":["*"],"ExposeHeaders":["ETag"],"MaxAgeSeconds":3600}]}'
         aws --endpoint-url http://storage:9000 s3api put-bucket-policy --bucket pati-dostu --policy \
-          '{"Version":"2012-10-17","Statement":[{"Sid":"PublicReadImages","Effect":"Allow","Principal":"*","Action":["s3:GetObject"],"Resource":["arn:aws:s3:::pati-dostu/listings/*","arn:aws:s3:::pati-dostu/avatars/*"]}]}'
+          '{"Version":"2012-10-17","Statement":[{"Sid":"PublicReadImages","Effect":"Allow","Principal":"*","Action":["s3:GetObject"],"Resource":["arn:aws:s3:::pati-dostu/listings/*","arn:aws:s3:::pati-dostu/avatars/*","arn:aws:s3:::pati-dostu/forum/*","arn:aws:s3:::pati-dostu/posts/*"]}]}'
         echo "pati-dostu bucket hazır"
     restart: "no"
 

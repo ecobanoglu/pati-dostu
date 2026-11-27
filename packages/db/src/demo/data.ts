@@ -964,6 +964,8 @@ export const rejectedPhotos = new Set([
   "Orange tabby cat lying on her back on a futon.jpg",
   "John Jay (Gilbert Stuart portrait).jpg",
   "Obsidian - Maine coon yeux vairons - Odd eyed - Red Eye Effect.jpg",
+  "Guangzhou-Kitten-and-bowl-of-rice-0552.jpg",
+  "Photograph of a Standard Winter Sports Area Shelter at Parkinstown Area - NARA - 2128343.jpg",
 ])
 
 /**

@@ -257,6 +257,7 @@ export function PreferencesSections({ user }: { user: Me }) {
     { key: "favorite_update", label: t("topicFavoriteUpdate") },
     { key: "new_message", label: t("topicNewMessage") },
     { key: "listing_comment", label: t("topicListingComment") },
+    { key: "community", label: t("topicCommunity") },
     // Yalnız admin'e ait konu (yeni şikâyet).
     ...(user.role === "admin" ? [{ key: "admin_report" as const, label: t("topicAdminReport") }] : []),
   ]

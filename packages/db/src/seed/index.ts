@@ -12,8 +12,9 @@ import { readFileSync } from "node:fs"
 import { and, eq, sql } from "drizzle-orm"
 
 import { createDb } from "../client.js"
-import { bannedTerm, breed, city, district, moderationRule, species } from "../schema/index.js"
+import { bannedTerm, breed, city, district, forumCategory, moderationRule, species } from "../schema/index.js"
 import { normalizeTurkish, slugify } from "../text.js"
+import { forumCategorySeed } from "./data/forum.js"
 import { bannedTermSeed, moderationRuleSeed } from "./data/moderation.js"
 import { mixedBreedName, speciesSeed } from "./data/species.js"
 
@@ -76,6 +77,20 @@ async function seedSpecies() {
   console.log(`  tür: ${speciesSeed.length}, ırk: ${breedCount}`)
 }
 
+/** Topluluk kategorilerini ekler; mevcutlarda ad, açıklama ve sırayı günceller (slug sabit). */
+async function seedForumCategories() {
+  for (const [index, c] of forumCategorySeed.entries()) {
+    await db
+      .insert(forumCategory)
+      .values({ slug: c.slug, name: c.name, description: c.description, sortOrder: index })
+      .onConflictDoUpdate({
+        target: forumCategory.slug,
+        set: { name: c.name, description: c.description, sortOrder: index },
+      })
+  }
+  console.log(`  topluluk kategorisi: ${forumCategorySeed.length}`)
+}
+
 /** İçerik filtresi kurallarını ve normalize edilmiş örnek yasaklı kelimeleri ekler. */
 async function seedModeration() {
   await db.insert(moderationRule).values(moderationRuleSeed).onConflictDoNothing()
@@ -102,6 +117,7 @@ try {
   await seedCities()
   await seedSpecies()
   await seedModeration()
+  await seedForumCategories()
   await verify()
   console.log("Seed tamamlandı.")
 } finally {

@@ -21,6 +21,12 @@ import {
   city,
   conversation,
   district,
+  forumCategory,
+  forumReply,
+  forumReplyLike,
+  forumTopic,
+  forumTopicFollow,
+  forumTopicImage,
   listing,
   listingComment,
   listingImage,
@@ -39,6 +45,7 @@ import {
   demoReports,
   demoUsers,
 } from "./data.js"
+import { demoTopics } from "./data-forum.js"
 import { CACHE_DIR, preparePhotos } from "./photos.js"
 
 const command = process.argv[2] === "clear" ? "clear" : "seed"
@@ -76,6 +83,23 @@ const s3 = new S3Client({
 
 const demoEmail = (key: string) => `${key}@${DEMO_EMAIL_DOMAIN}`
 
+/** Demo konu ve cevap kimliklerinin öneki (gerçek hesaba yazılan demo içerik de bununla bulunup silinir). */
+const DEMO_TOPIC_PREFIX = "de000000-"
+const DEMO_REPLY_PREFIX = "de000001-"
+/** Sabit demo kimliği: önek + sıra (uuid biçiminde). */
+const demoId = (prefix: string, n: number) => `${prefix}0000-4000-8000-${n.toString(16).padStart(12, "0")}`
+
+/** `.env › DEMO_INBOX_EMAIL`'deki gerçek hesabın kimliği (yoksa null; yerine demo kullanıcı "can" kullanılır). */
+async function inboxUserId(): Promise<string | null> {
+  const email = process.env.DEMO_INBOX_EMAIL?.trim()
+  if (!email) return null
+  const [row] = await db
+    .select({ id: user.id })
+    .from(user)
+    .where(and(eq(user.email, email), isNull(user.deletedAt)))
+  return row?.id ?? null
+}
+
 /** Depodaki bir klasörü (önek) tamamen siler. */
 async function deletePrefix(prefix: string) {
   let token: string | undefined
@@ -112,6 +136,26 @@ async function clearDemo() {
         listingIds.length > 0 ? inArray(conversation.listingId, listingIds) : undefined
       )
     )
+
+  // Topluluk: sabit kimlikli demo konular (gerçek DEMO_INBOX_EMAIL hesabınınkiler dahil) ve demo kullanıcıların
+  // konuları; cevaplar, beğeniler, takipler ve fotoğraf satırları cascade ile silinir. Demo kullanıcıların başka
+  // konulardaki cevapları da silinir.
+  const topics = await db
+    .select({ id: forumTopic.id })
+    .from(forumTopic)
+    .where(or(sql`${forumTopic.id}::text like ${`${DEMO_TOPIC_PREFIX}%`}`, inArray(forumTopic.authorId, userIds)))
+  const topicIds = topics.map((t) => t.id)
+  const demoReplies = await db
+    .select({ id: forumReply.id })
+    .from(forumReply)
+    .where(or(sql`${forumReply.id}::text like ${`${DEMO_REPLY_PREFIX}%`}`, inArray(forumReply.authorId, userIds)))
+  const replyIds = demoReplies.map((r) => r.id)
+  if (topicIds.length + replyIds.length > 0) {
+    await db.delete(report).where(inArray(report.targetId, [...topicIds, ...replyIds]))
+  }
+  if (replyIds.length > 0) await db.delete(forumReply).where(inArray(forumReply.id, replyIds))
+  for (const id of topicIds) await deletePrefix(`forum/${id}/`)
+  if (topicIds.length > 0) await db.delete(forumTopic).where(inArray(forumTopic.id, topicIds))
 
   // Demo kullanıcıların açtığı ya da demo kullanıcı/ilan hakkındaki şikâyetler (yorum şikâyetleri demo kullanıcılarındır).
   await db
@@ -265,6 +309,89 @@ async function seedListings(owners: Map<string, string>): Promise<Map<string, { 
   return created
 }
 
+/**
+ * Demo topluluk konuları: kategoriler (db:seed), tür, fotoğraf (Commons, forum/{konuId}/), cevaplar, "Faydalı"
+ * beğenileri, en iyi cevap, takipler. "inbox" yazar/takipçi `DEMO_INBOX_EMAIL` hesabıdır (Sorularım dolu görünsün).
+ */
+async function seedForum(owners: Map<string, string>) {
+  const inbox = await inboxUserId()
+  const who = (key: string) => {
+    const id = key === "inbox" ? (inbox ?? owners.get("can")) : owners.get(key)
+    if (!id) throw new Error(`Topluluk için kullanıcı yok: ${key}`)
+    return id
+  }
+  const [categories, speciesRows] = await Promise.all([
+    db.select({ id: forumCategory.id, slug: forumCategory.slug }).from(forumCategory),
+    db.select({ id: species.id, slug: species.slug }).from(species),
+  ])
+  if (categories.length === 0) throw new Error("Topluluk kategorisi yok (önce pnpm db:seed)")
+  const photos = await preparePhotos(
+    demoTopics
+      .filter((t) => t.photos)
+      .map((t) => ({ key: `topic-${t.key}`, query: t.photos!.query, count: t.photos!.count }))
+  )
+  const now = Date.now()
+  const at = (ago: number) => new Date(now - ago * 60_000)
+  let replyNo = 0
+  let replyCount = 0
+  for (const [i, t] of demoTopics.entries()) {
+    if (t.replies.some((r, j) => j > 0 && r.ago >= t.replies[j - 1]!.ago) || t.replies.some((r) => r.ago >= t.ago)) {
+      throw new Error(`Cevaplar sırasız (${t.key}): "ago" konu ve önceki cevaptan küçük olmalı`)
+    }
+    const id = demoId(DEMO_TOPIC_PREFIX, i + 1)
+    const categoryId = categories.find((c) => c.slug === t.category)?.id
+    if (!categoryId) throw new Error(`Kategori yok: ${t.category}`)
+    const authorId = who(t.author)
+    const last = t.replies.at(-1)
+    await db.insert(forumTopic).values({
+      id,
+      categoryId,
+      speciesId: t.species ? (speciesRows.find((s) => s.slug === t.species)?.id ?? null) : null,
+      authorId,
+      title: t.title,
+      slug: slugify(t.title),
+      body: t.body,
+      isSolved: t.replies.some((r) => r.best),
+      viewCount: t.views,
+      answerCount: t.replies.length,
+      lastActivityAt: at(last?.ago ?? t.ago),
+      createdAt: at(t.ago),
+      updatedAt: at(last?.ago ?? t.ago),
+    })
+    for (const [order, file] of (photos.get(`topic-${t.key}`) ?? []).entries()) {
+      const key = `forum/${id}/${randomUUID()}.jpg`
+      await s3.send(
+        new PutObjectCommand({ Bucket: bucket, Key: key, Body: await readFile(file), ContentType: "image/jpeg" })
+      )
+      await db.insert(forumTopicImage).values({ topicId: id, url: key, sortOrder: order })
+    }
+    const followers = new Set([authorId, ...(t.followers ?? []).map(who)])
+    await db.insert(forumTopicFollow).values([...followers].map((userId) => ({ topicId: id, userId })))
+    for (const r of t.replies) {
+      const replyId = demoId(DEMO_REPLY_PREFIX, ++replyNo)
+      const replyAuthor = who(r.author)
+      const likers = [...new Set((r.likes ?? []).map(who))].filter((u) => u !== replyAuthor)
+      await db.insert(forumReply).values({
+        id: replyId,
+        topicId: id,
+        authorId: replyAuthor,
+        body: r.body,
+        isBestAnswer: Boolean(r.best),
+        likeCount: likers.length,
+        createdAt: at(r.ago),
+        updatedAt: at(r.ago),
+      })
+      if (likers.length > 0) {
+        await db.insert(forumReplyLike).values(likers.map((userId) => ({ replyId, userId })))
+      }
+      replyCount++
+    }
+  }
+  console.log(
+    `  topluluk: ${demoTopics.length} konu, ${replyCount} cevap${inbox ? " (DEMO_INBOX_EMAIL hesabı dahil)" : ""}`
+  )
+}
+
 /** Demo ilan yorumlarını ekler (yazanlar demo kullanıcılar; ilan sahibinin yorumu "İlan sahibi" rozetli görünür). */
 async function seedComments(
   owners: Map<string, string>,
@@ -388,6 +515,7 @@ try {
     await seedConversations(owners, listings)
     const comments = await seedComments(owners, listings)
     await seedReports(owners, listings, comments)
+    await seedForum(owners)
     console.log("Tamam. Silmek için: pnpm db:demo:clear")
   }
 } finally {

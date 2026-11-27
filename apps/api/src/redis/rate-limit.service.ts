@@ -17,6 +17,10 @@ const LIMITS = {
   comment: { tokens: 10, windowSeconds: 10 * 60 },
   /** Şikâyet: saatte 10. */
   report: { tokens: 10, windowSeconds: 60 * 60 },
+  /** Topluluk konusu açma: saatte 5. */
+  topic: { tokens: 5, windowSeconds: 60 * 60 },
+  /** Topluluk cevabı: 10 dakikada 20. */
+  reply: { tokens: 20, windowSeconds: 10 * 60 },
 } as const satisfies Record<string, { tokens: number; windowSeconds: number }>
 
 export type RateLimitAction = keyof typeof LIMITS

@@ -16,9 +16,20 @@ import { DeleteObjectsCommand, ListObjectsV2Command, PutObjectCommand, S3Client 
 import { and, eq, inArray, isNull, like, or, sql } from "drizzle-orm"
 
 import { createDb } from "../client.js"
-import { breed, city, conversation, district, listing, listingImage, message, species, user } from "../schema/index.js"
+import {
+  breed,
+  city,
+  conversation,
+  district,
+  listing,
+  listingComment,
+  listingImage,
+  message,
+  species,
+  user,
+} from "../schema/index.js"
 import { slugify } from "../text.js"
-import { closings, DEMO_EMAIL_DOMAIN, demoConversations, demoListings, demoUsers } from "./data.js"
+import { closings, DEMO_EMAIL_DOMAIN, demoComments, demoConversations, demoListings, demoUsers } from "./data.js"
 import { CACHE_DIR, preparePhotos } from "./photos.js"
 
 const command = process.argv[2] === "clear" ? "clear" : "seed"
@@ -92,6 +103,9 @@ async function clearDemo() {
         listingIds.length > 0 ? inArray(conversation.listingId, listingIds) : undefined
       )
     )
+
+  // Demo kullanıcıların yorumları (demo ilanlardakiler ilanla birlikte cascade silinir).
+  await db.delete(listingComment).where(inArray(listingComment.authorId, userIds))
 
   for (const { id } of listings) await deletePrefix(`listings/${id}/`)
   for (const id of userIds) await deletePrefix(`tmp/listing-images/${id}/`)
@@ -232,6 +246,21 @@ async function seedListings(owners: Map<string, string>): Promise<Map<string, { 
   return created
 }
 
+/** Demo ilan yorumlarını ekler (yazanlar demo kullanıcılar; ilan sahibinin yorumu "İlan sahibi" rozetli görünür). */
+async function seedComments(owners: Map<string, string>, listings: Map<string, { id: string; ownerId: string }>) {
+  const now = Date.now()
+  await db.insert(listingComment).values(
+    demoComments.map((c) => {
+      const target = listings.get(c.listing)
+      const authorId = owners.get(c.author)
+      if (!target || !authorId) throw new Error(`Yorum için ilan/yazan yok: ${c.listing} / ${c.author}`)
+      const at = new Date(now - c.ago * 60_000)
+      return { listingId: target.id, authorId, body: c.body, createdAt: at, updatedAt: at }
+    })
+  )
+  console.log(`  yorum: ${demoComments.length}`)
+}
+
 /**
  * Demo konuşmaları ekler. "inbox" konuşmalarını `.env › DEMO_INBOX_EMAIL`'deki gerçek hesap başlatmış sayılır
  * (Mesajlar sayfası o hesapta dolu görünsün; karar). Değişken yoksa ya da hesap bulunamazsa yerine demo kullanıcı
@@ -296,6 +325,7 @@ try {
     const owners = await seedUsers()
     const listings = await seedListings(owners)
     await seedConversations(owners, listings)
+    await seedComments(owners, listings)
     console.log("Tamam. Silmek için: pnpm db:demo:clear")
   }
 } finally {

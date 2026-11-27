@@ -1,6 +1,6 @@
 "use client"
 
-import { Check, FilePen, Heart, MessageCircle, TriangleAlert, type LucideIcon } from "lucide-react"
+import { Check, FilePen, Heart, MessageCircle, MessageSquareText, TriangleAlert, type LucideIcon } from "lucide-react"
 import { useFormatter, useTranslations } from "next-intl"
 import { useEffect, useState } from "react"
 
@@ -11,7 +11,13 @@ import { cn } from "@/lib/utils"
 
 export type NotificationItem = {
   id: string
-  type: "listing_approved" | "listing_rejected" | "listing_changes_requested" | "favorite_closed" | "new_message"
+  type:
+    | "listing_approved"
+    | "listing_rejected"
+    | "listing_changes_requested"
+    | "favorite_closed"
+    | "new_message"
+    | "listing_comment"
   payload: Record<string, unknown>
   readAt: string | null
   createdAt: string
@@ -51,6 +57,7 @@ const tones: Record<NotificationItem["type"], { icon: LucideIcon; className: str
   listing_changes_requested: { icon: FilePen, className: "text-notice-text" },
   favorite_closed: { icon: Heart, className: "text-success-text" },
   new_message: { icon: MessageCircle, className: "text-primary" },
+  listing_comment: { icon: MessageSquareText, className: "text-primary" },
 }
 
 /** Payload'daki metin alanını güvenle okur (API `Record<string, unknown>` döndürür). */
@@ -68,13 +75,20 @@ function messageKey(n: NotificationItem): string {
 
 /**
  * Bildirime tıklayınca gidilecek yer: onaylanan ilanın detayı, reddedilen/düzeltme istenen için İlanlarım, favori
- * bildiriminde Favoriler (ilan artık yayında olmadığından detayına gidilmez), yeni mesajda o konuşma.
+ * bildiriminde Favoriler (ilan artık yayında olmadığından detayına gidilmez), yeni mesajda o konuşma, ilan yorumunda
+ * ilanın yorumlar bölümü.
  */
 function targetOf(n: NotificationItem) {
-  if (n.type === "listing_approved") {
+  if (n.type === "listing_approved" || n.type === "listing_comment") {
     const slug = str(n.payload, "slug")
     const no = str(n.payload, "listingNo")
-    if (slug && no) return { pathname: "/listing/[slug]" as const, params: { slug: `${slug}-${no}` } }
+    if (slug && no) {
+      return {
+        pathname: "/listing/[slug]" as const,
+        params: { slug: `${slug}-${no}` },
+        ...(n.type === "listing_comment" ? { hash: "comments" } : {}),
+      }
+    }
   }
   if (n.type === "favorite_closed") return "/account/favorites" as const
   if (n.type === "new_message") {
@@ -191,7 +205,7 @@ export function NotificationsList({ initial, now }: { initial: NotificationPage;
                       title: str(n.payload, "title"),
                       reason: str(n.payload, "reason"),
                       note: str(n.payload, "note"),
-                      sender: str(n.payload, "senderName"),
+                      sender: str(n.payload, "senderName") || str(n.payload, "authorName"),
                       preview: str(n.payload, "preview"),
                     })}
                     time={

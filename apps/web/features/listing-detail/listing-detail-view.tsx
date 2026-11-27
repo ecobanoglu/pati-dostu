@@ -7,6 +7,7 @@ import { listingSlug } from "@/components/listing/listing-card"
 import { ListingTypeBadge } from "@/components/listing/listing-type-badge"
 import { getPathname, Link, permanentRedirect } from "@/i18n/navigation"
 import type { Locale } from "@/i18n/routing"
+import { API_URL } from "@/lib/api"
 import { getListing, getSimilarListings, type ListingDetailData } from "@/lib/listings"
 import { apiServer } from "@/lib/server-api"
 import { defaultTemplate, shareImagePath } from "@/lib/share-image"
@@ -14,6 +15,7 @@ import { getCurrentUser } from "@/lib/session"
 
 import { ContactCard, ContactCardCompact, type ContactProps } from "./contact-card"
 import { Gallery } from "./gallery"
+import { Comments, type CommentPage } from "./comments"
 import { ListingDescription } from "./listing-description"
 import { FeaturesTable, FeatureTiles, SafeAdoptionNote } from "./listing-features"
 import { MobileActionBar, MobileTopBar } from "./mobile-bars"
@@ -59,11 +61,25 @@ async function loadListing(no: number, locale: Locale, signedIn: boolean) {
 }
 
 /**
+ * Yayındaki ilanın ilk yorum sayfası: önbelleksiz (yeni yorum hemen görünsün; detay zaten oturuma bakan dinamik
+ * kısımda). Hata olursa yorumsuz devam edilir.
+ */
+async function loadComments(no: number): Promise<CommentPage> {
+  try {
+    const res = await fetch(`${API_URL}/api/v1/listings/${no}/comments?limit=10`, { cache: "no-store" })
+    if (res.ok) return (await res.json()) as CommentPage
+  } catch {
+    // API'ye ulaşılamadı: yorumlar boş görünür.
+  }
+  return { items: [], total: 0, nextCursor: null }
+}
+
+/**
  * İlan detay sayfası (tasarım: 03-ilan-detay, 19-mobil-ilan-detay). Masaüstü üç sütun: başlık + galeri + açıklama ·
  * özellikler · ilan sahibi + benzer ilanlar. Mobilde sayfanın kendi üst çubuğu, kaydırmalı galeri, özellik
  * kutucukları ve altta sabit "Mesaj gönder". Yalnızca yayındaki ilan görünür (sahibi ve admin önizleyebilir);
  * eski/yanlış slug kalıcı olarak doğru adrese yönlendirilir. Oturuma baktığı için <Suspense> içinde render edilir.
- * Yorumlar ve şikâyet 3. aşamada eklenecek.
+ * Açıklamanın altında yorumlar (önizlemede yok). Şikâyet 3. aşamanın 8. adımında.
  */
 export async function ListingDetailView({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
@@ -81,12 +97,13 @@ export async function ListingDetailView({ params }: { params: Promise<{ slug: st
     permanentRedirect({ href: { pathname: "/listing/[slug]", params: { slug: canonical } }, locale })
   }
 
-  const [t, tp, tl, format, similar] = await Promise.all([
+  const [t, tp, tl, format, similar, comments] = await Promise.all([
     getTranslations("ListingDetail"),
     getTranslations("ListingsPage"),
     getTranslations("Listing"),
     getFormatter(),
     preview ? Promise.resolve([]) : getSimilarListings(no, locale),
+    preview ? Promise.resolve(null) : loadComments(no),
   ])
 
   const title = listing.title ?? tp("untitled")
@@ -214,6 +231,19 @@ export async function ListingDetailView({ params }: { params: Promise<{ slug: st
                   </h2>
                   <ListingDescription text={listing.description} />
                 </section>
+              )}
+              {comments && (
+                <Comments
+                  listingNo={listing.listingNo}
+                  initial={comments}
+                  viewer={
+                    user
+                      ? { id: user.id, isListingOwner: user.id === listing.owner.id, isAdmin: user.role === "admin" }
+                      : null
+                  }
+                  next={`${contact.next}#comments`}
+                  now={new Date().toISOString()}
+                />
               )}
               <div className="lg:hidden">
                 <SimilarListingsStrip items={similar} />

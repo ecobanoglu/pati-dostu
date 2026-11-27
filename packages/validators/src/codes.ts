@@ -28,6 +28,8 @@ export const ValidationCode = {
   REASON_TOO_SHORT: "REASON_TOO_SHORT",
   // Mesaj
   MESSAGE_TOO_LONG: "MESSAGE_TOO_LONG",
+  // Yorum
+  COMMENT_TOO_LONG: "COMMENT_TOO_LONG",
 } as const
 
 export type ValidationCode = (typeof ValidationCode)[keyof typeof ValidationCode]

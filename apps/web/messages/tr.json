@@ -666,7 +666,8 @@
     "topicListingReview": "İlan onay / red sonucu",
     "topicFavoriteUpdate": "Favori ilanımın durumu",
     "channelNotAvailable": "Bu kanal yok",
-    "topicNewMessage": "Yeni mesaj"
+    "topicNewMessage": "Yeni mesaj",
+    "topicListingComment": "İlanıma yorum"
   },
   "Notifications": {
     "metaTitle": "Bildirimler",
@@ -715,6 +716,10 @@
       "new_message": {
         "title": "Yeni mesaj",
         "body": "{sender}: {preview}"
+      },
+      "listing_comment": {
+        "title": "İlanınıza yorum yazıldı",
+        "body": "{sender}: {preview}"
       }
     }
   },
@@ -758,6 +763,27 @@
     "ownListing": "Bu ilan sizin; kendi ilanınıza mesaj gönderemezsiniz.",
     "recipientDeleted": "Bu kullanıcı hesabını kapattığı için yeni mesaj gönderilemez.",
     "draftIntro": "{name} ile \"{title}\" ilanı hakkında ilk mesajınızı yazın. Telefonunuzu paylaşmadan yazışabilirsiniz."
+  },
+  "Comments": {
+    "title": "Yorumlar",
+    "empty": "Henüz yorum yok. İlk soruyu siz sorun.",
+    "showAll": "Tümünü gör",
+    "loadMore": "Daha fazla yorum",
+    "ownerBadge": "İlan sahibi",
+    "delete": "Yorumu sil",
+    "deleteTitle": "Yorum silinsin mi?",
+    "deleteText": "Yorum ilandan kaldırılır; bu işlem geri alınamaz.",
+    "cancel": "Vazgeç",
+    "formLabel": "Yorum yaz",
+    "placeholder": "Soru sorun ya da ilan hakkında bilgi paylaşın",
+    "hint": "Yorumlar herkese açıktır. Telefon, e-posta ve bağlantı paylaşılamaz; iletişim için mesaj gönderin.",
+    "charsLeft": "{count, plural, other {# karakter kaldı.}}",
+    "submit": "Gönder",
+    "sending": "Gönderiliyor…",
+    "posted": "Yorumunuz yayınlandı.",
+    "deleted": "Yorum silindi.",
+    "signIn": "Giriş yapın,",
+    "signInText": "yorum yazabilin."
   },
   "HomePage": {
     "badge": "Ücretsiz sahiplendirme platformu",
@@ -849,6 +875,7 @@
     "INVALID_PASSWORD": "Mevcut şifre hatalı.",
     "CANNOT_MESSAGE_SELF": "Kendi ilanınıza mesaj gönderemezsiniz.",
     "RECIPIENT_UNAVAILABLE": "Bu kullanıcı hesabını kapattığı için mesaj gönderilemiyor.",
-    "MESSAGE_TOO_LONG": "Mesaj en fazla 2000 karakter olabilir."
+    "MESSAGE_TOO_LONG": "Mesaj en fazla 2000 karakter olabilir.",
+    "COMMENT_TOO_LONG": "Yorum en fazla 1000 karakter olabilir."
   }
 }

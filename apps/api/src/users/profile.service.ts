@@ -1,7 +1,17 @@
 import { randomUUID } from "node:crypto"
 
 import { HttpStatus, Injectable } from "@nestjs/common"
-import { account, city, type Database, favorite, listing, session, user, verification } from "@pati-dostu/db"
+import {
+  account,
+  city,
+  type Database,
+  favorite,
+  listing,
+  listingComment,
+  session,
+  user,
+  verification,
+} from "@pati-dostu/db"
 import {
   type DeleteAccountInput,
   imageContentTypes,
@@ -121,6 +131,11 @@ export class ProfileService {
         .update(listing)
         .set({ deletedAt: now })
         .where(and(eq(listing.ownerId, me.id), isNull(listing.deletedAt)))
+      // Yorumları da gizlenir (karar: hesap silmede kullanıcı içeriği yayından kalkar).
+      await tx
+        .update(listingComment)
+        .set({ deletedAt: now })
+        .where(and(eq(listingComment.authorId, me.id), isNull(listingComment.deletedAt)))
       await tx.delete(favorite).where(eq(favorite.userId, me.id))
       await tx.delete(session).where(eq(session.userId, me.id))
       await tx.delete(account).where(eq(account.userId, me.id))

@@ -142,6 +142,12 @@ const notificationStrings = {
       button: "Mesajı yanıtla",
       note: "Okuyana kadar bu konuşmadan yeni e-posta göndermeyeceğiz.",
     },
+    listing_comment: {
+      subject: (sender: string) => `${sender} ilanınıza yorum yazdı`,
+      text: (sender: string, title: string) => `${sender}, "${title}" ilanınıza yorum yazdı.`,
+      detail: "Yorum",
+      button: "Yorumu görüntüle",
+    },
   },
   en: {
     footer: "You can change your notification preferences on the Profile and settings page.",
@@ -176,6 +182,12 @@ const notificationStrings = {
       button: "Reply",
       note: "We won't email you about this conversation again until you've read it.",
     },
+    listing_comment: {
+      subject: (sender: string) => `${sender} commented on your listing`,
+      text: (sender: string, title: string) => `${sender} commented on your listing "${title}".`,
+      detail: "Comment",
+      button: "View comment",
+    },
   },
 } satisfies Record<MailLocale, unknown>
 
@@ -186,8 +198,9 @@ export type NotificationMailData =
   | { type: "listing_changes_requested"; title: string; url: string; note: string }
   | { type: "favorite_closed"; title: string; url: string; outcome: "adopted" | "reunited" | "closed" }
   | { type: "new_message"; title: string; url: string; senderName: string; preview: string }
+  | { type: "listing_comment"; title: string; url: string; senderName: string; preview: string }
 
-/** Bildirim e-postası (ilan sonucu, favori güncellemesi, yeni mesaj): kullanıcının dilinde, tek butonlu. */
+/** Bildirim e-postası (ilan sonucu, favori güncellemesi, yeni mesaj, ilan yorumu): kullanıcının dilinde, tek butonlu. */
 export function notificationMail(
   locale: MailLocale,
   to: string,
@@ -224,6 +237,12 @@ export function notificationMail(
       buttonLabel = n.new_message.button
       text = `${n.new_message.text(data.senderName, data.title)} ${n.new_message.note}`
       detail = { label: n.new_message.detail, value: data.preview }
+      break
+    case "listing_comment":
+      subject = n.listing_comment.subject(data.senderName)
+      buttonLabel = n.listing_comment.button
+      text = n.listing_comment.text(data.senderName, data.title)
+      detail = { label: n.listing_comment.detail, value: data.preview }
       break
   }
   const detailHtml = detail

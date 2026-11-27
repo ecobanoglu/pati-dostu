@@ -256,6 +256,7 @@ export function PreferencesSections({ user }: { user: Me }) {
     { key: "listing_review", label: t("topicListingReview") },
     { key: "favorite_update", label: t("topicFavoriteUpdate") },
     { key: "new_message", label: t("topicNewMessage") },
+    { key: "listing_comment", label: t("topicListingComment") },
   ]
 
   /** Bir konunun bir kanalını değiştirir (tüm tercih nesnesi gönderilir). */

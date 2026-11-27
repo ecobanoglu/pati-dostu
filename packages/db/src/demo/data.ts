@@ -1112,3 +1112,54 @@ export const demoConversations: DemoConversation[] = [
     messages: [{ from: "starter", ago: 2 * DAY, body: "Max'in diğer köpeklerle arası nasıl?", unread: true }],
   },
 ]
+
+/**
+ * Demo ilan yorumları (herkese açık; düz liste). `author`: demo kullanıcı anahtarı — ilan sahibiyse arayüzde "İlan
+ * sahibi" rozetiyle görünür. `ago` dakika önce; listede en yeni önce gösterilir.
+ */
+export type DemoComment = { listing: string; author: string; ago: number; body: string }
+
+export const demoComments: DemoComment[] = [
+  { listing: "luna", author: "elif", ago: 3 * HOUR, body: "Çok tatlı! Aşı kartı var mı, bir de kum eğitimi aldı mı?" },
+  {
+    listing: "luna",
+    author: "zeynep",
+    ago: 2 * HOUR,
+    body: "Aşı kartı var, ilk karma aşısı yapıldı. Kumu ilk günden kullanıyor.",
+  },
+  { listing: "luna", author: "mert", ago: 40, body: "Bornova'dayım, hafta sonu görmeye gelebilir miyim?" },
+  {
+    listing: "pamuk",
+    author: "zeynep",
+    ago: 20 * HOUR,
+    body: "Kadıköy'deki veteriner kliniklerine de haber vermenizi öneririm, bulunan kedileri genelde oraya getiriyorlar.",
+  },
+  { listing: "pamuk", author: "mert", ago: 18 * HOUR, body: "Teşekkürler, bugün hepsine afiş bıraktım." },
+  {
+    listing: "karabas",
+    author: "can",
+    ago: 2 * DAY,
+    body: "Apartman dairesi için uygun mu, yoksa mutlaka bahçe mi gerekiyor?",
+  },
+  {
+    listing: "karabas",
+    author: "barinak",
+    ago: 2 * DAY - 3 * HOUR,
+    body: "Kangallar geniş alana ihtiyaç duyar; Karabaş için bahçeli ev arıyoruz.",
+  },
+  { listing: "mia", author: "elif", ago: 4 * DAY, body: "Scottish Fold'ların kulak ve eklem kontrolleri yapıldı mı?" },
+  {
+    listing: "mia",
+    author: "mert",
+    ago: 4 * DAY - 5 * HOUR,
+    body: "Evet, geçen ay genel kontrolden geçti; raporu sahiplenecek kişiyle paylaşırım.",
+  },
+  { listing: "kar", author: "zeynep", ago: 6 * DAY, body: "Samoyedler çok tüy döker mi? İlk köpeğimiz olacak." },
+  { listing: "pofuduk", author: "elif", ago: 2 * DAY, body: "Tavşanlar için kafes dışında gezme alanı şart mı?" },
+  {
+    listing: "pofuduk",
+    author: "barinak",
+    ago: 2 * DAY - 2 * HOUR,
+    body: "Günde birkaç saat güvenli bir alanda serbest dolaşması gerekiyor; kablolara dikkat etmek yeterli.",
+  },
+]

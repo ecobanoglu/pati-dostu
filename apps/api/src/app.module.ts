@@ -3,6 +3,7 @@ import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from "@nestjs/core"
 import { ZodSerializerInterceptor, ZodValidationPipe } from "nestjs-zod"
 
 import { AuthModule } from "./auth/auth.module.js"
+import { CommentsModule } from "./comments/comments.module.js"
 import { HttpExceptionFilter } from "./common/http-exception.filter.js"
 import { DatabaseModule } from "./database/database.module.js"
 import { DictionaryModule } from "./dictionary/dictionary.module.js"
@@ -34,6 +35,7 @@ import { UsersModule } from "./users/users.module.js"
     ListingsModule,
     FavoritesModule,
     MessagingModule,
+    CommentsModule,
   ],
   providers: [
     // Tüm girişler Zod şemalarıyla (createZodDto) doğrulanır.

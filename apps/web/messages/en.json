@@ -666,7 +666,8 @@
     "topicListingReview": "Listing review result",
     "topicFavoriteUpdate": "Updates on saved listings",
     "channelNotAvailable": "Not available",
-    "topicNewMessage": "New message"
+    "topicNewMessage": "New message",
+    "topicListingComment": "Comments on my listings"
   },
   "Notifications": {
     "metaTitle": "Notifications",
@@ -715,6 +716,10 @@
       "new_message": {
         "title": "New message",
         "body": "{sender}: {preview}"
+      },
+      "listing_comment": {
+        "title": "New comment on your listing",
+        "body": "{sender}: {preview}"
       }
     }
   },
@@ -758,6 +763,27 @@
     "ownListing": "This is your listing; you can't message your own listing.",
     "recipientDeleted": "This user closed their account, so you can't send new messages.",
     "draftIntro": "Write your first message to {name} about \"{title}\". You can chat without sharing your phone number."
+  },
+  "Comments": {
+    "title": "Comments",
+    "empty": "No comments yet. Be the first to ask.",
+    "showAll": "See all",
+    "loadMore": "More comments",
+    "ownerBadge": "Listing owner",
+    "delete": "Delete comment",
+    "deleteTitle": "Delete this comment?",
+    "deleteText": "The comment will be removed from the listing. This can't be undone.",
+    "cancel": "Cancel",
+    "formLabel": "Write a comment",
+    "placeholder": "Ask a question or share information about the listing",
+    "hint": "Comments are public. Phone numbers, emails and links aren't allowed; send a message to get in touch.",
+    "charsLeft": "{count, plural, one {# character left.} other {# characters left.}}",
+    "submit": "Send",
+    "sending": "Sending…",
+    "posted": "Your comment was posted.",
+    "deleted": "Comment deleted.",
+    "signIn": "Sign in",
+    "signInText": "to write a comment."
   },
   "HomePage": {
     "badge": "Free adoption platform",
@@ -849,6 +875,7 @@
     "INVALID_PASSWORD": "Your current password is incorrect.",
     "CANNOT_MESSAGE_SELF": "You can't send a message to your own listing.",
     "RECIPIENT_UNAVAILABLE": "This user has closed their account, so you can't send them messages.",
-    "MESSAGE_TOO_LONG": "A message can be at most 2,000 characters."
+    "MESSAGE_TOO_LONG": "A message can be at most 2,000 characters.",
+    "COMMENT_TOO_LONG": "A comment can be at most 1,000 characters."
   }
 }

@@ -5,7 +5,7 @@ import { z } from "zod"
  * Bildirim tercihleri). Yalnızca çalışan özelliklerin konuları burada; sorularıma cevap
  * (topluluk) ve kayıtlı arama (v1.2) özellikleri gelince eklenir. Mobil bildirim kanalı v2'de.
  */
-export const notificationTopics = ["listing_review", "favorite_update", "new_message"] as const
+export const notificationTopics = ["listing_review", "favorite_update", "new_message", "listing_comment"] as const
 export type NotificationTopic = (typeof notificationTopics)[number]
 
 /** Bildirim türleri ve ait oldukları konu. */
@@ -23,6 +23,8 @@ export const notificationTypes = {
    * kadar aynı konuşmadan yeni bildirim gitmez (karar).
    */
   new_message: "new_message",
+  /** İlanıma yorum yazıldı (sahibin kendi yorumu bildirilmez). */
+  listing_comment: "listing_comment",
 } as const satisfies Record<string, NotificationTopic>
 export type NotificationType = keyof typeof notificationTypes
 export const notificationTypeList = Object.keys(notificationTypes) as NotificationType[]
@@ -30,11 +32,12 @@ export const notificationTypeList = Object.keys(notificationTypes) as Notificati
 const channels = z.object({ inApp: z.boolean(), email: z.boolean() })
 export type NotificationChannels = z.infer<typeof channels>
 
-/** Varsayılan tercihler: ilan sonucu ve yeni mesaj her iki kanalda; favori güncellemesi yalnızca site içinde. */
+/** Varsayılan tercihler: ilan sonucu ve yeni mesaj her iki kanalda; favori güncellemesi ve ilan yorumu yalnızca site içinde. */
 export const defaultNotificationPrefs: Record<NotificationTopic, NotificationChannels> = {
   listing_review: { inApp: true, email: true },
   favorite_update: { inApp: true, email: false },
   new_message: { inApp: true, email: true },
+  listing_comment: { inApp: true, email: false },
 }
 
 /** Kullanıcı tercihleri (PATCH /me › notificationPrefs): tüm konular gönderilir. */

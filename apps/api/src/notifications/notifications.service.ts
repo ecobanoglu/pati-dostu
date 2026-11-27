@@ -34,6 +34,15 @@ export type NotificationPayload =
       /** Mesajın ilk 140 karakteri. */
       preview: string
     }
+  | {
+      type: "listing_comment"
+      listingNo: number
+      slug: string | null
+      title: string
+      authorName: string
+      /** Yorumun ilk 140 karakteri. */
+      preview: string
+    }
 
 /** Web adresleri (e-postadaki butonlar için; Türkçe öneksiz, İngilizce /en önekli — web › i18n/routing). */
 const WEB_PATHS = {
@@ -207,6 +216,14 @@ export class NotificationsService {
           senderName: payload.senderName,
           preview: payload.preview,
           url: `${web}${WEB_PATHS.messages[locale]}?c=${payload.conversationId}`,
+        }
+      case "listing_comment":
+        return {
+          type: payload.type,
+          title: payload.title,
+          senderName: payload.authorName,
+          preview: payload.preview,
+          url: `${web}${WEB_PATHS.listing[locale]}/${payload.slug ? `${payload.slug}-` : ""}${payload.listingNo}#comments`,
         }
     }
   }

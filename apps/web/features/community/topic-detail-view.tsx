@@ -190,7 +190,10 @@ export async function TopicDetailView({ params }: { params: Params }) {
             </div>
             <div className="rounded-card bg-smoke p-5">
               <h2 className="text-lg font-extrabold text-heading">{t("notFoundTitle")}</h2>
-              <Link href="/community/ask" className={cn(buttonVariants(), "mt-3 w-full")}>
+              <Link
+                href={{ pathname: "/community/ask", query: { kategori: topic.category.slug } }}
+                className={cn(buttonVariants(), "mt-3 w-full")}
+              >
                 <Plus aria-hidden="true" />
                 {t("ask")}
               </Link>

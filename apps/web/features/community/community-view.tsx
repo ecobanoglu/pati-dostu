@@ -120,7 +120,10 @@ export async function CommunityView({
               <h1 className="text-h2 font-extrabold text-heading lg:text-h1">{current ? current.name : t("title")}</h1>
               <p className="mt-1 text-body max-lg:hidden">{current?.description ?? t("subtitle")}</p>
             </div>
-            <Link href="/community/ask" className={cn(buttonVariants({ size: "lg" }), "shrink-0")}>
+            <Link
+              href={{ pathname: "/community/ask", query: category ? { kategori: category } : {} }}
+              className={cn(buttonVariants({ size: "lg" }), "shrink-0")}
+            >
               <Plus aria-hidden="true" />
               {t("ask")}
             </Link>
@@ -223,7 +226,10 @@ export async function CommunityView({
                   {state.q ? t("emptySearch") : state.sort === "unanswered" ? t("emptyUnanswered") : t("empty")}
                 </p>
                 {!state.q && state.sort !== "unanswered" && (
-                  <Link href="/community/ask" className={buttonVariants()}>
+                  <Link
+                    href={{ pathname: "/community/ask", query: category ? { kategori: category } : {} }}
+                    className={buttonVariants()}
+                  >
                     <Plus aria-hidden="true" />
                     {t("ask")}
                   </Link>

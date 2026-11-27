@@ -57,7 +57,7 @@ const cornerButton = (position: string) =>
 const cornerDot = "flex size-8 items-center justify-center rounded-full border border-border bg-background shadow-sm"
 
 /**
- * İlan fotoğrafı yükleyici (tasarım: 04-ilan-ver-yz-siz › Fotoğraflar). En fazla 5 fotoğraf; seçerek veya
+ * Fotoğraf yükleyici (ilan: 04-ilan-ver-yz-siz › Fotoğraflar; topluluk konusu da kullanır). En fazla `max` fotoğraf; seçerek veya
  * sürükle-bırakla eklenir, tarayıcıda küçültülüp imzalı URL ile doğrudan depoya yüklenir.
  * İlk fotoğraf kapaktır. Sıralama: fareyle sürükle-bırak; dokunmatik ve klavye için her fotoğrafın menüsü
  * (Kapak yap, Sola/Sağa taşı, Kaldır). Değişiklikler ekran okuyucuya duyurulur.
@@ -67,6 +67,8 @@ export function ImageUploader({
   onChange,
   describedBy,
   invalid,
+  max = MAX_LISTING_IMAGES,
+  uploadPath = "/uploads/listing-image",
 }: {
   /** Düzenlemede ilanın mevcut fotoğrafları (anahtar + herkese açık adres), sırasıyla. */
   initial?: Array<{ key: string; url: string }>
@@ -74,6 +76,10 @@ export function ImageUploader({
   /** Formdaki hata metninin id'si (aria-describedby). */
   describedBy?: string
   invalid?: boolean
+  /** En fazla fotoğraf (ilan 5, topluluk konusu 3). */
+  max?: number
+  /** İmzalı yükleme adresini veren uç (ilan: /uploads/listing-image, konu: /uploads/topic-image). */
+  uploadPath?: string
 }) {
   const t = useTranslations("ImageUploader")
   const errorMessage = useErrorMessage()
@@ -134,7 +140,7 @@ export function ImageUploader({
       const previewUrl = URL.createObjectURL(blob)
       patch(id, { previewUrl, status: "uploading", progress: 0 })
 
-      const { data, error } = await apiFetch<PresignResponse>("/uploads/listing-image", {
+      const { data, error } = await apiFetch<PresignResponse>(uploadPath, {
         method: "POST",
         body: JSON.stringify({ contentType: blob.type, size: blob.size }),
       })
@@ -147,13 +153,13 @@ export function ImageUploader({
       patch(id, { status: "done", key: data.key, progress: 1 })
       setAnnouncement(t("uploaded", { name: file.name }))
     },
-    [patch, t]
+    [patch, t, uploadPath]
   )
 
   /** Seçilen/bırakılan dosyaları ekler; 5 sınırını aşanlar alınmaz ve kullanıcıya söylenir. */
   function addFiles(files: FileList | File[]) {
     setNotice(null)
-    const room = MAX_LISTING_IMAGES - items.length
+    const room = max - items.length
     const list = Array.from(files)
     if (list.length > room) setNotice(errorMessage("TOO_MANY_IMAGES"))
     const accepted = list.slice(0, Math.max(0, room))
@@ -214,7 +220,7 @@ export function ImageUploader({
       onDrop={onDropZone}
       className={cn("rounded-2xl transition-colors", dropActive && "bg-smoke outline-2 outline-primary outline-dashed")}
     >
-      <p className="text-sm text-body">{t("counter", { count: doneCount, max: MAX_LISTING_IMAGES })}</p>
+      <p className="text-sm text-body">{t("counter", { count: doneCount, max })}</p>
 
       <ul className="mt-3 flex flex-wrap gap-3" aria-describedby={describedBy}>
         {items.map((item, index) => (
@@ -317,7 +323,7 @@ export function ImageUploader({
           </li>
         ))}
 
-        {items.length < MAX_LISTING_IMAGES && (
+        {items.length < max && (
           <li className="size-28">
             <label
               htmlFor={inputId}
@@ -357,7 +363,7 @@ export function ImageUploader({
         </ul>
       )}
 
-      <p className="mt-3 text-[13px] text-body">{t("hint", { max: MAX_LISTING_IMAGES })}</p>
+      <p className="mt-3 text-[13px] text-body">{t("hint", { max })}</p>
       <p aria-live="polite" className="sr-only">
         {announcement}
       </p>

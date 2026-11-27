@@ -31,8 +31,12 @@ import {
   listingComment,
   listingImage,
   message,
+  post,
+  postCategory,
+  postTag,
   report,
   species,
+  tag,
   user,
 } from "../schema/index.js"
 import { slugify } from "../text.js"
@@ -46,6 +50,7 @@ import {
   demoUsers,
 } from "./data.js"
 import { demoTopics } from "./data-forum.js"
+import { demoPosts, demoTags, type TiptapNode } from "./data-posts.js"
 import { CACHE_DIR, preparePhotos } from "./photos.js"
 
 const command = process.argv[2] === "clear" ? "clear" : "seed"
@@ -156,6 +161,25 @@ async function clearDemo() {
   if (replyIds.length > 0) await db.delete(forumReply).where(inArray(forumReply.id, replyIds))
   for (const id of topicIds) await deletePrefix(`forum/${id}/`)
   if (topicIds.length > 0) await db.delete(forumTopic).where(inArray(forumTopic.id, topicIds))
+
+  // Blog/haber: demo yazarın yazıları (kapakları depodan; etiket bağları cascade) ve artık kullanılmayan demo etiketleri.
+  const posts = await db.select({ id: post.id }).from(post).where(inArray(post.authorId, userIds))
+  for (const { id } of posts) await deletePrefix(`posts/${id}/`)
+  if (posts.length > 0)
+    await db.delete(post).where(
+      inArray(
+        post.id,
+        posts.map((x) => x.id)
+      )
+    )
+  await db
+    .delete(tag)
+    .where(
+      and(
+        inArray(tag.slug, Object.keys(demoTags)),
+        sql`not exists (select 1 from ${postTag} pt where pt.tag_id = ${sql.raw(`"tag"."id"`)})`
+      )
+    )
 
   // Demo kullanıcıların açtığı ya da demo kullanıcı/ilan hakkındaki şikâyetler (yorum şikâyetleri demo kullanıcılarındır).
   await db
@@ -392,6 +416,69 @@ async function seedForum(owners: Map<string, string>) {
   )
 }
 
+/** Tiptap belgesindeki düz metin (okuma süresi için). */
+function plainText(node: TiptapNode | { type: "text"; text: string }): string {
+  if ("text" in node) return node.text
+  return (node.content ?? []).map((c) => plainText(c as TiptapNode)).join(" ")
+}
+
+/**
+ * Demo blog yazıları ve haberler: yazar demo "editor", kategori (db:seed), etiketler, kapak (Commons, posts/{id}/),
+ * okuma süresi (dakikada ~200 kelime). Haberlerin kaynağı "Demo içerik".
+ */
+async function seedPosts(owners: Map<string, string>) {
+  const authorId = owners.get("editor")
+  if (!authorId) throw new Error("Demo editör yok")
+  const categories = await db.select({ id: postCategory.id, slug: postCategory.slug }).from(postCategory)
+  if (categories.length === 0) throw new Error("Blog/haber kategorisi yok (önce pnpm db:seed)")
+  await db
+    .insert(tag)
+    .values(Object.entries(demoTags).map(([slug, name]) => ({ slug, name })))
+    .onConflictDoNothing()
+  const tags = await db
+    .select({ id: tag.id, slug: tag.slug })
+    .from(tag)
+    .where(inArray(tag.slug, Object.keys(demoTags)))
+  const photos = await preparePhotos(demoPosts.map((d) => ({ key: `post-${d.key}`, query: d.photo, count: 1 })))
+  for (const d of demoPosts) {
+    const id = randomUUID()
+    const file = photos.get(`post-${d.key}`)?.[0]
+    let coverUrl: string | null = null
+    if (file) {
+      coverUrl = `posts/${id}/${randomUUID()}.jpg`
+      await s3.send(
+        new PutObjectCommand({ Bucket: bucket, Key: coverUrl, Body: await readFile(file), ContentType: "image/jpeg" })
+      )
+    }
+    const words = plainText(d.content).split(/\s+/).filter(Boolean).length
+    const published = new Date(Date.now() - d.daysAgo * 86_400_000)
+    await db.insert(post).values({
+      id,
+      type: d.type,
+      authorId,
+      categoryId: categories.find((c) => c.slug === d.category)?.id ?? null,
+      title: d.title,
+      slug: slugify(d.title),
+      excerpt: d.excerpt,
+      content: d.content as Record<string, unknown>,
+      coverUrl,
+      country: d.country ?? null,
+      sourceName: d.type === "news" ? "Demo içerik" : null,
+      status: "published",
+      featured: Boolean(d.featured),
+      publishedAt: published,
+      readingTime: Math.max(1, Math.round(words / 200)),
+      createdAt: published,
+      updatedAt: published,
+    })
+    const tagIds = (d.tags ?? []).map((slug) => tags.find((t) => t.slug === slug)?.id).filter(Boolean) as string[]
+    if (tagIds.length > 0) await db.insert(postTag).values(tagIds.map((tagId) => ({ postId: id, tagId })))
+  }
+  console.log(
+    `  blog/haber: ${demoPosts.filter((d) => d.type === "blog").length} yazı, ${demoPosts.filter((d) => d.type === "news").length} haber`
+  )
+}
+
 /** Demo ilan yorumlarını ekler (yazanlar demo kullanıcılar; ilan sahibinin yorumu "İlan sahibi" rozetli görünür). */
 async function seedComments(
   owners: Map<string, string>,
@@ -516,6 +603,7 @@ try {
     const comments = await seedComments(owners, listings)
     await seedReports(owners, listings, comments)
     await seedForum(owners)
+    await seedPosts(owners)
     console.log("Tamam. Silmek için: pnpm db:demo:clear")
   }
 } finally {

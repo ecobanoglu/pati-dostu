@@ -12,10 +12,20 @@ import { readFileSync } from "node:fs"
 import { and, eq, sql } from "drizzle-orm"
 
 import { createDb } from "../client.js"
-import { bannedTerm, breed, city, district, forumCategory, moderationRule, species } from "../schema/index.js"
+import {
+  bannedTerm,
+  breed,
+  city,
+  district,
+  forumCategory,
+  moderationRule,
+  postCategory,
+  species,
+} from "../schema/index.js"
 import { normalizeTurkish, slugify } from "../text.js"
 import { forumCategorySeed } from "./data/forum.js"
 import { bannedTermSeed, moderationRuleSeed } from "./data/moderation.js"
+import { postCategorySeed } from "./data/posts.js"
 import { mixedBreedName, speciesSeed } from "./data/species.js"
 
 type CitySeed = { plate: number; name: string; districts: string[] }
@@ -91,6 +101,17 @@ async function seedForumCategories() {
   console.log(`  topluluk kategorisi: ${forumCategorySeed.length}`)
 }
 
+/** Blog ve haber kategorilerini ekler; mevcutlarda ad ve sırayı günceller (slug sabit). */
+async function seedPostCategories() {
+  for (const [index, c] of postCategorySeed.entries()) {
+    await db
+      .insert(postCategory)
+      .values({ type: c.type, slug: c.slug, name: c.name, sortOrder: index })
+      .onConflictDoUpdate({ target: postCategory.slug, set: { name: c.name, sortOrder: index } })
+  }
+  console.log(`  blog/haber kategorisi: ${postCategorySeed.length}`)
+}
+
 /** İçerik filtresi kurallarını ve normalize edilmiş örnek yasaklı kelimeleri ekler. */
 async function seedModeration() {
   await db.insert(moderationRule).values(moderationRuleSeed).onConflictDoNothing()
@@ -118,6 +139,7 @@ try {
   await seedSpecies()
   await seedModeration()
   await seedForumCategories()
+  await seedPostCategories()
   await verify()
   console.log("Seed tamamlandı.")
 } finally {

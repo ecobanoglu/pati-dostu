@@ -15,6 +15,7 @@ import { MailModule } from "./mail/mail.module.js"
 import { MessagingModule } from "./messaging/messaging.module.js"
 import { ModerationModule } from "./moderation/moderation.module.js"
 import { NotificationsModule } from "./notifications/notifications.module.js"
+import { PostsModule } from "./posts/posts.module.js"
 import { RedisModule } from "./redis/redis.module.js"
 import { ReportsModule } from "./reports/reports.module.js"
 import { StorageModule } from "./storage/storage.module.js"
@@ -40,6 +41,7 @@ import { UsersModule } from "./users/users.module.js"
     CommentsModule,
     ReportsModule,
     ForumModule,
+    PostsModule,
   ],
   providers: [
     // Tüm girişler Zod şemalarıyla (createZodDto) doğrulanır.

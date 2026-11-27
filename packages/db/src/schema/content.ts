@@ -1,12 +1,16 @@
-import { index, jsonb, pgTable, primaryKey, smallint, text, timestamp, uuid } from "drizzle-orm/pg-core"
+import { boolean, index, jsonb, pgTable, primaryKey, smallint, text, timestamp, uuid } from "drizzle-orm/pg-core"
 
-import { createdAt, id, postStatusEnum, postTypeEnum, timestamps } from "./_common.js"
+import { createdAt, id, type LocalizedText, postStatusEnum, postTypeEnum, timestamps } from "./_common.js"
 import { user } from "./auth.js"
 
+/**
+ * Blog ya da haber kategorisi (sistem verisi; ad { tr, en }). Blogda konu (Sahiplenme, Sağlık…), haberde tür (Haber,
+ * Duyuru, Etkinlik).
+ */
 export const postCategory = pgTable("post_category", {
   id: id(),
   type: postTypeEnum().notNull(),
-  name: text().notNull(),
+  name: jsonb().$type<LocalizedText>().notNull(),
   slug: text().notNull().unique(),
   sortOrder: smallint().notNull().default(0),
   ...timestamps,
@@ -34,9 +38,12 @@ export const post = pgTable(
     excerpt: text(),
     content: jsonb().$type<Record<string, unknown>>().notNull(),
     coverUrl: text(),
-    /** Haber: ülke ve kaynak. */
+    /** Haber: ülke (ISO kodu; "TR" = Türkiye, diğerleri "Dünya") ve kaynak (ad + adres). */
     country: text(),
+    sourceName: text(),
     sourceUrl: text(),
+    /** Blog listesinin başındaki "Öne çıkan" yazı (en yeni öne çıkan gösterilir). */
+    featured: boolean().notNull().default(false),
     status: postStatusEnum().notNull().default("draft"),
     /** scheduled durumunda planlanan yayın zamanı. */
     publishedAt: timestamp({ withTimezone: true }),

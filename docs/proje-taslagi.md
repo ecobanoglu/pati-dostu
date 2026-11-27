@@ -161,8 +161,8 @@ Sayfalar üç route grubunda toplanır: herkese açık `(public)`, giriş gerekt
 | `/topluluk`, `/topluluk/[kategori]` | Topluluk listeleme (`ara`, `sirala`, `sayfa` sorguda) | SSR | Herkes |
 | `/topluluk/[kategori]/[konu]` | Topluluk konu detay | SSR | Herkes |
 | `/topluluk/soru-sor` | Yeni konu (soru sor) formu; yazarken benzer konular | CSR | Giriş |
-| `/blog`, `/blog/[slug]` | Blog | Önbellekli (`cacheTag`) | Herkes |
-| `/haberler`, `/haberler/[slug]` | Haberler | Önbellekli (`cacheTag`) | Herkes |
+| `/blog`, `/blog/[slug]` | Blog (`kategori`, `sayfa` sorguda; ilk sayfada öne çıkan yazı) | Önbellekli (`cacheTag`) | Herkes |
+| `/haberler`, `/haberler/[slug]` | Haberler (`bolge` turkiye/dunya, `tur`, `sayfa` sorguda) | Önbellekli (`cacheTag`) | Herkes |
 | `/veterinerler`, `/veteriner/[slug]` | Veteriner dizini ve klinik profili | Önbellekli | Herkes |
 | `/barinaklar`, `/barinak/[slug]` | Barınak dizini ve profil (barınağın ilanlarıyla) | Önbellekli | Herkes |
 | `/kayit`, `/giris`, `/sifremi-unuttum`, `/sifre-yenile`, `/e-posta-dogrula` | Kimlik doğrulama | CSR | Misafir |
@@ -275,8 +275,8 @@ Liste (kapak, başlık, özet, tarih, kategori) ve detay (içindekiler, okuma s�
 | Topluluk | `forum_topic` | categoryId, authorId, title, slug, body, status, isSolved, viewCount, answerCount |
 | Topluluk | `forum_reply` | topicId, authorId, body, isBestAnswer, likeCount |
 | Topluluk | `forum_reply_like` | replyId, userId |
-| İçerik | `post` | type (blog/news), authorId, title, slug, excerpt, content (jsonb, Tiptap), coverUrl, categoryId, country, sourceUrl, status, publishedAt, readingTime |
-| İçerik | `post_category`, `tag`, `post_tag` | Blog/haber kategori ve etiketleri |
+| İçerik | `post` | type (blog/news), authorId, title, slug, excerpt, content (jsonb, Tiptap), coverUrl, categoryId, country, sourceName, sourceUrl, status, featured, publishedAt, readingTime |
+| İçerik | `post_category`, `tag`, `post_tag` | Blog/haber kategori (ad `LocalizedText` jsonb; haberde kategori = tür: Haber / Duyuru / Etkinlik) ve etiketleri |
 | Moderasyon | `report` | reporterId, targetType (listing/comment/topic/reply/user), targetId, reason, status, resolvedBy |
 | Sistem | `notification` | userId, type, payload (jsonb), readAt — tercihler `user.notification_prefs` (jsonb: konu → `{ inApp, email }`) |
 | Sistem | `audit_log` | actorId, action, entity, entityId, diff (jsonb) |
@@ -410,7 +410,7 @@ MVP için yaklaşık 60 uç nokta gerekiyor; hepsi NestJS API'de (api.pati-dostu
 | Topluluk | POST | `/forum/topics/{id}/replies` | Giriş | Cevap yazma; içerik filtresinden geçerse anında yayınlanır |
 | Topluluk | PUT / DELETE | `/forum/replies/{id}/like` | Giriş | Beğen / beğeniyi geri al |
 | Topluluk | POST / DELETE | `/forum/replies/{id}/best-answer` | Soru sahibi | En iyi cevap işaretleme / kaldırma (konu Çözüldü) |
-| İçerik | GET | `/posts?type=blog\|news`, `/posts/{slug}` | Herkes | Blog ve haber listesi / detayı |
+| İçerik | GET | `/posts?type=blog\|news&category=&region=tr\|world&page=`, `/posts/{slug}` | Herkes | Blog ve haber listesi (blogda sayfa 9, haberde 10; blogun ilk sayfasında `featured` ayrı, listede hiç tekrar etmez; kategoriler yanıtta) / detayı (Tiptap içerik, etiketler, kaynak, 3 ilgili yazı) |
 | Kurumlar | GET | `/organizations?type=clinic\|shelter`, `/organizations/{slug}` | Herkes | Veteriner ve barınak dizini / profili |
 | Kurumlar | POST | `/organizations/applications` | Giriş | Klinik veya barınak başvurusu (belge yok: vergi/kütük no, adres, konum, hizmetler, çalışma saatleri) |
 | Kurumlar | PATCH | `/organizations/me` | Kurum | Kurumsal profil düzenleme |
@@ -622,6 +622,7 @@ Her aşama sonunda çalışan bir sürüm preview ortamına çıkar; v1.1 ve son
 - Topluluk ve içerik (4. aşama): konuya en fazla 3 fotoğraf, konu takibi ve cevap bildirimi, isteğe bağlı hayvan türü bu aşamada; etiketler ve "Yanıtla"/@bahsetme v1.1'e kaldı. Konu ve cevap metinlerinde yalnız kalın, italik ve liste biçimi vardır (bağlantı yok). Blog/haber editörü (Tiptap) bu aşamada admin için tek sayfa olarak yapılır, 5. aşamada admin paneline taşınır; klinik ve barınakların yazı önermesi sonraya kaldı.
 - Topluluk API'si (4. aşama): soru sahibine yeni cevap bildirimi her durumda gider, takip edenlere de gider (varsayılan site içi; e-posta tercihten). Soru sahibi konusunu otomatik takip eder. Kendi cevabı "Faydalı" işaretlenemez. Hesap silindiğinde topluluk konu ve cevapları kalır, yazar "Silinmiş kullanıcı" görünür (başkalarının cevapları kaybolmasın).
 - Topluluk adresleri: kategori `/topluluk/[kategori]`, konu `/topluluk/[kategori]/[konu]` (konu sayfası mobilde ayrı düzen kullandığı için). Toplulukta bireysel üyelerin adı "Ad S." biçiminde, kurum hesaplarının adı tam gösterilir (tasarım).
+- Blog ve haberler (4. aşama): yazı yayın durumundaysa ya da planlı yayın saati geldiyse görünür (ayrı zamanlanmış iş yok). Haberin bölgesi ülkeye göre: `TR` Türkiye, diğerleri (ve ülkesi boş olan) Dünya; haberde kategori "tür"dür. Etiketler yalnız gösterilir (etiket sayfası yok). "Haftalık bülten" kutusunda e-posta alanı yok: üye tek tıkla abone olur (`marketingOptIn`, Ayarlar'daki bülten tercihi), misafire kayıt / giriş bağlantısı; ayrı bülten aboneliği (`/newsletter/*`) v1.1'de.
 - Sayfa kabı 1320 px'tir (`--container-site`, iç boşluk dahil; masaüstünde içerik 1272 px). Tasarım görselleri 1200 px içerikle çizildi; genişlikte görseller değil bu karar geçerlidir.
 - Favoriler sayfası (`/hesabim/favoriler`) 2. aşamada yapılır; Hesabım sol menüsü 3. aşamada eklenir. Favorideki ilan sahiplendirilir ya da kapatılırsa listede "artık yayında değil" notuyla soluk ve bağlantısız kalır (kalple çıkarılabilir); silinen ilan listeden düşer. Onay bekleyen / düzeltme istenen / reddedilen ilan favorilerde gösterilmez (onaylanmamış içerik görünmesin); yeniden yayına girince geri gelir.
 - Dosyalar (ilan fotoğrafları, avatar, blog kapakları) Cloudflare R2'de tutulur; S3 API'siyle erişildiği için sağlayıcı değiştirilebilir. Geliştirmede docker-compose'daki RustFS (S3 uyumlu) kullanılır.

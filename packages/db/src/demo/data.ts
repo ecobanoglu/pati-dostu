@@ -7,7 +7,7 @@
 /** Demo kullanıcıların e-posta alanı (.test gerçek bir alan adı olamaz; gerçek veriyle karışmaz). */
 export const DEMO_EMAIL_DOMAIN = "demo.pati-dostu.test"
 
-type Role = "user" | "clinic" | "shelter"
+type Role = "user" | "clinic" | "shelter" | "admin"
 
 export type DemoUser = { key: string; name: string; role: Role; phone: string | null }
 
@@ -18,6 +18,8 @@ export const demoUsers: DemoUser[] = [
   { key: "can", name: "Can Öztürk", role: "user", phone: null },
   { key: "barinak", name: "Patiler Barınağı", role: "shelter", phone: "+905301002030" },
   { key: "klinik", name: "Can Dostlar Veteriner Kliniği", role: "clinic", phone: "+905367778899" },
+  // Blog ve haber yazılarının yazarı (giriş yapılamaz; yalnız içerik sahibi).
+  { key: "editor", name: "Pati Dostu Editör", role: "admin", phone: null },
 ]
 
 type Species = "kedi" | "kopek" | "kus" | "tavsan"
@@ -966,6 +968,11 @@ export const rejectedPhotos = new Set([
   "Obsidian - Maine coon yeux vairons - Odd eyed - Red Eye Effect.jpg",
   "Guangzhou-Kitten-and-bowl-of-rice-0552.jpg",
   "Photograph of a Standard Winter Sports Area Shelter at Parkinstown Area - NARA - 2128343.jpg",
+  "Dentist's Chair - Flickr - Thomas James Caldwell.jpg",
+  "Sleeping, homeless children - Jacob Riis.jpg",
+  "Lindsey Pearlman with foster kittens in 2020.jpg",
+  "Stray mom cat gets a veterinary exam at West Point.jpg",
+  "Kittens for adoption at Dog Days 2013 (9358355661) (2).jpg",
 ])
 
 /**

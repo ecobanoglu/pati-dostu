@@ -135,6 +135,13 @@ const notificationStrings = {
       closed: (title: string) => `Favorinizdeki "${title}" ilanı yayından kaldırıldı.`,
       button: "Favorilerime git",
     },
+    new_message: {
+      subject: (sender: string) => `${sender} size mesaj gönderdi`,
+      text: (sender: string, title: string) => `${sender}, "${title}" ilanı hakkında size mesaj gönderdi.`,
+      detail: "Mesaj",
+      button: "Mesajı yanıtla",
+      note: "Okuyana kadar bu konuşmadan yeni e-posta göndermeyeceğiz.",
+    },
   },
   en: {
     footer: "You can change your notification preferences on the Profile and settings page.",
@@ -162,6 +169,13 @@ const notificationStrings = {
       closed: (title: string) => `"${title}", a listing you saved, was taken down.`,
       button: "Go to my favorites",
     },
+    new_message: {
+      subject: (sender: string) => `${sender} sent you a message`,
+      text: (sender: string, title: string) => `${sender} sent you a message about "${title}".`,
+      detail: "Message",
+      button: "Reply",
+      note: "We won't email you about this conversation again until you've read it.",
+    },
   },
 } satisfies Record<MailLocale, unknown>
 
@@ -171,8 +185,9 @@ export type NotificationMailData =
   | { type: "listing_rejected"; title: string; url: string; reason: string }
   | { type: "listing_changes_requested"; title: string; url: string; note: string }
   | { type: "favorite_closed"; title: string; url: string; outcome: "adopted" | "reunited" | "closed" }
+  | { type: "new_message"; title: string; url: string; senderName: string; preview: string }
 
-/** Bildirim e-postası (ilan sonucu, favori güncellemesi): kullanıcının dilinde, tek butonlu. */
+/** Bildirim e-postası (ilan sonucu, favori güncellemesi, yeni mesaj): kullanıcının dilinde, tek butonlu. */
 export function notificationMail(
   locale: MailLocale,
   to: string,
@@ -203,6 +218,12 @@ export function notificationMail(
     case "favorite_closed":
       ;({ subject, button: buttonLabel } = n.favorite_closed)
       text = n.favorite_closed[data.outcome](data.title)
+      break
+    case "new_message":
+      subject = n.new_message.subject(data.senderName)
+      buttonLabel = n.new_message.button
+      text = `${n.new_message.text(data.senderName, data.title)} ${n.new_message.note}`
+      detail = { label: n.new_message.detail, value: data.preview }
       break
   }
   const detailHtml = detail

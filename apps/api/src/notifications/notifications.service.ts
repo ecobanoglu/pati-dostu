@@ -25,12 +25,22 @@ export type NotificationPayload =
       /** adopted: sahiplendirildi; reunited: kayıp/bulunan ilanında kavuştu; closed: yayından kaldırıldı. */
       outcome: "adopted" | "reunited" | "closed"
     }
+  | {
+      type: "new_message"
+      conversationId: string
+      senderName: string
+      /** Konuşmanın ilanının başlığı. */
+      title: string
+      /** Mesajın ilk 140 karakteri. */
+      preview: string
+    }
 
 /** Web adresleri (e-postadaki butonlar için; Türkçe öneksiz, İngilizce /en önekli — web › i18n/routing). */
 const WEB_PATHS = {
   myListings: { tr: "/hesabim/ilanlarim", en: "/en/account/listings" },
   favorites: { tr: "/hesabim/favoriler", en: "/en/account/favorites" },
   listing: { tr: "/ilan", en: "/en/listing" },
+  messages: { tr: "/hesabim/mesajlar", en: "/en/account/messages" },
 } as const
 
 /**
@@ -189,6 +199,14 @@ export class NotificationsService {
           title: payload.title,
           outcome: payload.outcome,
           url: `${web}${WEB_PATHS.favorites[locale]}`,
+        }
+      case "new_message":
+        return {
+          type: payload.type,
+          title: payload.title,
+          senderName: payload.senderName,
+          preview: payload.preview,
+          url: `${web}${WEB_PATHS.messages[locale]}?c=${payload.conversationId}`,
         }
     }
   }

@@ -10,6 +10,7 @@ import { FavoritesModule } from "./favorites/favorites.module.js"
 import { HealthModule } from "./health/health.module.js"
 import { ListingsModule } from "./listings/listings.module.js"
 import { MailModule } from "./mail/mail.module.js"
+import { MessagingModule } from "./messaging/messaging.module.js"
 import { ModerationModule } from "./moderation/moderation.module.js"
 import { NotificationsModule } from "./notifications/notifications.module.js"
 import { RedisModule } from "./redis/redis.module.js"
@@ -32,6 +33,7 @@ import { UsersModule } from "./users/users.module.js"
     UploadsModule,
     ListingsModule,
     FavoritesModule,
+    MessagingModule,
   ],
   providers: [
     // Tüm girişler Zod şemalarıyla (createZodDto) doğrulanır.

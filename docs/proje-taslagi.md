@@ -393,10 +393,12 @@ MVP için yaklaşık 60 uç nokta gerekiyor; hepsi NestJS API'de (api.pati-dostu
 | Favoriler | PUT / DELETE | `/listings/{id}/favorite` | Giriş | Favoriye ekle / çıkar |
 | Yorumlar | GET / POST | `/listings/{id}/comments` | Herkes / Giriş | İlan yorumlarını listeleme / yazma |
 | Yorumlar | DELETE | `/comments/{id}` | Sahibi, Admin | Yorum silme |
-| Mesajlar | GET | `/conversations` | Giriş | Konuşma listesi, okunmamış sayısıyla |
-| Mesajlar | POST | `/conversations` | Giriş | İlan için konuşma başlatır (ilk mesajla) |
-| Mesajlar | GET / POST | `/conversations/{id}/messages` | Katılımcı | Mesajları listeleme (cursor) / gönderme |
-| Mesajlar | POST | `/conversations/{id}/read` | Katılımcı | Okundu işareti |
+| Mesajlar | GET | `/conversations?q=&limit=&cursor=` | Giriş | Konuşma listesi (son mesaj, okunmamış sayısı; kişi/ilan araması) |
+| Mesajlar | POST | `/conversations` | Giriş | İlan için konuşma başlatır (ilk mesajla); konuşma varsa ona ekler |
+| Mesajlar | GET | `/conversations/unread-count` | Giriş | Okunmamış mesaj sayısı (menü rozeti, polling) |
+| Mesajlar | GET | `/conversations/{id}` | Katılımcı | Konuşma başlığı (karşı taraf, ilan) |
+| Mesajlar | GET / POST | `/conversations/{id}/messages` | Katılımcı | Listeleme (`before` eskiler, `after` yeniler — polling; `readUpTo`) / gönderme |
+| Mesajlar | POST | `/conversations/{id}/read` | Katılımcı | Okundu işareti (konuşmanın "yeni mesaj" bildirimleri de) |
 | Topluluk | GET | `/forum/categories` | Herkes | Kategoriler |
 | Topluluk | GET | `/forum/topics` | Herkes | Filtreler: category, q, sort (yeni, popüler, cevapsız) |
 | Topluluk | GET | `/forum/topics/{slug}`, `/forum/topics/{id}/similar` | Herkes | Konu detayı + cevaplar; benzer konular |
@@ -608,6 +610,7 @@ Her aşama sonunda çalışan bir sürüm preview ortamına çıkar; v1.1 ve son
 - Geliştirme sırasında sayfalar demo içerikle doldurulur (`pnpm db:demo`): gerçek hayvan fotoğrafları (Wikimedia Commons, serbest lisanslı) ve hayali ilan/kullanıcılar. Demo içerik yayından önce `pnpm db:demo:clear` ile silinir; yayın veritabanına yazılmaz.
 - Profil ve ayarlar (3. aşama): hesap silme anında kapatır ve anonimleştirir (ilanlar yayından kalkar; ad, e-posta, telefon, fotoğraf silinir; aynı e-postayla yeniden kayıt olunabilir). Bildirim tercihleri Profil ve ayarlar'da konu × kanal tablosudur (site içi / e-posta). KVKK veri kopyası MVP sonunda, SMS ile telefon doğrulama sağlayıcı seçilince yapılır. "Hakkımda" metni ilan metniyle aynı içerik filtresi kurallarından geçer. "Yeni ilanlarda telefonumu varsayılan olarak göster" tercihi ilan formundaki "Telefonumu ilanda göster"in başlangıç değeridir.
 - Bildirimler (3. aşama): konular "İlan onay / red sonucu" (onaylandı, reddedildi, düzeltme istendi — varsayılan site içi + e-posta) ve "Favori ilanımın durumu" (favorideki ilan sahiplendirildi / kavuştu / kaldırıldı — varsayılan yalnız site içi; ilan sahibine gitmez). Yeni mesaj, sorularıma cevap ve kayıtlı arama konuları o özelliklerle eklenir. E-posta yalnız e-postası doğrulanmış kullanıcıya, `user.locale` dilinde gider; gönderim hatası işlemi durdurmaz. Okunmamış sayısı polling ile (dakikada bir, sekme görünürken). Bildirim metni saklanmaz; tür + veri saklanır, metni arayüz kullanıcının dilinde üretir.
+- Mesajlaşma (3. aşama): "Yeni mesaj" bildirimi (site içi + e-posta, tercihten kapatılabilir) konuşma başına bir kez gider: konuşmada okunmamış mesaj yokken gelen ilk mesajda; alıcı okuyana kadar aynı konuşmadan yenisi gitmez. Arayüzde yalnız "Okundu" bilgisi var; "çevrimiçi" ve "yazıyor…" gerçek zamanlı iletim (WebSocket) gelince eklenir. Özel mesajlarda içerik filtresi yalnız yasaklı kelimeleri ve IBAN/fiyat ifadelerini engeller (satış yasağı); telefon ve e-posta paylaşımı serbesttir. Yeni konuşma yalnız yayındaki ilanda başlar, ilan sonradan kapansa da konuşma sürer; kendi ilanına ve hesabını kapatmış kişiye mesaj yazılamaz; e-postası doğrulanmamış kullanıcı yazamaz. İstek sınırı: dakikada 30 mesaj, saatte 20 yeni konuşma.
 - Sayfa kabı 1320 px'tir (`--container-site`, iç boşluk dahil; masaüstünde içerik 1272 px). Tasarım görselleri 1200 px içerikle çizildi; genişlikte görseller değil bu karar geçerlidir.
 - Favoriler sayfası (`/hesabim/favoriler`) 2. aşamada yapılır; Hesabım sol menüsü 3. aşamada eklenir. Favorideki ilan sahiplendirilir ya da kapatılırsa listede "artık yayında değil" notuyla soluk ve bağlantısız kalır (kalple çıkarılabilir); silinen ilan listeden düşer. Onay bekleyen / düzeltme istenen / reddedilen ilan favorilerde gösterilmez (onaylanmamış içerik görünmesin); yeniden yayına girince geri gelir.
 - Dosyalar (ilan fotoğrafları, avatar, blog kapakları) Cloudflare R2'de tutulur; S3 API'siyle erişildiği için sağlayıcı değiştirilebilir. Geliştirmede docker-compose'daki RustFS (S3 uyumlu) kullanılır.

@@ -1,12 +1,12 @@
-import { Global, Inject, Logger, Module } from "@nestjs/common"
+import { Global, Logger, Module } from "@nestjs/common"
 import { Redis } from "@upstash/redis"
 
 import { env } from "../config/env.js"
+import { RateLimitService } from "./rate-limit.service.js"
 
-export const REDIS = Symbol("REDIS")
+import { REDIS } from "./redis.token.js"
 
-/** Redis istemcisini enjekte eder; Redis ayarlı değilse değer null'dır (çağıran taraf buna göre davranmalı). */
-export const InjectRedis = () => Inject(REDIS)
+export { InjectRedis, REDIS } from "./redis.token.js"
 
 /**
  * Upstash Redis (REST). Serverless'ta bağlantı tutmadığı için Vercel Function'a uygundur; yerelde
@@ -25,7 +25,8 @@ export const InjectRedis = () => Inject(REDIS)
         return new Redis({ url: env.UPSTASH_REDIS_REST_URL, token: env.UPSTASH_REDIS_REST_TOKEN })
       },
     },
+    RateLimitService,
   ],
-  exports: [REDIS],
+  exports: [REDIS, RateLimitService],
 })
 export class RedisModule {}

@@ -662,7 +662,8 @@
     "colEmail": "Email",
     "topicListingReview": "Listing review result",
     "topicFavoriteUpdate": "Updates on saved listings",
-    "channelNotAvailable": "Not available"
+    "channelNotAvailable": "Not available",
+    "topicNewMessage": "New message"
   },
   "Notifications": {
     "metaTitle": "Notifications",
@@ -675,7 +676,7 @@
     "yesterday": "Yesterday",
     "thisWeek": "This week",
     "older": "Older",
-    "empty": "No notifications yet. You'll see them here when your listings are reviewed or a saved listing has news.",
+    "empty": "No notifications yet. You'll see them here when your listings are reviewed, you get a new message or a saved listing has news.",
     "emptyUnread": "No unread notifications.",
     "loadMore": "Show more",
     "unread": "Unread",
@@ -707,6 +708,10 @@
       "favorite_closed_closed": {
         "title": "A saved listing was taken down",
         "body": "\"{title}\" is no longer live."
+      },
+      "new_message": {
+        "title": "New message",
+        "body": "{sender}: {preview}"
       }
     }
   },
@@ -797,6 +802,9 @@
     "PHONE_REQUIRED": "Add a phone number to your profile to show it.",
     "IMAGE_INVALID": "One of the photos is invalid. Remove it and upload again.",
     "BIO_TOO_LONG": "About me can be at most 300 characters.",
-    "INVALID_PASSWORD": "Your current password is incorrect."
+    "INVALID_PASSWORD": "Your current password is incorrect.",
+    "CANNOT_MESSAGE_SELF": "You can't send a message to your own listing.",
+    "RECIPIENT_UNAVAILABLE": "This user has closed their account, so you can't send them messages.",
+    "MESSAGE_TOO_LONG": "A message can be at most 2,000 characters."
   }
 }

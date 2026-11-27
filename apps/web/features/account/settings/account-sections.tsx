@@ -254,6 +254,7 @@ export function PreferencesSections({ user }: { user: Me }) {
   const topics: Array<{ key: NotificationTopic; label: string }> = [
     { key: "listing_review", label: t("topicListingReview") },
     { key: "favorite_update", label: t("topicFavoriteUpdate") },
+    { key: "new_message", label: t("topicNewMessage") },
   ]
 
   /** Bir konunun bir kanalını değiştirir (tüm tercih nesnesi gönderilir). */

@@ -13,10 +13,10 @@ import { randomUUID } from "node:crypto"
 import { readFile } from "node:fs/promises"
 
 import { DeleteObjectsCommand, ListObjectsV2Command, PutObjectCommand, S3Client } from "@aws-sdk/client-s3"
-import { and, eq, inArray, like, sql } from "drizzle-orm"
+import { and, eq, inArray, like, or, sql } from "drizzle-orm"
 
 import { createDb } from "../client.js"
-import { breed, city, district, listing, listingImage, species, user } from "../schema/index.js"
+import { breed, city, conversation, district, listing, listingImage, species, user } from "../schema/index.js"
 import { slugify } from "../text.js"
 import { closings, DEMO_EMAIL_DOMAIN, demoListings, demoUsers } from "./data.js"
 import { CACHE_DIR, preparePhotos } from "./photos.js"
@@ -68,8 +68,8 @@ async function deletePrefix(prefix: string) {
 }
 
 /**
- * Tüm demo içeriği siler: demo kullanıcıların ilanlarının fotoğrafları (depo), ilanlar (fotoğraf satırları ve
- * favoriler cascade ile), yükleme klasörleri ve kullanıcılar (oturum/hesap cascade ile).
+ * Tüm demo içeriği siler: demo konuşmaları (mesajlarıyla), demo kullanıcıların ilanlarının fotoğrafları (depo),
+ * ilanlar (fotoğraf satırları ve favoriler cascade ile), yükleme klasörleri ve kullanıcılar (oturum/hesap cascade ile).
  */
 async function clearDemo() {
   const users = await db
@@ -79,6 +79,19 @@ async function clearDemo() {
   if (users.length === 0) return console.log("  silinecek demo içerik yok")
   const userIds = users.map((u) => u.id)
   const listings = await db.select({ id: listing.id }).from(listing).where(inArray(listing.ownerId, userIds))
+
+  // Demo kullanıcının katıldığı ya da demo ilandaki konuşmalar (gerçek kullanıcı demo ilana yazmış olabilir);
+  // mesajlar cascade ile silinir.
+  const listingIds = listings.map((l) => l.id)
+  await db
+    .delete(conversation)
+    .where(
+      or(
+        inArray(conversation.starterId, userIds),
+        inArray(conversation.ownerId, userIds),
+        listingIds.length > 0 ? inArray(conversation.listingId, listingIds) : undefined
+      )
+    )
 
   for (const { id } of listings) await deletePrefix(`listings/${id}/`)
   for (const id of userIds) await deletePrefix(`tmp/listing-images/${id}/`)

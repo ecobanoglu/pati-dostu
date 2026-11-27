@@ -26,6 +26,8 @@ export const ValidationCode = {
   IMAGES_REQUIRED: "IMAGES_REQUIRED",
   NO_FEE_NOT_CONFIRMED: "NO_FEE_NOT_CONFIRMED",
   REASON_TOO_SHORT: "REASON_TOO_SHORT",
+  // Mesaj
+  MESSAGE_TOO_LONG: "MESSAGE_TOO_LONG",
 } as const
 
 export type ValidationCode = (typeof ValidationCode)[keyof typeof ValidationCode]

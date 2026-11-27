@@ -2,10 +2,10 @@ import { z } from "zod"
 
 /**
  * Bildirim konuları: kullanıcı her konu için site içi ve e-posta kanalını ayrı ayrı açıp kapatır (Profil ve ayarlar ›
- * Bildirim tercihleri). Yalnızca çalışan özelliklerin konuları burada; yeni mesaj (mesajlaşma), sorularıma cevap
+ * Bildirim tercihleri). Yalnızca çalışan özelliklerin konuları burada; sorularıma cevap
  * (topluluk) ve kayıtlı arama (v1.2) özellikleri gelince eklenir. Mobil bildirim kanalı v2'de.
  */
-export const notificationTopics = ["listing_review", "favorite_update"] as const
+export const notificationTopics = ["listing_review", "favorite_update", "new_message"] as const
 export type NotificationTopic = (typeof notificationTopics)[number]
 
 /** Bildirim türleri ve ait oldukları konu. */
@@ -18,6 +18,11 @@ export const notificationTypes = {
   listing_changes_requested: "listing_review",
   /** Favorinizdeki ilan sahiplendirildi / kavuştu ya da yayından kaldırıldı. */
   favorite_closed: "favorite_update",
+  /**
+   * Yeni mesaj — konuşma başına bir kez: konuşmada okunmamış mesaj yokken gelen ilk mesajda gider; alıcı okuyana
+   * kadar aynı konuşmadan yeni bildirim gitmez (karar).
+   */
+  new_message: "new_message",
 } as const satisfies Record<string, NotificationTopic>
 export type NotificationType = keyof typeof notificationTypes
 export const notificationTypeList = Object.keys(notificationTypes) as NotificationType[]
@@ -25,10 +30,11 @@ export const notificationTypeList = Object.keys(notificationTypes) as Notificati
 const channels = z.object({ inApp: z.boolean(), email: z.boolean() })
 export type NotificationChannels = z.infer<typeof channels>
 
-/** Varsayılan tercihler: ilan sonucu her iki kanalda; favori güncellemesi yalnızca site içinde. */
+/** Varsayılan tercihler: ilan sonucu ve yeni mesaj her iki kanalda; favori güncellemesi yalnızca site içinde. */
 export const defaultNotificationPrefs: Record<NotificationTopic, NotificationChannels> = {
   listing_review: { inApp: true, email: true },
   favorite_update: { inApp: true, email: false },
+  new_message: { inApp: true, email: true },
 }
 
 /** Kullanıcı tercihleri (PATCH /me › notificationPrefs): tüm konular gönderilir. */

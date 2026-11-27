@@ -1,6 +1,6 @@
 "use client"
 
-import { Check, FilePen, Heart, TriangleAlert, type LucideIcon } from "lucide-react"
+import { Check, FilePen, Heart, MessageCircle, TriangleAlert, type LucideIcon } from "lucide-react"
 import { useFormatter, useTranslations } from "next-intl"
 import { useEffect, useState } from "react"
 
@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils"
 
 export type NotificationItem = {
   id: string
-  type: "listing_approved" | "listing_rejected" | "listing_changes_requested" | "favorite_closed"
+  type: "listing_approved" | "listing_rejected" | "listing_changes_requested" | "favorite_closed" | "new_message"
   payload: Record<string, unknown>
   readAt: string | null
   createdAt: string
@@ -50,6 +50,7 @@ const tones: Record<NotificationItem["type"], { icon: LucideIcon; className: str
   listing_rejected: { icon: TriangleAlert, className: "text-danger" },
   listing_changes_requested: { icon: FilePen, className: "text-notice-text" },
   favorite_closed: { icon: Heart, className: "text-success-text" },
+  new_message: { icon: MessageCircle, className: "text-primary" },
 }
 
 /** Payload'daki metin alanını güvenle okur (API `Record<string, unknown>` döndürür). */
@@ -67,7 +68,7 @@ function messageKey(n: NotificationItem): string {
 
 /**
  * Bildirime tıklayınca gidilecek yer: onaylanan ilanın detayı, reddedilen/düzeltme istenen için İlanlarım, favori
- * bildiriminde Favoriler (ilan artık yayında olmadığından detayına gidilmez).
+ * bildiriminde Favoriler (ilan artık yayında olmadığından detayına gidilmez), yeni mesajda o konuşma.
  */
 function targetOf(n: NotificationItem) {
   if (n.type === "listing_approved") {
@@ -76,6 +77,10 @@ function targetOf(n: NotificationItem) {
     if (slug && no) return { pathname: "/listing/[slug]" as const, params: { slug: `${slug}-${no}` } }
   }
   if (n.type === "favorite_closed") return "/account/favorites" as const
+  if (n.type === "new_message") {
+    const c = str(n.payload, "conversationId")
+    return c ? { pathname: "/account/messages" as const, query: { c } } : ("/account/messages" as const)
+  }
   return "/account/listings" as const
 }
 
@@ -186,6 +191,8 @@ export function NotificationsList({ initial, now }: { initial: NotificationPage;
                       title: str(n.payload, "title"),
                       reason: str(n.payload, "reason"),
                       note: str(n.payload, "note"),
+                      sender: str(n.payload, "senderName"),
+                      preview: str(n.payload, "preview"),
                     })}
                     time={
                       group.key === "yesterday" ? t("yesterday") : format.relativeTime(new Date(n.createdAt), nowDate)

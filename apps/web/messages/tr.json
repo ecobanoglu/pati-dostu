@@ -662,7 +662,8 @@
     "colEmail": "E-posta",
     "topicListingReview": "İlan onay / red sonucu",
     "topicFavoriteUpdate": "Favori ilanımın durumu",
-    "channelNotAvailable": "Bu kanal yok"
+    "channelNotAvailable": "Bu kanal yok",
+    "topicNewMessage": "Yeni mesaj"
   },
   "Notifications": {
     "metaTitle": "Bildirimler",
@@ -675,7 +676,7 @@
     "yesterday": "Dün",
     "thisWeek": "Bu hafta",
     "older": "Daha eski",
-    "empty": "Henüz bildiriminiz yok. İlanlarınız onaylandığında ya da favorilerinizde bir gelişme olduğunda burada görürsünüz.",
+    "empty": "Henüz bildiriminiz yok. İlanınız onaylandığında, yeni mesaj geldiğinde ya da favorilerinizde bir gelişme olduğunda burada görürsünüz.",
     "emptyUnread": "Okunmamış bildiriminiz yok.",
     "loadMore": "Daha fazla göster",
     "unread": "Okunmadı",
@@ -707,6 +708,10 @@
       "favorite_closed_closed": {
         "title": "Favori ilanınız yayından kaldırıldı",
         "body": "\"{title}\" artık yayında değil."
+      },
+      "new_message": {
+        "title": "Yeni mesaj",
+        "body": "{sender}: {preview}"
       }
     }
   },
@@ -797,6 +802,9 @@
     "PHONE_REQUIRED": "Telefonunuzu gösterebilmek için profilinize telefon numarası ekleyin.",
     "IMAGE_INVALID": "Fotoğraflardan biri geçersiz. Kaldırıp yeniden yükleyin.",
     "BIO_TOO_LONG": "Hakkımda en fazla 300 karakter olabilir.",
-    "INVALID_PASSWORD": "Mevcut şifre hatalı."
+    "INVALID_PASSWORD": "Mevcut şifre hatalı.",
+    "CANNOT_MESSAGE_SELF": "Kendi ilanınıza mesaj gönderemezsiniz.",
+    "RECIPIENT_UNAVAILABLE": "Bu kullanıcı hesabını kapattığı için mesaj gönderilemiyor.",
+    "MESSAGE_TOO_LONG": "Mesaj en fazla 2000 karakter olabilir."
   }
 }

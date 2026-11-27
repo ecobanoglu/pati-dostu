@@ -50,6 +50,11 @@ export const ErrorCode = {
   // Hesap
   /** Hesap silme onayında mevcut şifre hatalı. */
   INVALID_PASSWORD: "INVALID_PASSWORD",
+  // Mesajlaşma
+  /** Kendi ilanına mesaj gönderilemez. */
+  CANNOT_MESSAGE_SELF: "CANNOT_MESSAGE_SELF",
+  /** Karşı taraf hesabını kapatmış; konuşma okunur ama yeni mesaj gönderilemez. */
+  RECIPIENT_UNAVAILABLE: "RECIPIENT_UNAVAILABLE",
 } as const
 
 export type ErrorCode = (typeof ErrorCode)[keyof typeof ErrorCode]

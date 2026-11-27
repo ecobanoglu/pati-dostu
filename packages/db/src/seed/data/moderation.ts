@@ -2,10 +2,13 @@ type Area = "listing" | "comment" | "topic" | "reply" | "message" | "contact"
 type Kind = "phone" | "email" | "url" | "iban" | "price" | "duplicate"
 
 const PUBLIC_CONTENT: Area[] = ["listing", "comment", "topic", "reply"]
+/** Para alışverişi kuralları (IBAN, fiyat) özel mesajlarda da geçerli: satış yasağı mesajla aşılmasın. */
+const MONEY_CONTENT: Area[] = [...PUBLIC_CONTENT, "message"]
 
 /**
  * Hazır kalıp kuralları. Alanlar başlangıç değeridir; admin "Sözlük › İçerik filtreleri"nden değiştirir.
- * Mesajlaşma ve iletişim formu başlangıçta kapsam dışı (bkz. taslak › Alınan kararlar).
+ * Mesajlarda yalnızca IBAN ve fiyat kuralları açık (telefon/e-posta özelde paylaşılabilir — karar, 3. aşama);
+ * yasaklı kelimeler her alanda geçerli. İletişim formu başlangıçta kapsam dışı.
  */
 export const moderationRuleSeed: Array<{ kind: Kind; areas: Area[]; userMessage: string }> = [
   {
@@ -26,12 +29,12 @@ export const moderationRuleSeed: Array<{ kind: Kind; areas: Area[]; userMessage:
   },
   {
     kind: "iban",
-    areas: PUBLIC_CONTENT,
+    areas: MONEY_CONTENT,
     userMessage: "IBAN veya hesap numarası paylaşılamaz. Pati Dostu'da para alışverişi yapılmaz.",
   },
   {
     kind: "price",
-    areas: PUBLIC_CONTENT,
+    areas: MONEY_CONTENT,
     userMessage: "Ücret, kapora veya fiyat içeren içerik yayınlanamaz. Pati Dostu'da hayvan satışı yasaktır.",
   },
   {

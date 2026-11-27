@@ -57,6 +57,13 @@
       "when": 1795542368604,
       "tag": "0007_notification_prefs",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1795728126287,
+      "tag": "0008_message_money_rules",
+      "breakpoints": true
     }
   ]
 }

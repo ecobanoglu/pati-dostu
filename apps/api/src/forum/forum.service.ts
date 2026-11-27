@@ -46,6 +46,13 @@ const RESERVED_SLUGS = ["soru-sor", "ask"]
 /** Bildirimdeki cevap önizlemesinin uzunluğu. */
 const PREVIEW_LENGTH = 140
 
+/**
+ * İlişkili alt sorgularda dış tablonun kimliği, tablo adıyla. Drizzle tek tablolu sorguda sütunu tablo adı olmadan
+ * ("id") yazar; alt sorgunun içinde bu, alt sorgudaki tablonun id'si sanılır — o yüzden açıkça yazılır.
+ */
+const TOPIC_ID = sql.raw(`"forum_topic"."id"`)
+const CATEGORY_ID = sql.raw(`"forum_category"."id"`)
+
 /** Yayında görünen konu: yayımlanmış ve silinmemiş. */
 const visibleTopic = and(eq(forumTopic.status, "published"), isNull(forumTopic.deletedAt))
 /** Yayında görünen cevap. */
@@ -54,11 +61,11 @@ const visibleReply = and(eq(forumReply.status, "published"), isNull(forumReply.d
 /** Konuda veteriner kliniği hesabının görünen bir cevabı var mı ("Veteriner cevapladı"). */
 const vetAnswered = sql<boolean>`exists (
   select 1 from ${forumReply} r join ${user} u on u.id = r.author_id
-  where r.topic_id = ${forumTopic.id} and r.deleted_at is null and r.status = 'published' and u.role = 'clinic')`
+  where r.topic_id = ${TOPIC_ID} and r.deleted_at is null and r.status = 'published' and u.role = 'clinic')`
 
 /** Konunun kapak fotoğrafı (ilk sıradaki) — depo anahtarı. */
 const coverKey = sql<string | null>`(
-  select i.url from ${forumTopicImage} i where i.topic_id = ${forumTopic.id} order by i.sort_order limit 1)`
+  select i.url from ${forumTopicImage} i where i.topic_id = ${TOPIC_ID} order by i.sort_order limit 1)`
 
 /** Kart sütunları (liste, Sorularım vb. ortak). */
 const cardColumns = {
@@ -122,7 +129,7 @@ export class ForumService {
         name: forumCategory.name,
         description: forumCategory.description,
         topicCount: sql<number>`(select count(*)::int from ${forumTopic} t
-          where t.category_id = ${forumCategory.id} and t.status = 'published' and t.deleted_at is null)`,
+          where t.category_id = ${CATEGORY_ID} and t.status = 'published' and t.deleted_at is null)`,
       })
       .from(forumCategory)
       .where(isNull(forumCategory.deletedAt))

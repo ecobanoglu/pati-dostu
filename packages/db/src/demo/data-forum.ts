@@ -210,6 +210,7 @@ export const demoTopics: DemoTopic[] = [
         ago: 5 * DAY,
         body: "Bizde tüm masraflar barınağa ait; fiş ya da fatura ile karşılıyoruz.",
         likes: ["inbox"],
+        best: true,
       },
       { author: "elif", ago: 4 * DAY, body: "Gönüllü gruplarda da çoğunlukla aynı şekilde.", likes: [] },
       {

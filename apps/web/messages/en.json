@@ -970,6 +970,35 @@
     "verifyFirst": "Verify your email address before asking a question.",
     "verifyLink": "Send verification link"
   },
+  "MyQuestions": {
+    "metaTitle": "My questions",
+    "title": "My questions",
+    "tabsLabel": "My questions tabs",
+    "tabTopics": "My questions",
+    "tabReplies": "My replies",
+    "tabFollowing": "Following",
+    "solved": "Solved",
+    "open": "Open",
+    "waiting": "Awaiting answer",
+    "bestBy": "Best answer: {name}",
+    "chooseBestHint": "Choose the best answer to mark the topic as solved.",
+    "noAnswerYet": "No answers yet; opened {time}.",
+    "lastActivity": "Last activity: {time}",
+    "answersShort": "answers",
+    "bestAnswer": "Best answer",
+    "helpful": "{count, plural, other {Helpful · #}}",
+    "empty": {
+      "topics": "You haven't asked anything yet. Ask the community; our vet and shelter members answer too.",
+      "replies": "You haven't replied yet. Your experience can help someone.",
+      "following": "You're not following any topics. Use \"Follow\" on a topic to hear about new replies."
+    },
+    "ask": "Ask a question",
+    "browse": "Browse the community",
+    "pagination": "Pages",
+    "previous": "Previous",
+    "next": "Next",
+    "pageOf": "Page {page} of {total}"
+  },
   "HomePage": {
     "badge": "Free adoption platform",
     "title": "A warm home for <accent>every friend</accent>",

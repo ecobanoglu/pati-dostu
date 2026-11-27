@@ -119,3 +119,59 @@ export class TopicViewerDto extends createZodDto(
 export class LikeResultDto extends createZodDto(
   z.object({ liked: z.boolean(), likeCount: z.number().int() }).meta({ id: "ForumLikeResult" })
 ) {}
+
+// --- Hesabım › Sorularım ------------------------------------------------------
+
+export class MyForumQueryDto extends createZodDto(
+  z.object({
+    page: z.coerce.number().int().min(1).max(500).default(1),
+    locale: z.enum(["tr", "en"]).default("tr"),
+  })
+) {}
+
+const countsSchema = z
+  .object({ topics: z.number().int(), replies: z.number().int(), following: z.number().int() })
+  .meta({ id: "MyForumCounts" })
+export type MyForumCounts = z.infer<typeof countsSchema>
+
+const myTopicSchema = topicCardSchema
+  .extend({
+    /** En iyi cevabın yazarının adı ("En iyi cevap: …"); seçilmediyse null. */
+    bestAnswerAuthor: z.string().nullable(),
+  })
+  .meta({ id: "MyForumTopic" })
+
+const myTopicPageSchema = z
+  .object({
+    items: z.array(myTopicSchema),
+    total: z.number().int(),
+    page: z.number().int(),
+    pageSize: z.number().int(),
+    counts: countsSchema,
+  })
+  .meta({ id: "MyForumTopicPage" })
+export type MyTopicPage = z.infer<typeof myTopicPageSchema>
+export class MyTopicPageDto extends createZodDto(myTopicPageSchema) {}
+
+const myReplySchema = z
+  .object({
+    id: z.uuid(),
+    excerpt: z.string(),
+    likeCount: z.number().int(),
+    isBestAnswer: z.boolean(),
+    createdAt: z.iso.datetime(),
+    topic: z.object({ slug: z.string(), title: z.string(), isSolved: z.boolean(), category: named }),
+  })
+  .meta({ id: "MyForumReply" })
+
+const myReplyPageSchema = z
+  .object({
+    items: z.array(myReplySchema),
+    total: z.number().int(),
+    page: z.number().int(),
+    pageSize: z.number().int(),
+    counts: countsSchema,
+  })
+  .meta({ id: "MyForumReplyPage" })
+export type MyReplyPage = z.infer<typeof myReplyPageSchema>
+export class MyReplyPageDto extends createZodDto(myReplyPageSchema) {}

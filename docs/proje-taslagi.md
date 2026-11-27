@@ -415,6 +415,7 @@ MVP için yaklaşık 60 uç nokta gerekiyor; hepsi NestJS API'de (api.pati-dostu
 | Kurumlar | POST | `/organizations/applications` | Giriş | Klinik veya barınak başvurusu (belge yok: vergi/kütük no, adres, konum, hizmetler, çalışma saatleri) |
 | Kurumlar | PATCH | `/organizations/me` | Kurum | Kurumsal profil düzenleme |
 | Kayıtlı arama | GET / POST / DELETE | `/me/saved-searches` | Giriş | Arama kaydetme ve bildirim tercihi |
+| Topluluk | GET | `/me/forum/topics`, `/me/forum/replies`, `/me/forum/following` | Giriş | Sorularım: konularım, cevaplarım, takip ettiklerim (sayfalı, sekme sayılarıyla) |
 | Bildirimler | GET | `/me/notifications?limit=&cursor=` | Giriş | Site içi bildirimler, en yeni önce (cursor ile sayfalı) + okunmamış sayısı |
 | Bildirimler | GET | `/me/notifications/unread-count` | Giriş | Zil rozeti; istemci dakikada bir ve sekmeye dönünce sorgular (polling) |
 | Bildirimler | POST | `/me/notifications/read` | Giriş | Okundu işareti: `ids` verilirse onlar, yoksa tümü |

@@ -970,6 +970,35 @@
     "verifyFirst": "Soru sorabilmek için önce e-posta adresinizi doğrulayın.",
     "verifyLink": "Doğrulama bağlantısı gönder"
   },
+  "MyQuestions": {
+    "metaTitle": "Sorularım",
+    "title": "Sorularım",
+    "tabsLabel": "Sorularım sekmeleri",
+    "tabTopics": "Sorularım",
+    "tabReplies": "Cevaplarım",
+    "tabFollowing": "Takip ettiklerim",
+    "solved": "Çözüldü",
+    "open": "Açık",
+    "waiting": "Cevap bekliyor",
+    "bestBy": "En iyi cevap: {name}",
+    "chooseBestHint": "En iyi cevabı seçerek konuyu çözüldü olarak işaretleyebilirsiniz.",
+    "noAnswerYet": "Henüz cevap yok; konu {time} açıldı.",
+    "lastActivity": "Son etkinlik: {time}",
+    "answersShort": "cevap",
+    "bestAnswer": "En iyi cevap",
+    "helpful": "{count, plural, other {Faydalı · #}}",
+    "empty": {
+      "topics": "Henüz soru sormadınız. Topluluğa sorun; veteriner ve barınak üyelerimiz de cevaplıyor.",
+      "replies": "Henüz cevap yazmadınız. Deneyiminizle bir soruya yardım edebilirsiniz.",
+      "following": "Takip ettiğiniz konu yok. Bir konunun sayfasında \"Takip et\" ile yeni cevaplardan haberdar olun."
+    },
+    "ask": "Soru sor",
+    "browse": "Topluluğa göz at",
+    "pagination": "Sayfalar",
+    "previous": "Önceki",
+    "next": "Sonraki",
+    "pageOf": "Sayfa {page} / {total}"
+  },
   "HomePage": {
     "badge": "Ücretsiz sahiplendirme platformu",
     "title": "Her dosta <accent>sıcak bir yuva</accent>",

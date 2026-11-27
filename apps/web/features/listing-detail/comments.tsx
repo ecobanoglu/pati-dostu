@@ -6,6 +6,7 @@ import { useFormatter, useTranslations } from "next-intl"
 import { type FormEvent, useId, useMemo, useState } from "react"
 
 import { ConfirmDialog } from "@/components/dialog/confirm-dialog"
+import { ReportButton } from "@/components/dialog/report-dialog"
 import { Textarea } from "@/components/form/input"
 import { UserAvatar } from "@/components/layout/user-avatar"
 import { Button, buttonVariants } from "@/components/ui/button"
@@ -176,6 +177,9 @@ export function Comments({
                 </p>
                 <p className="mt-0.5 break-words whitespace-pre-wrap text-heading">{c.body}</p>
               </div>
+              {viewer && viewer.id !== c.author.id && !viewer.isListingOwner && (
+                <ReportButton target="comment" id={c.id} subject={c.author.name} trigger="icon" signedIn />
+              )}
               {canDelete(c) && (
                 <button
                   type="button"

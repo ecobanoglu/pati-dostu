@@ -667,7 +667,8 @@
     "topicFavoriteUpdate": "Favori ilanımın durumu",
     "channelNotAvailable": "Bu kanal yok",
     "topicNewMessage": "Yeni mesaj",
-    "topicListingComment": "İlanıma yorum"
+    "topicListingComment": "İlanıma yorum",
+    "topicAdminReport": "Yeni şikayet (admin)"
   },
   "Notifications": {
     "metaTitle": "Bildirimler",
@@ -720,6 +721,10 @@
       "listing_comment": {
         "title": "İlanınıza yorum yazıldı",
         "body": "{sender}: {preview}"
+      },
+      "report_created": {
+        "title": "Yeni şikayet",
+        "body": "{target} · {reason}: \"{title}\""
       }
     }
   },
@@ -784,6 +789,46 @@
     "deleted": "Yorum silindi.",
     "signIn": "Giriş yapın,",
     "signInText": "yorum yazabilin."
+  },
+  "Reports": {
+    "open": {
+      "listing": "İlanı şikayet et",
+      "comment": "Yorumu şikayet et",
+      "user": "Kullanıcıyı şikayet et"
+    },
+    "short": "Şikayet",
+    "reasonLabel": "Şikayet nedeni",
+    "reasons": {
+      "sale": "Satış ya da ücret talebi",
+      "fake": "Sahte veya yanıltıcı",
+      "animal_abuse": "Hayvana kötü muamele",
+      "inappropriate": "Hakaret veya uygunsuz içerik",
+      "spam": "Spam / tekrar",
+      "misinformation": "Yanlış bilgi",
+      "harassment": "Taciz veya hakaret",
+      "fake_account": "Sahte hesap",
+      "other": "Diğer"
+    },
+    "targets": {
+      "listing": "İlan",
+      "comment": "Yorum",
+      "user": "Kullanıcı"
+    },
+    "detailsLabel": "Açıklama (isteğe bağlı)",
+    "detailsLabelRequired": "Açıklama",
+    "detailsPlaceholder": "Gördüğünüz sorunu kısaca anlatın",
+    "detailsHint": "{count}/{max} karakter. Açıklamayı yalnız Pati Dostu ekibi görür.",
+    "note": "Şikayetiniz Pati Dostu ekibine iletilir; şikayet edilen kişiye kim olduğunuz söylenmez. İçerik incelenene kadar yayında kalabilir.",
+    "reasonRequired": "Lütfen bir neden seçin.",
+    "detailsRequired": "\"Diğer\" seçtiğinizde lütfen en az 10 karakterlik bir açıklama yazın.",
+    "cancel": "Vazgeç",
+    "submit": "Şikayet et",
+    "sending": "Gönderiliyor…",
+    "close": "Kapat",
+    "sentTitle": "Teşekkürler, şikayetiniz alındı",
+    "sentText": "Ekibimiz inceleyip gerekli işlemi yapacak.",
+    "alreadyTitle": "Bunu zaten şikayet ettiniz",
+    "alreadyText": "Önceki şikayetiniz inceleniyor; tekrar göndermenize gerek yok."
   },
   "HomePage": {
     "badge": "Ücretsiz sahiplendirme platformu",
@@ -876,6 +921,9 @@
     "CANNOT_MESSAGE_SELF": "Kendi ilanınıza mesaj gönderemezsiniz.",
     "RECIPIENT_UNAVAILABLE": "Bu kullanıcı hesabını kapattığı için mesaj gönderilemiyor.",
     "MESSAGE_TOO_LONG": "Mesaj en fazla 2000 karakter olabilir.",
-    "COMMENT_TOO_LONG": "Yorum en fazla 1000 karakter olabilir."
+    "COMMENT_TOO_LONG": "Yorum en fazla 1000 karakter olabilir.",
+    "CANNOT_REPORT_SELF": "Kendi içeriğinizi şikayet edemezsiniz.",
+    "REPORT_DETAILS_REQUIRED": "\"Diğer\" seçtiğinizde lütfen en az 10 karakterlik bir açıklama yazın.",
+    "REPORT_DETAILS_TOO_LONG": "Açıklama en fazla 500 karakter olabilir."
   }
 }

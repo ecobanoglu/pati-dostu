@@ -55,6 +55,9 @@ export const ErrorCode = {
   CANNOT_MESSAGE_SELF: "CANNOT_MESSAGE_SELF",
   /** Karşı taraf hesabını kapatmış; konuşma okunur ama yeni mesaj gönderilemez. */
   RECIPIENT_UNAVAILABLE: "RECIPIENT_UNAVAILABLE",
+  // Şikâyet
+  /** Kendi ilanını, yorumunu ya da kendini şikâyet edemez. */
+  CANNOT_REPORT_SELF: "CANNOT_REPORT_SELF",
 } as const
 
 export type ErrorCode = (typeof ErrorCode)[keyof typeof ErrorCode]

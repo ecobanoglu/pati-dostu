@@ -1,6 +1,15 @@
 "use client"
 
-import { Check, FilePen, Heart, MessageCircle, MessageSquareText, TriangleAlert, type LucideIcon } from "lucide-react"
+import {
+  Check,
+  FilePen,
+  Flag,
+  Heart,
+  MessageCircle,
+  MessageSquareText,
+  TriangleAlert,
+  type LucideIcon,
+} from "lucide-react"
 import { useFormatter, useTranslations } from "next-intl"
 import { useEffect, useState } from "react"
 
@@ -18,6 +27,7 @@ export type NotificationItem = {
     | "favorite_closed"
     | "new_message"
     | "listing_comment"
+    | "report_created"
   payload: Record<string, unknown>
   readAt: string | null
   createdAt: string
@@ -58,6 +68,7 @@ const tones: Record<NotificationItem["type"], { icon: LucideIcon; className: str
   favorite_closed: { icon: Heart, className: "text-success-text" },
   new_message: { icon: MessageCircle, className: "text-primary" },
   listing_comment: { icon: MessageSquareText, className: "text-primary" },
+  report_created: { icon: Flag, className: "text-danger" },
 }
 
 /** Payload'daki metin alanını güvenle okur (API `Record<string, unknown>` döndürür). */
@@ -90,6 +101,19 @@ function targetOf(n: NotificationItem) {
       }
     }
   }
+  // Yeni şikâyet (admin): ilan/yorum ise ilgili ilan; kullanıcı şikâyetinin sayfası yok (admin paneli 5. aşamada).
+  if (n.type === "report_created") {
+    const slug = str(n.payload, "slug")
+    const no = str(n.payload, "listingNo")
+    if (slug && no) {
+      return {
+        pathname: "/listing/[slug]" as const,
+        params: { slug: `${slug}-${no}` },
+        ...(str(n.payload, "targetType") === "comment" ? { hash: "comments" } : {}),
+      }
+    }
+    return "/account/notifications" as const
+  }
   if (n.type === "favorite_closed") return "/account/favorites" as const
   if (n.type === "new_message") {
     const c = str(n.payload, "conversationId")
@@ -105,6 +129,7 @@ function targetOf(n: NotificationItem) {
  */
 export function NotificationsList({ initial, now }: { initial: NotificationPage; now: string }) {
   const t = useTranslations("Notifications")
+  const tr = useTranslations("Reports")
   const format = useFormatter()
   const [items, setItems] = useState(initial.items)
   const [unread, setUnread] = useState(initial.unreadCount)
@@ -203,7 +228,14 @@ export function NotificationsList({ initial, now }: { initial: NotificationPage;
                     title={t(`item.${messageKey(n)}.title` as never)}
                     body={t(`item.${messageKey(n)}.body` as "item.listing_rejected.body", {
                       title: str(n.payload, "title"),
-                      reason: str(n.payload, "reason"),
+                      reason:
+                        n.type === "report_created"
+                          ? tr(`reasons.${str(n.payload, "reason")}` as "reasons.other")
+                          : str(n.payload, "reason"),
+                      target:
+                        n.type === "report_created"
+                          ? tr(`targets.${str(n.payload, "targetType")}` as "targets.user")
+                          : "",
                       note: str(n.payload, "note"),
                       sender: str(n.payload, "senderName") || str(n.payload, "authorName"),
                       preview: str(n.payload, "preview"),

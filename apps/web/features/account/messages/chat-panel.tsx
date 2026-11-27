@@ -34,6 +34,7 @@ export function ChatPanel({
   sendError,
   blockedNote,
   intro,
+  headerAction,
   now,
 }: {
   other: { name: string; image: string | null; deleted: boolean }
@@ -50,6 +51,8 @@ export function ChatPanel({
   blockedNote: string | null
   /** Taslak konuşmada mesajların yerine gösterilen açıklama. */
   intro?: ReactNode
+  /** Başlığın sağındaki eylem ("Şikâyet et"; tasarımdaki "Şikayet / engelle" — engelleme v1.1). */
+  headerAction?: ReactNode
   now: Date
 }) {
   const t = useTranslations("Messages")
@@ -124,6 +127,7 @@ export function ChatPanel({
         </button>
         <UserAvatar user={{ name, role: "user", image: other.image }} className="size-10 bg-smoke text-primary" />
         <h2 className="min-w-0 flex-1 truncate text-lg font-extrabold text-heading">{name}</h2>
+        {headerAction}
       </header>
 
       <div ref={logRef} className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 py-4 lg:px-5">

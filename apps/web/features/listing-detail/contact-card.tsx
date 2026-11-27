@@ -12,6 +12,7 @@ import type { ListingDetailData } from "@/lib/listings"
 import { cn } from "@/lib/utils"
 
 import { FavoriteButton } from "@/components/listing/favorite-button"
+import { ReportButton } from "@/components/dialog/report-dialog"
 import { ShareDialog } from "@/components/listing/share-dialog"
 
 export type ContactProps = {
@@ -210,7 +211,7 @@ export function PrimaryAction({ listingId, listingNo, viewer, className }: Conta
   )
 }
 
-/** Masaüstü ilan sahibi kartı (tasarım 03, sağ sütun): sahip, telefon, mesaj, favori ve paylaş. */
+/** Masaüstü ilan sahibi kartı (tasarım 03, sağ sütun): sahip, telefon, mesaj, favori, paylaş ve şikâyet. */
 export function ContactCard(props: ContactProps) {
   return (
     <section aria-labelledby="owner-name" className="grid gap-4 rounded-card border border-border p-5">
@@ -220,9 +221,28 @@ export function ContactCard(props: ContactProps) {
       <OwnerHeading owner={props.owner} size="lg" />
       <PhoneBlock {...props} />
       <PrimaryAction {...props} />
-      <div className={cn("grid gap-2.5", props.canFavorite && "grid-cols-2")}>
+      <div
+        className={cn(
+          "grid gap-2",
+          [props.canFavorite, props.viewer !== "owner"].filter(Boolean).length === 2
+            ? "grid-cols-3"
+            : props.canFavorite || props.viewer !== "owner"
+              ? "grid-cols-2"
+              : undefined
+        )}
+      >
         {props.canFavorite && <FavoriteButton listingNo={props.listingNo} title={props.title} variant="full" />}
         <ShareDialog listingNo={props.listingNo} title={props.title} type={props.type} variant="full" />
+        {props.viewer !== "owner" && (
+          <ReportButton
+            target="listing"
+            id={String(props.listingNo)}
+            subject={props.title}
+            trigger="card"
+            signedIn={props.viewer !== "guest"}
+            next={props.next}
+          />
+        )}
       </div>
     </section>
   )

@@ -3,6 +3,7 @@ import type { Metadata } from "next"
 import { getFormatter, getLocale, getTranslations } from "next-intl/server"
 import { notFound } from "next/navigation"
 
+import { ReportButton } from "@/components/dialog/report-dialog"
 import { listingSlug } from "@/components/listing/listing-card"
 import { ListingTypeBadge } from "@/components/listing/listing-type-badge"
 import { getPathname, Link, permanentRedirect } from "@/i18n/navigation"
@@ -79,7 +80,7 @@ async function loadComments(no: number): Promise<CommentPage> {
  * özellikler · ilan sahibi + benzer ilanlar. Mobilde sayfanın kendi üst çubuğu, kaydırmalı galeri, özellik
  * kutucukları ve altta sabit "Mesaj gönder". Yalnızca yayındaki ilan görünür (sahibi ve admin önizleyebilir);
  * eski/yanlış slug kalıcı olarak doğru adrese yönlendirilir. Oturuma baktığı için <Suspense> içinde render edilir.
- * Açıklamanın altında yorumlar (önizlemede yok). Şikâyet 3. aşamanın 8. adımında.
+ * Açıklamanın altında yorumlar (önizlemede yok). Şikâyet: masaüstünde sahip kartında, mobilde sayfa sonunda.
  */
 export async function ListingDetailView({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
@@ -251,6 +252,18 @@ export async function ListingDetailView({ params }: { params: Promise<{ slug: st
               <div className="lg:hidden">
                 <SafeAdoptionNote />
               </div>
+              {!preview && contact.viewer !== "owner" && (
+                <div className="flex justify-center lg:hidden">
+                  <ReportButton
+                    target="listing"
+                    id={String(listing.listingNo)}
+                    subject={title}
+                    trigger="link"
+                    signedIn={contact.viewer !== "guest"}
+                    next={contact.next}
+                  />
+                </div>
+              )}
             </div>
           </div>
 

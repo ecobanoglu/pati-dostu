@@ -30,6 +30,9 @@ export const ValidationCode = {
   MESSAGE_TOO_LONG: "MESSAGE_TOO_LONG",
   // Yorum
   COMMENT_TOO_LONG: "COMMENT_TOO_LONG",
+  // Şikâyet
+  REPORT_DETAILS_REQUIRED: "REPORT_DETAILS_REQUIRED",
+  REPORT_DETAILS_TOO_LONG: "REPORT_DETAILS_TOO_LONG",
 } as const
 
 export type ValidationCode = (typeof ValidationCode)[keyof typeof ValidationCode]

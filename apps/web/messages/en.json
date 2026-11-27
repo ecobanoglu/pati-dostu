@@ -667,7 +667,8 @@
     "topicFavoriteUpdate": "Updates on saved listings",
     "channelNotAvailable": "Not available",
     "topicNewMessage": "New message",
-    "topicListingComment": "Comments on my listings"
+    "topicListingComment": "Comments on my listings",
+    "topicAdminReport": "New reports (admin)"
   },
   "Notifications": {
     "metaTitle": "Notifications",
@@ -720,6 +721,10 @@
       "listing_comment": {
         "title": "New comment on your listing",
         "body": "{sender}: {preview}"
+      },
+      "report_created": {
+        "title": "New report",
+        "body": "{target} · {reason}: \"{title}\""
       }
     }
   },
@@ -784,6 +789,46 @@
     "deleted": "Comment deleted.",
     "signIn": "Sign in",
     "signInText": "to write a comment."
+  },
+  "Reports": {
+    "open": {
+      "listing": "Report listing",
+      "comment": "Report comment",
+      "user": "Report user"
+    },
+    "short": "Report",
+    "reasonLabel": "Reason",
+    "reasons": {
+      "sale": "Selling or asking for money",
+      "fake": "Fake or misleading",
+      "animal_abuse": "Animal mistreatment",
+      "inappropriate": "Abusive or inappropriate",
+      "spam": "Spam / duplicate",
+      "misinformation": "False information",
+      "harassment": "Harassment or abuse",
+      "fake_account": "Fake account",
+      "other": "Other"
+    },
+    "targets": {
+      "listing": "Listing",
+      "comment": "Comment",
+      "user": "User"
+    },
+    "detailsLabel": "Details (optional)",
+    "detailsLabelRequired": "Details",
+    "detailsPlaceholder": "Briefly describe the problem",
+    "detailsHint": "{count}/{max} characters. Only the Pati Dostu team sees this.",
+    "note": "Your report goes to the Pati Dostu team; the reported person isn't told who reported them. The content may stay up until it's reviewed.",
+    "reasonRequired": "Please choose a reason.",
+    "detailsRequired": "When you choose \"Other\", please write at least 10 characters.",
+    "cancel": "Cancel",
+    "submit": "Report",
+    "sending": "Sending…",
+    "close": "Close",
+    "sentTitle": "Thanks, we got your report",
+    "sentText": "Our team will review it and take action.",
+    "alreadyTitle": "You've already reported this",
+    "alreadyText": "Your earlier report is being reviewed; no need to send it again."
   },
   "HomePage": {
     "badge": "Free adoption platform",
@@ -876,6 +921,9 @@
     "CANNOT_MESSAGE_SELF": "You can't send a message to your own listing.",
     "RECIPIENT_UNAVAILABLE": "This user has closed their account, so you can't send them messages.",
     "MESSAGE_TOO_LONG": "A message can be at most 2,000 characters.",
-    "COMMENT_TOO_LONG": "A comment can be at most 1,000 characters."
+    "COMMENT_TOO_LONG": "A comment can be at most 1,000 characters.",
+    "CANNOT_REPORT_SELF": "You can't report your own content.",
+    "REPORT_DETAILS_REQUIRED": "When you choose \"Other\", please write at least 10 characters.",
+    "REPORT_DETAILS_TOO_LONG": "Details can be at most 500 characters."
   }
 }

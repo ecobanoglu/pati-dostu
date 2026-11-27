@@ -43,6 +43,17 @@ export type NotificationPayload =
       /** Yorumun ilk 140 karakteri. */
       preview: string
     }
+  | {
+      type: "report_created"
+      reportId: string
+      targetType: "listing" | "comment" | "user"
+      reason: string
+      /** İlan ve yorum şikâyetinde ilgili ilan. */
+      listingNo: number | null
+      slug: string | null
+      /** İlan başlığı ya da (kullanıcı şikâyetinde) kullanıcının adı. */
+      title: string
+    }
 
 /** Web adresleri (e-postadaki butonlar için; Türkçe öneksiz, İngilizce /en önekli — web › i18n/routing). */
 const WEB_PATHS = {
@@ -50,6 +61,7 @@ const WEB_PATHS = {
   favorites: { tr: "/hesabim/favoriler", en: "/en/account/favorites" },
   listing: { tr: "/ilan", en: "/en/listing" },
   messages: { tr: "/hesabim/mesajlar", en: "/en/account/messages" },
+  notifications: { tr: "/hesabim/bildirimler", en: "/en/account/notifications" },
 } as const
 
 /**
@@ -224,6 +236,13 @@ export class NotificationsService {
           senderName: payload.authorName,
           preview: payload.preview,
           url: `${web}${WEB_PATHS.listing[locale]}/${payload.slug ? `${payload.slug}-` : ""}${payload.listingNo}#comments`,
+        }
+      case "report_created":
+        // E-posta varsayılan kapalı (karar); açılırsa bildirimler sayfasına yönlendirir (admin paneli 5. aşamada).
+        return {
+          type: payload.type,
+          title: payload.title,
+          url: `${web}${WEB_PATHS.notifications[locale]}`,
         }
     }
   }

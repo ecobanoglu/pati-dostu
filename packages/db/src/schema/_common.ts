@@ -99,6 +99,23 @@ export const reportTargetEnum = pgEnum("report_target", ["listing", "comment", "
 
 export const reportStatusEnum = pgEnum("report_status", ["open", "resolved", "dismissed"])
 
+/**
+ * Şikâyet nedeni (hedefe göre izinli alt küme packages/validators › reports.ts). sale: satış/ücret talebi; fake:
+ * sahte/yanıltıcı ilan; animal_abuse: hayvana kötü muamele; inappropriate: uygunsuz/hakaret içeren; spam; misinformation:
+ * yanlış bilgi; harassment: taciz/hakaret (kullanıcı); fake_account: sahte hesap; other: diğer (açıklama zorunlu).
+ */
+export const reportReasonEnum = pgEnum("report_reason", [
+  "sale",
+  "fake",
+  "animal_abuse",
+  "inappropriate",
+  "spam",
+  "misinformation",
+  "harassment",
+  "fake_account",
+  "other",
+])
+
 export const moderationRuleKindEnum = pgEnum("moderation_rule_kind", [
   "phone",
   "email",

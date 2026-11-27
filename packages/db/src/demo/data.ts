@@ -1163,3 +1163,52 @@ export const demoComments: DemoComment[] = [
     body: "Günde birkaç saat güvenli bir alanda serbest dolaşması gerekiyor; kablolara dikkat etmek yeterli.",
   },
 ]
+
+/**
+ * Demo şikâyetler (yalnız admin görür; admin paneli 5. aşamada bunları listeler). `target`: ilan anahtarı, yorumun
+ * ilanı + sırası (`demoComments` içinde o ilana ait n. yorum) ya da kullanıcı anahtarı.
+ */
+export type DemoReport = {
+  reporter: string
+  target:
+    | { type: "listing"; listing: string }
+    | { type: "comment"; listing: string; index: number }
+    | { type: "user"; user: string }
+  reason:
+    | "sale"
+    | "fake"
+    | "animal_abuse"
+    | "inappropriate"
+    | "spam"
+    | "misinformation"
+    | "harassment"
+    | "fake_account"
+    | "other"
+  details?: string
+  ago: number
+}
+
+export const demoReports: DemoReport[] = [
+  {
+    reporter: "elif",
+    target: { type: "listing", listing: "mia" },
+    reason: "sale",
+    details: "Mesajda sahiplendirme için ücret istendiğini yazdı.",
+    ago: 5 * HOUR,
+  },
+  { reporter: "can", target: { type: "listing", listing: "lokum" }, reason: "fake", ago: DAY },
+  {
+    reporter: "zeynep",
+    target: { type: "comment", listing: "kar", index: 0 },
+    reason: "other",
+    details: "Yorum ilanla ilgili değil, aynı soruyu birçok ilana yazmış.",
+    ago: 2 * DAY,
+  },
+  {
+    reporter: "mert",
+    target: { type: "user", user: "can" },
+    reason: "harassment",
+    details: "Mesajlarda kaba bir dil kullandı.",
+    ago: 3 * DAY,
+  },
+]

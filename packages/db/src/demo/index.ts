@@ -25,11 +25,20 @@ import {
   listingComment,
   listingImage,
   message,
+  report,
   species,
   user,
 } from "../schema/index.js"
 import { slugify } from "../text.js"
-import { closings, DEMO_EMAIL_DOMAIN, demoComments, demoConversations, demoListings, demoUsers } from "./data.js"
+import {
+  closings,
+  DEMO_EMAIL_DOMAIN,
+  demoComments,
+  demoConversations,
+  demoListings,
+  demoReports,
+  demoUsers,
+} from "./data.js"
 import { CACHE_DIR, preparePhotos } from "./photos.js"
 
 const command = process.argv[2] === "clear" ? "clear" : "seed"
@@ -104,6 +113,16 @@ async function clearDemo() {
       )
     )
 
+  // Demo kullanıcıların açtığı ya da demo kullanıcı/ilan hakkındaki şikâyetler (yorum şikâyetleri demo kullanıcılarındır).
+  await db
+    .delete(report)
+    .where(
+      or(
+        inArray(report.reporterId, userIds),
+        inArray(report.targetId, userIds),
+        listingIds.length > 0 ? inArray(report.targetId, listingIds) : undefined
+      )
+    )
   // Demo kullanıcıların yorumları (demo ilanlardakiler ilanla birlikte cascade silinir).
   await db.delete(listingComment).where(inArray(listingComment.authorId, userIds))
 
@@ -247,18 +266,60 @@ async function seedListings(owners: Map<string, string>): Promise<Map<string, { 
 }
 
 /** Demo ilan yorumlarını ekler (yazanlar demo kullanıcılar; ilan sahibinin yorumu "İlan sahibi" rozetli görünür). */
-async function seedComments(owners: Map<string, string>, listings: Map<string, { id: string; ownerId: string }>) {
+async function seedComments(
+  owners: Map<string, string>,
+  listings: Map<string, { id: string; ownerId: string }>
+): Promise<Map<string, string[]>> {
   const now = Date.now()
-  await db.insert(listingComment).values(
-    demoComments.map((c) => {
-      const target = listings.get(c.listing)
-      const authorId = owners.get(c.author)
-      if (!target || !authorId) throw new Error(`Yorum için ilan/yazan yok: ${c.listing} / ${c.author}`)
-      const at = new Date(now - c.ago * 60_000)
-      return { listingId: target.id, authorId, body: c.body, createdAt: at, updatedAt: at }
+  const rows = await db
+    .insert(listingComment)
+    .values(
+      demoComments.map((c) => {
+        const target = listings.get(c.listing)
+        const authorId = owners.get(c.author)
+        if (!target || !authorId) throw new Error(`Yorum için ilan/yazan yok: ${c.listing} / ${c.author}`)
+        const at = new Date(now - c.ago * 60_000)
+        return { listingId: target.id, authorId, body: c.body, createdAt: at, updatedAt: at }
+      })
+    )
+    .returning({ id: listingComment.id, listingId: listingComment.listingId })
+  console.log(`  yorum: ${demoComments.length}`)
+  // İlan anahtarı → o ilanın yorum id'leri (demoComments sırasıyla).
+  const byListing = new Map<string, string[]>()
+  demoComments.forEach((c, i) => byListing.set(c.listing, [...(byListing.get(c.listing) ?? []), rows[i]!.id]))
+  return byListing
+}
+
+/** Demo şikâyetleri ekler (açık durumda; admin paneli 5. aşamada listeler). */
+async function seedReports(
+  owners: Map<string, string>,
+  listings: Map<string, { id: string; ownerId: string }>,
+  comments: Map<string, string[]>
+) {
+  const now = Date.now()
+  await db.insert(report).values(
+    demoReports.map((r) => {
+      const reporterId = owners.get(r.reporter)
+      const targetId =
+        r.target.type === "listing"
+          ? listings.get(r.target.listing)?.id
+          : r.target.type === "comment"
+            ? comments.get(r.target.listing)?.[r.target.index]
+            : owners.get(r.target.user)
+      if (!reporterId || !targetId) throw new Error(`Şikâyet için yazan/hedef yok: ${r.reporter}`)
+      const at = new Date(now - r.ago * 60_000)
+      return {
+        reporterId,
+        targetType: r.target.type,
+        targetId,
+        reason: r.reason,
+        details: r.details ?? null,
+        createdAt: at,
+        updatedAt: at,
+      }
     })
   )
-  console.log(`  yorum: ${demoComments.length}`)
+  console.log(`  şikâyet: ${demoReports.length}`)
 }
 
 /**
@@ -325,7 +386,8 @@ try {
     const owners = await seedUsers()
     const listings = await seedListings(owners)
     await seedConversations(owners, listings)
-    await seedComments(owners, listings)
+    const comments = await seedComments(owners, listings)
+    await seedReports(owners, listings, comments)
     console.log("Tamam. Silmek için: pnpm db:demo:clear")
   }
 } finally {

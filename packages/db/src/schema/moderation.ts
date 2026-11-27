@@ -7,6 +7,7 @@ import {
   id,
   moderationAreaEnum,
   moderationRuleKindEnum,
+  reportReasonEnum,
   reportStatusEnum,
   reportTargetEnum,
   termMatchEnum,
@@ -24,7 +25,9 @@ export const report = pgTable(
     targetType: reportTargetEnum().notNull(),
     /** Hedef kaydın kimliği (user için text, diğerleri için uuid metni). */
     targetId: text().notNull(),
-    reason: text().notNull(),
+    reason: reportReasonEnum().notNull(),
+    /** Şikâyet edenin açıklaması (isteğe bağlı; "Diğer"de zorunlu). Yalnız admin görür. */
+    details: text(),
     status: reportStatusEnum().notNull().default("open"),
     resolvedBy: text().references(() => user.id),
     resolutionNote: text(),

@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl"
 import { type MouseEvent, type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react"
 
 import { PdMark } from "@/components/brand/logo"
+import { ReportButton } from "@/components/dialog/report-dialog"
 import { buttonVariants } from "@/components/ui/button"
 import { Link } from "@/i18n/navigation"
 import { apiFetch } from "@/lib/api-browser"
@@ -430,6 +431,17 @@ export function Inbox({
         onSend={send}
         sendError={failure?.id === selected.id ? failure.text : null}
         blockedNote={selected.other.deleted ? t("recipientDeleted") : null}
+        headerAction={
+          !selected.other.deleted && (
+            <ReportButton
+              target="user"
+              id={selected.other.id}
+              subject={selected.other.name}
+              trigger="header"
+              signedIn
+            />
+          )
+        }
         now={now}
       />
     )

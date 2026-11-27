@@ -148,6 +148,11 @@ const notificationStrings = {
       detail: "Yorum",
       button: "Yorumu görüntüle",
     },
+    report_created: {
+      subject: "Yeni şikayet",
+      text: (title: string) => `"${title}" için yeni bir şikayet var.`,
+      button: "Bildirimlere git",
+    },
   },
   en: {
     footer: "You can change your notification preferences on the Profile and settings page.",
@@ -188,6 +193,11 @@ const notificationStrings = {
       detail: "Comment",
       button: "View comment",
     },
+    report_created: {
+      subject: "New report",
+      text: (title: string) => `There's a new report about "${title}".`,
+      button: "Go to notifications",
+    },
   },
 } satisfies Record<MailLocale, unknown>
 
@@ -199,6 +209,7 @@ export type NotificationMailData =
   | { type: "favorite_closed"; title: string; url: string; outcome: "adopted" | "reunited" | "closed" }
   | { type: "new_message"; title: string; url: string; senderName: string; preview: string }
   | { type: "listing_comment"; title: string; url: string; senderName: string; preview: string }
+  | { type: "report_created"; title: string; url: string }
 
 /** Bildirim e-postası (ilan sonucu, favori güncellemesi, yeni mesaj, ilan yorumu): kullanıcının dilinde, tek butonlu. */
 export function notificationMail(
@@ -243,6 +254,10 @@ export function notificationMail(
       buttonLabel = n.listing_comment.button
       text = n.listing_comment.text(data.senderName, data.title)
       detail = { label: n.listing_comment.detail, value: data.preview }
+      break
+    case "report_created":
+      ;({ subject, button: buttonLabel } = n.report_created)
+      text = n.report_created.text(data.title)
       break
   }
   const detailHtml = detail

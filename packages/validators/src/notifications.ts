@@ -5,8 +5,17 @@ import { z } from "zod"
  * Bildirim tercihleri). Yalnızca çalışan özelliklerin konuları burada; sorularıma cevap
  * (topluluk) ve kayıtlı arama (v1.2) özellikleri gelince eklenir. Mobil bildirim kanalı v2'de.
  */
-export const notificationTopics = ["listing_review", "favorite_update", "new_message", "listing_comment"] as const
+export const notificationTopics = [
+  "listing_review",
+  "favorite_update",
+  "new_message",
+  "listing_comment",
+  "admin_report",
+] as const
 export type NotificationTopic = (typeof notificationTopics)[number]
+
+/** Yalnız admin'e ait konular (ayarlardaki tercih tablosunda diğer rollere gösterilmez). */
+export const adminNotificationTopics: readonly NotificationTopic[] = ["admin_report"]
 
 /** Bildirim türleri ve ait oldukları konu. */
 export const notificationTypes = {
@@ -25,6 +34,8 @@ export const notificationTypes = {
   new_message: "new_message",
   /** İlanıma yorum yazıldı (sahibin kendi yorumu bildirilmez). */
   listing_comment: "listing_comment",
+  /** Yeni şikâyet — yalnız admin'lere (ayarlarda yalnız admin görür). */
+  report_created: "admin_report",
 } as const satisfies Record<string, NotificationTopic>
 export type NotificationType = keyof typeof notificationTypes
 export const notificationTypeList = Object.keys(notificationTypes) as NotificationType[]
@@ -38,6 +49,7 @@ export const defaultNotificationPrefs: Record<NotificationTopic, NotificationCha
   favorite_update: { inApp: true, email: false },
   new_message: { inApp: true, email: true },
   listing_comment: { inApp: true, email: false },
+  admin_report: { inApp: true, email: false },
 }
 
 /** Kullanıcı tercihleri (PATCH /me › notificationPrefs): tüm konular gönderilir. */

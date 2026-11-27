@@ -4,6 +4,7 @@ import { getFormatter, getLocale, getTranslations } from "next-intl/server"
 import { notFound } from "next/navigation"
 
 import { ReportButton } from "@/components/dialog/report-dialog"
+import { ViewTracker } from "@/components/tracking/view-tracker"
 import { listingSlug } from "@/components/listing/listing-card"
 import { ListingTypeBadge } from "@/components/listing/listing-type-badge"
 import { getPathname, Link, permanentRedirect } from "@/i18n/navigation"
@@ -21,7 +22,6 @@ import { ListingDescription } from "./listing-description"
 import { FeaturesTable, FeatureTiles, SafeAdoptionNote } from "./listing-features"
 import { MobileActionBar, MobileTopBar } from "./mobile-bars"
 import { SimilarListingsAside, SimilarListingsStrip } from "./similar-listings"
-import { ViewTracker } from "./view-tracker"
 
 /** Adresin slug parçasından ilan numarasını çıkarır: "luna-2-aylik-tekir-kedi-104582" → 104582. */
 export function parseListingNo(slug: string): number | null {
@@ -125,7 +125,7 @@ export async function ListingDetailView({ params }: { params: Promise<{ slug: st
   return (
     <>
       <MobileTopBar title={title} type={listing.type} listingNo={listing.listingNo} canFavorite={contact.canFavorite} />
-      {!preview && <ViewTracker listingNo={listing.listingNo} />}
+      {!preview && <ViewTracker storageKey={String(listing.listingNo)} path={`/listings/${listing.listingNo}/views`} />}
 
       <div className="mx-auto max-w-site pb-28 lg:px-6 lg:py-8 lg:pb-16">
         {preview && (

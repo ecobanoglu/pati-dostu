@@ -62,3 +62,66 @@ export async function getTopics(apiQuery: string): Promise<TopicPageData> {
     return { items: [], total: 0, page: 1, pageSize: 20 }
   }
 }
+
+/** Konu cevabı (apps/api › ForumReply). */
+export type ReplyData = {
+  id: string
+  body: string
+  author: TopicCardData["author"]
+  likeCount: number
+  isBestAnswer: boolean
+  createdAt: string
+}
+
+/** GET /forum/topics/{slug} yanıtı (apps/api › ForumTopicDetail). */
+export type TopicDetailData = TopicCardData & {
+  categoryId: string
+  body: string
+  images: string[]
+  replies: ReplyData[]
+}
+
+/** GET /forum/similar öğesi. */
+export type SimilarTopicData = {
+  id: string
+  slug: string
+  title: string
+  category: { slug: string; name: string }
+  answerCount: number
+  isSolved: boolean
+  vetAnswered: boolean
+}
+
+/**
+ * Konu detayı + cevaplar: önbelleksiz (yeni cevap, beğeni ve en iyi cevap sayfa yenilenince hemen görünsün; detay
+ * zaten oturuma bakan dinamik kısımda). Yoksa ya da silindiyse null.
+ */
+export async function getTopic(slug: string, locale: string): Promise<TopicDetailData | null> {
+  const res = await fetch(`${API_URL}/api/v1/forum/topics/${encodeURIComponent(slug)}?locale=${locale}`, {
+    cache: "no-store",
+  })
+  if (res.status === 404) return null
+  if (!res.ok) throw new Error(`forum topic: ${res.status}`)
+  return (await res.json()) as TopicDetailData
+}
+
+/** Benzer konular (başlığa göre, aynı kategori önce): 5 dakika önbellekte. Hata olursa boş liste. */
+export async function getSimilarTopics(
+  title: string,
+  categoryId: string,
+  exclude: string,
+  locale: string
+): Promise<SimilarTopicData[]> {
+  "use cache"
+  cacheTag("forum")
+  try {
+    const q = new URLSearchParams({ title: title.slice(0, 120), categoryId, exclude, locale })
+    const res = await fetch(`${API_URL}/api/v1/forum/similar?${q}`)
+    if (!res.ok) throw new Error(`forum similar: ${res.status}`)
+    cacheLife({ stale: 60, revalidate: 300, expire: 3600 })
+    return (await res.json()) as SimilarTopicData[]
+  } catch {
+    cacheLife("seconds")
+    return []
+  }
+}

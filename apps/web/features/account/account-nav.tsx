@@ -4,20 +4,24 @@ import { LogOut } from "lucide-react"
 import { useTranslations } from "next-intl"
 
 import { accountNav } from "@/components/layout/account-links"
+import { UnreadMessagesBadge } from "@/components/layout/messages-link"
 import { useSignOut } from "@/components/layout/use-sign-out"
 import { Link, usePathname } from "@/i18n/navigation"
+import { useUnreadMessages } from "@/lib/use-unread-messages"
 import { cn } from "@/lib/utils"
 
 /**
  * Hesabım sol menüsünün bağlantıları ve "Çıkış yap" (tasarım 02-hesabim/01). Bulunulan sayfa vurgulanır ve
  * aria-current ile bildirilir; alt sayfalarda (ör. /hesabim/ilanlarim/…/duzenle) üst bağlantı aktif sayılır.
- * usePathname okuduğu için düzende <Suspense> içinde render edilir.
+ * Mesajlar satırında okunmamış mesaj sayısı (tasarım). usePathname okuduğu için düzende <Suspense> içinde render edilir.
  */
 export function AccountNav() {
   const t = useTranslations("UserMenu")
   const ta = useTranslations("Account")
   const pathname = usePathname()
   const { signOut, pending, error } = useSignOut()
+  const tm = useTranslations("Messages")
+  const unread = useUnreadMessages()
 
   /** Bağlantı bu sayfayı mı gösteriyor? Panel özeti yalnızca tam eşleşmede aktif. */
   const isActive = (href: string) => (href === "/account" ? pathname === href : pathname.startsWith(href))
@@ -38,7 +42,13 @@ export function AccountNav() {
                 className={cn(row, active ? "bg-smoke text-primary" : "text-heading hover:bg-smoke-2")}
               >
                 <Icon aria-hidden="true" />
-                {t(key)}
+                <span className="flex-1">{t(key)}</span>
+                {href === "/account/messages" && unread > 0 && (
+                  <>
+                    <UnreadMessagesBadge count={unread} />
+                    <span className="sr-only">{tm("unreadCount", { count: unread })}</span>
+                  </>
+                )}
               </Link>
             </li>
           )

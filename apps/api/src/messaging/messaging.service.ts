@@ -165,6 +165,7 @@ export class MessagingService {
     const rows = await this.conversationRows(
       meId,
       and(
+        q.listingId ? eq(conversation.listingId, q.listingId) : undefined,
         term
           ? or(
               ilike(listing.title, term),

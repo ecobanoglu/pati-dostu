@@ -5,8 +5,10 @@ import { useTranslations } from "next-intl"
 import { Suspense } from "react"
 
 import { Link, usePathname } from "@/i18n/navigation"
+import { useUnreadMessages } from "@/lib/use-unread-messages"
 import { cn } from "@/lib/utils"
 
+import { UnreadMessagesBadge } from "./messages-link"
 import { isActivePath } from "./nav-items"
 
 const tabs = [
@@ -20,7 +22,8 @@ const tabs = [
 /**
  * Mobil alt menü (768 px altı): Anasayfa, İlanlar, İlan Ver (ortada yükseltilmiş turuncu buton), Mesajlar, Profil.
  * Ekranın altına sabitlenir; içerik alttan bu yükseklik kadar boşlukla biter (layout'ta pb).
- * Mesajlar/Profil giriş ister; misafir giriş sayfasına yönlendirilir (proxy, 7c).
+ * Mesajlar/Profil giriş ister; misafir giriş sayfasına yönlendirilir (proxy, 7c). Mesajlar'da okunmamış sayısı
+ * rozeti (misafirde istek ilk 401'den sonra durur).
  */
 export function MobileTabBar() {
   // Adresi değişken içeren sayfalarda aktif sekme Suspense içinde hesaplanır (bkz. MainNav).
@@ -39,6 +42,8 @@ function ActiveTabBar() {
 /** Alt menünün kendisi; pathname null ise hiçbir sekme işaretlenmez. */
 function TabBar({ pathname }: { pathname: string | null }) {
   const t = useTranslations("Nav")
+  const tm = useTranslations("Messages")
+  const unread = useUnreadMessages()
 
   return (
     <nav
@@ -69,9 +74,17 @@ function TabBar({ pathname }: { pathname: string | null }) {
                     <Icon aria-hidden="true" className="size-7" />
                   </span>
                 ) : (
-                  <Icon aria-hidden="true" className="size-6" />
+                  <span className="relative">
+                    <Icon aria-hidden="true" className="size-6" />
+                    {key === "messages" && (
+                      <UnreadMessagesBadge count={unread} className="absolute -top-1.5 -right-2.5" />
+                    )}
+                  </span>
                 )}
                 {t(key)}
+                {key === "messages" && unread > 0 && (
+                  <span className="sr-only">{tm("unreadCount", { count: unread })}</span>
+                )}
               </Link>
             </li>
           )

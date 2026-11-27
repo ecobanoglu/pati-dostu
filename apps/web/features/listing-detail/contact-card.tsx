@@ -184,7 +184,7 @@ function PhoneBlock({ listingNo, title, contact, viewer, next, compact }: Contac
 }
 
 /** Ana eylem: "Mesaj gönder" (misafir → giriş), ilan sahibine "İlanı düzenle". */
-export function PrimaryAction({ listingId, viewer, next, className }: ContactProps & { className?: string }) {
+export function PrimaryAction({ listingId, listingNo, viewer, className }: ContactProps & { className?: string }) {
   const t = useTranslations("ListingDetail")
   if (viewer === "owner") {
     return (
@@ -197,10 +197,11 @@ export function PrimaryAction({ listingId, viewer, next, className }: ContactPro
       </Link>
     )
   }
-  // Mesajlaşma 3. aşamada; şimdilik mesajlar sayfasına gider (ilanla konuşma başlatma o adımda).
+  // Mesajlar sayfasında bu ilan için konuşma açılır (varsa o, yoksa ilk mesaj taslağı). Misafiri proxy girişe
+  // yönlendirir ve giriş sonrası buraya döner.
   return (
     <Link
-      href={viewer === "guest" ? { pathname: "/sign-in", query: { next } } : "/account/messages"}
+      href={{ pathname: "/account/messages", query: { ilan: String(listingNo) } }}
       className={cn(buttonVariants(), className)}
     >
       <MessageCircle aria-hidden="true" />

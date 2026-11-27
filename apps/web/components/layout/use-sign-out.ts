@@ -5,6 +5,7 @@ import { useState, useTransition } from "react"
 
 import { useRouter } from "@/i18n/navigation"
 import { authClient } from "@/lib/auth-client"
+import { resetUnreadCounts } from "@/lib/unread-store"
 import { resetFavorites } from "@/lib/use-favorites"
 
 /**
@@ -27,6 +28,7 @@ export function useSignOut() {
         return
       }
       resetFavorites()
+      resetUnreadCounts()
       router.replace("/")
       router.refresh()
     })

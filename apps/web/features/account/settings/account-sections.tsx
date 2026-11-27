@@ -26,6 +26,7 @@ import type { Me } from "@/lib/api"
 import { apiFetch } from "@/lib/api-browser"
 import { authClient } from "@/lib/auth-client"
 import { authErrorCode, useErrorMessage } from "@/lib/errors"
+import { resetUnreadCounts } from "@/lib/unread-store"
 import { resetFavorites } from "@/lib/use-favorites"
 import { cn } from "@/lib/utils"
 
@@ -375,6 +376,7 @@ export function DeleteAccountSection({ user }: { user: Me }) {
     }
     await authClient.signOut().catch(() => undefined)
     resetFavorites()
+    resetUnreadCounts()
     router.replace("/")
     router.refresh()
   }

@@ -1,4 +1,3 @@
-import { MessageCircle } from "lucide-react"
 import { getTranslations } from "next-intl/server"
 
 import { buttonVariants } from "@/components/ui/button"
@@ -6,17 +5,17 @@ import { Link } from "@/i18n/navigation"
 import { getCurrentUser } from "@/lib/session"
 import { cn } from "@/lib/utils"
 
+import { MessagesLink } from "./messages-link"
 import { MobileMenu } from "./mobile-menu"
 import { NotificationBell } from "./notification-bell"
 import { UserMenu } from "./user-menu"
-
-const iconLink = cn(buttonVariants({ variant: "ghost", size: "icon" }), "text-heading hover:text-primary")
 
 /**
  * Üst menünün oturuma bağlı sağ tarafı. Misafir: Giriş yap / Kayıt ol; giriş yapılmış: mesajlar, bildirimler,
  * profil menüsü. Her durumda "İlan Ver" ve (lg altı) hamburger menü.
  * cookies() okuduğu için SiteHeader'da <Suspense> içinde render edilir; sayfanın geri kalanı beklemez.
- * Zil okunmamış bildirim sayısını gösterir (mobilde de, hamburgerin yanında); mesaj sayısı mesajlaşmayla gelecek.
+ * Zil okunmamış bildirim, mesaj ikonu okunmamış mesaj sayısını gösterir (mobilde zil hamburgerin yanında, mesaj
+ * sayısı alt menüde).
  */
 export async function HeaderActions() {
   const [user, t] = await Promise.all([getCurrentUser(), getTranslations("Nav")])
@@ -25,9 +24,7 @@ export async function HeaderActions() {
     <div className="flex items-center gap-2">
       {user ? (
         <div className="hidden items-center gap-1 lg:flex">
-          <Link href="/account/messages" aria-label={t("messages")} className={iconLink}>
-            <MessageCircle aria-hidden="true" />
-          </Link>
+          <MessagesLink />
           <NotificationBell />
           <UserMenu user={user} />
         </div>

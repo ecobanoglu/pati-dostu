@@ -965,3 +965,150 @@ export const rejectedPhotos = new Set([
   "John Jay (Gilbert Stuart portrait).jpg",
   "Obsidian - Maine coon yeux vairons - Odd eyed - Red Eye Effect.jpg",
 ])
+
+/**
+ * Demo konuşma. `starter`: ilana yazan — "inbox" = `.env › DEMO_INBOX_EMAIL`'deki gerçek hesap (Mesajlar sayfası
+ * kendi hesabınızda dolu görünsün diye; değişken yoksa yerine "can" yazar), ya da demo kullanıcı anahtarı.
+ * Mesajlar eskiden yeniye; `ago` dakika önce (sonraki mesajın `ago`'su daha küçük olmalı). `unread: true` → alıcı henüz okumadı (diğerleri birkaç dakika sonra okundu).
+ */
+export type DemoConversation = {
+  listing: string
+  starter: "inbox" | string
+  messages: Array<{ from: "starter" | "owner"; ago: number; body: string; unread?: true }>
+}
+
+const HOUR = 60
+const DAY = 24 * HOUR
+
+export const demoConversations: DemoConversation[] = [
+  {
+    listing: "luna",
+    starter: "inbox",
+    messages: [
+      { from: "starter", ago: 2 * DAY + 3 * HOUR, body: "Merhaba, Luna hâlâ sahiplendirilmeyi bekliyor mu?" },
+      {
+        from: "owner",
+        ago: 2 * DAY + 2 * HOUR,
+        body: "Merhaba, evet bekliyor! Kum ve mama düzeni oturdu, çok oyuncu ve insan seven bir yavru.",
+      },
+      {
+        from: "starter",
+        ago: 2 * DAY + HOUR,
+        body: "Çok sevindim. Evde başka hayvan yok, daha önce kedi baktım. Hafta sonu görmeye gelebilir miyim?",
+      },
+      {
+        from: "owner",
+        ago: 40,
+        body: "Tabii, cumartesi öğleden sonra uygun. Aşı kartını da yanımda getiririm, birlikte bakarız.",
+        unread: true,
+      },
+      { from: "owner", ago: 38, body: "Bu arada geçen hafta mikroçipi de takıldı.", unread: true },
+    ],
+  },
+  {
+    listing: "pamuk",
+    starter: "inbox",
+    messages: [
+      {
+        from: "starter",
+        ago: DAY - 3 * HOUR,
+        body: "Merhaba, dün akşam Moda sahiline yakın bir apartman bahçesinde beyaz, gözleri farklı renkte bir kedi gördüm. Pamuk olabilir mi?",
+      },
+      {
+        from: "owner",
+        ago: DAY - 4 * HOUR + 30,
+        body: "Çok teşekkürler! Pamuk'un bir gözü mavi bir gözü kehribar. Hangi sokak olduğunu yazabilir misiniz? Bu akşam bakmaya gideceğim.",
+        unread: true,
+      },
+    ],
+  },
+  {
+    listing: "karabas",
+    starter: "inbox",
+    messages: [
+      {
+        from: "starter",
+        ago: 3 * DAY,
+        body: "Merhaba, Karabaş için yazıyorum. Bahçeli bir evde yaşıyoruz, daha önce Kangal baktık.",
+      },
+      {
+        from: "owner",
+        ago: 3 * DAY - 2 * HOUR,
+        body: "Merhaba, ilginiz için teşekkürler. Karabaş enerjik bir genç, geniş bahçe onun için çok iyi olur. Barınağımızı hafta içi 10:00–17:00 arası ziyaret edebilirsiniz.",
+      },
+      {
+        from: "starter",
+        ago: 3 * DAY - 3 * HOUR,
+        body: "Perşembe öğleden sonra uğrarız. Yanımızda getirmemiz gereken bir şey var mı?",
+      },
+      {
+        from: "owner",
+        ago: 3 * DAY - 3 * HOUR - 15,
+        body: "Kimliğiniz yeterli. Görüşmeden sonra kısa bir ev ziyareti yapıyoruz, onu da birlikte planlarız.",
+      },
+      { from: "starter", ago: 3 * DAY - 3 * HOUR - 25, body: "Harika, perşembe görüşmek üzere." },
+    ],
+  },
+  {
+    listing: "komur",
+    starter: "inbox",
+    messages: [
+      {
+        from: "starter",
+        ago: 5 * DAY,
+        body: "Merhaba, Kömür'ün aşıları başladı mı? Kliniğinizden mi teslim alınıyor?",
+      },
+      {
+        from: "owner",
+        ago: 5 * DAY - 3 * HOUR,
+        body: "Merhaba, ilk karma aşısı yapıldı, ikinci doz önümüzdeki hafta. Sahiplenme kliniğimizden, kısa bir bilgilendirme görüşmesiyle oluyor.",
+      },
+      { from: "starter", ago: 5 * DAY - 4 * HOUR, body: "Teşekkürler, ikinci dozdan sonra tekrar yazacağım." },
+    ],
+  },
+  {
+    listing: "tekir",
+    starter: "inbox",
+    messages: [
+      {
+        from: "starter",
+        ago: 22 * DAY,
+        body: "Merhaba, Tekir'i sahiplenmek isteriz. Başvuru için ne yapmamız gerekiyor?",
+      },
+      {
+        from: "owner",
+        ago: 21 * DAY,
+        body: "Merhaba, ilginiz için çok teşekkürler. Tekir dün yeni yuvasına gitti; benzer karakterde başka kedilerimiz de var, ilanlarımıza göz atabilirsiniz.",
+      },
+    ],
+  },
+  {
+    listing: "pofuduk",
+    starter: "inbox",
+    messages: [
+      {
+        from: "starter",
+        ago: 40 * DAY,
+        body: "Merhaba, Pofuduk'un kafesi ve beslenme düzeni hakkında bilgi alabilir miyim? İlk kez tavşan sahiplenmeyi düşünüyoruz.",
+      },
+    ],
+  },
+  // Yalnız demo kullanıcılar arasında (veritabanında örnek; giriş yapılamadığı için arayüzde görünmez).
+  {
+    listing: "oscar",
+    starter: "mert",
+    messages: [
+      { from: "starter", ago: 6 * HOUR, body: "Merhaba, Oscar apartman dairesine uyum sağlar mı?" },
+      {
+        from: "owner",
+        ago: 5 * HOUR,
+        body: "Merhaba, evet; sakin bir köpek, günde iki yürüyüş yeterli oluyor.",
+      },
+    ],
+  },
+  {
+    listing: "max",
+    starter: "elif",
+    messages: [{ from: "starter", ago: 2 * DAY, body: "Max'in diğer köpeklerle arası nasıl?", unread: true }],
+  },
+]

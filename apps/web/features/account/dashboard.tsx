@@ -10,6 +10,8 @@ import { getCurrentUser } from "@/lib/session"
 import { cn } from "@/lib/utils"
 
 import { AccountPageHeader } from "./account-page-header"
+import { ConversationItem } from "./messages/conversation-item"
+import type { ConversationPage } from "./messages/types"
 
 /** GET /me/summary yanıtı (apps/api › MeSummaryDto). */
 type Summary = {
@@ -67,8 +69,8 @@ function StatCard({
 
 /**
  * Hesabım › Panel özeti (tasarım 02-hesabim/01, 08): selamlama, özet kartları (yayındaki ve onay bekleyen ilan,
- * favori, toplam görüntülenme) ve "Yapılacaklar" (reddedilen / düzeltme istenen / taslak ilan, e-posta doğrulama,
- * telefon). Okunmamış mesaj kartı ve "Son mesajlar" mesajlaşma adımında; kayıtlı aramalar v1.2'de.
+ * okunmamış mesaj, favori), "Yapılacaklar" (reddedilen / düzeltme istenen / taslak ilan, e-posta doğrulama, telefon)
+ * ve "Son mesajlar" (en son 3 konuşma). Kayıtlı aramalar v1.2'de.
  * Oturum yoksa girişe yönlendirir. cookies() okuduğu için <Suspense> içinde render edilir.
  */
 export async function Dashboard() {
@@ -80,11 +82,14 @@ export async function Dashboard() {
       locale,
     })
   }
-  const [t, format, summary] = await Promise.all([
+  const [t, format, summary, recent, unread] = await Promise.all([
     getTranslations("Dashboard"),
     getFormatter(),
     apiServer<Summary>("/me/summary"),
+    apiServer<ConversationPage>("/conversations?limit=3"),
+    apiServer<{ count: number }>("/conversations/unread-count"),
   ])
+  const now = new Date()
   const s = summary ?? {
     listings: { draft: 0, pending: 0, changes_requested: 0, active: 0, adopted: 0, closed: 0, rejected: 0 },
     favorites: 0,
@@ -172,11 +177,15 @@ export async function Dashboard() {
         />
         <StatCard label={t("statPending")} value={n(s.listings.pending)} hint={t("pendingHint")} />
         <StatCard
+          label={t("statMessages")}
+          value={n(unread?.count ?? 0)}
+          link={{ href: "/account/messages", text: t("goMessages") }}
+        />
+        <StatCard
           label={t("statFavorites")}
           value={n(s.favorites)}
           link={{ href: "/account/favorites", text: t("goFavorites") }}
         />
-        <StatCard label={t("statViews")} value={n(s.views)} hint={t("viewsHint")} />
       </div>
 
       <section
@@ -215,6 +224,36 @@ export async function Dashboard() {
               </li>
             ))}
           </ul>
+        )}
+      </section>
+
+      <section
+        aria-labelledby="recent-title"
+        className="mt-4 overflow-hidden rounded-card border border-border bg-background lg:mt-6"
+      >
+        <div className="flex items-center justify-between gap-3 px-4 pt-4 pb-3 lg:px-5">
+          <h2 id="recent-title" className="text-xl font-extrabold text-heading">
+            {t("recentTitle")}
+          </h2>
+          {(recent?.items.length ?? 0) > 0 && (
+            <Link
+              href="/account/messages"
+              className="inline-flex min-h-tap items-center text-sm font-extrabold text-primary underline underline-offset-4"
+            >
+              {t("recentAll")}
+            </Link>
+          )}
+        </div>
+        {recent && recent.items.length > 0 ? (
+          <ul className="divide-y divide-border border-t border-border">
+            {recent.items.map((c) => (
+              <li key={c.id}>
+                <ConversationItem conversation={c} now={now} />
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="px-4 pb-5 text-body lg:px-5">{t("recentEmpty")}</p>
         )}
       </section>
     </>

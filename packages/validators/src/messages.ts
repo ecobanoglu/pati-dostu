@@ -19,9 +19,13 @@ export type SendMessageInput = z.infer<typeof sendMessageSchema>
 export const startConversationSchema = z.object({ listingId: z.uuid(), body })
 export type StartConversationInput = z.infer<typeof startConversationSchema>
 
-/** GET /conversations sorgusu: kişi adı ya da ilan başlığında arama, sayfa boyutu, sonraki sayfa (cursor). */
+/**
+ * GET /conversations sorgusu: kişi adı ya da ilan başlığında arama, belirli bir ilanın konuşması (ilan detayındaki
+ * "Mesaj gönder" var olan konuşmayı bulmak için), sayfa boyutu, sonraki sayfa (cursor).
+ */
 export const conversationsQuerySchema = z.object({
   q: z.string().trim().max(100).optional(),
+  listingId: z.uuid().optional(),
   limit: z.coerce.number().int().min(1).max(50).default(20),
   cursor: z.string().max(100).optional(),
 })

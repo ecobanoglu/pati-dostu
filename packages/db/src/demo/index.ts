@@ -13,12 +13,12 @@ import { randomUUID } from "node:crypto"
 import { readFile } from "node:fs/promises"
 
 import { DeleteObjectsCommand, ListObjectsV2Command, PutObjectCommand, S3Client } from "@aws-sdk/client-s3"
-import { and, eq, inArray, like, or, sql } from "drizzle-orm"
+import { and, eq, inArray, isNull, like, or, sql } from "drizzle-orm"
 
 import { createDb } from "../client.js"
-import { breed, city, conversation, district, listing, listingImage, species, user } from "../schema/index.js"
+import { breed, city, conversation, district, listing, listingImage, message, species, user } from "../schema/index.js"
 import { slugify } from "../text.js"
-import { closings, DEMO_EMAIL_DOMAIN, demoListings, demoUsers } from "./data.js"
+import { closings, DEMO_EMAIL_DOMAIN, demoConversations, demoListings, demoUsers } from "./data.js"
 import { CACHE_DIR, preparePhotos } from "./photos.js"
 
 const command = process.argv[2] === "clear" ? "clear" : "seed"
@@ -165,12 +165,13 @@ async function loadDictionary() {
 }
 
 /** Demo ilanları, fotoğraflarıyla birlikte ekler. */
-async function seedListings(owners: Map<string, string>) {
+async function seedListings(owners: Map<string, string>): Promise<Map<string, { id: string; ownerId: string }>> {
   const dict = await loadDictionary()
   console.log("  fotoğraflar hazırlanıyor (Wikimedia Commons; önbellekteyse indirilmez)…")
   const photos = await preparePhotos(demoListings.map((l) => ({ key: l.key, query: l.query, count: l.photos })))
 
   let imageCount = 0
+  const created = new Map<string, { id: string; ownerId: string }>()
   for (const [i, d] of demoListings.entries()) {
     const ownerId = owners.get(d.owner)
     if (!ownerId) throw new Error(`Sahip yok: ${d.owner}`)
@@ -210,6 +211,7 @@ async function seedListings(owners: Map<string, string>) {
       })
       .returning({ id: listing.id })
     if (!row) throw new Error(`İlan eklenemedi: ${d.key}`)
+    created.set(d.key, { id: row.id, ownerId })
 
     const files = photos.get(d.key) ?? []
     for (const [order, file] of files.entries()) {
@@ -227,6 +229,63 @@ async function seedListings(owners: Map<string, string>) {
     .where(and(inArray(listing.ownerId, [...owners.values()]), eq(listing.status, "active")))
   console.log(`  ilan: ${demoListings.length} (yayında ${total}), fotoğraf: ${imageCount}`)
   console.log(`  fotoğraf kaynakları ve lisansları: ${CACHE_DIR}/attributions.json`)
+  return created
+}
+
+/**
+ * Demo konuşmaları ekler. "inbox" konuşmalarını `.env › DEMO_INBOX_EMAIL`'deki gerçek hesap başlatmış sayılır
+ * (Mesajlar sayfası o hesapta dolu görünsün; karar). Değişken yoksa ya da hesap bulunamazsa yerine demo kullanıcı
+ * "can" yazar. Konuşmalar demo ilanlarda olduğu için clearDemo hepsini siler.
+ */
+async function seedConversations(owners: Map<string, string>, listings: Map<string, { id: string; ownerId: string }>) {
+  const inboxEmail = process.env.DEMO_INBOX_EMAIL?.trim()
+  const [inbox] = inboxEmail
+    ? await db
+        .select({ id: user.id })
+        .from(user)
+        .where(and(eq(user.email, inboxEmail), isNull(user.deletedAt)))
+    : []
+  if (inboxEmail && !inbox) console.log(`  DEMO_INBOX_EMAIL hesabı bulunamadı; demo kullanıcı yazacak`)
+  const now = Date.now()
+  let messageCount = 0
+  for (const c of demoConversations) {
+    const target = listings.get(c.listing)
+    if (!target) throw new Error(`Konuşma ilanı yok: ${c.listing}`)
+    const starterId = c.starter === "inbox" ? (inbox?.id ?? owners.get("can")) : owners.get(c.starter)
+    if (!starterId) throw new Error(`Yazan yok: ${c.starter}`)
+    if (starterId === target.ownerId) continue
+    if (c.messages.some((m, i) => i > 0 && m.ago >= c.messages[i - 1]!.ago)) {
+      throw new Error(`Konuşma mesajları sırasız (${c.listing}): sonraki mesajın "ago" değeri daha küçük olmalı`)
+    }
+    const at = (ago: number) => new Date(now - ago * 60_000)
+    const last = c.messages.at(-1)!
+    const [row] = await db
+      .insert(conversation)
+      .values({
+        listingId: target.id,
+        starterId,
+        ownerId: target.ownerId,
+        lastMessageAt: at(last.ago),
+        createdAt: at(c.messages[0]!.ago),
+        updatedAt: at(last.ago),
+      })
+      .returning({ id: conversation.id })
+    await db.insert(message).values(
+      c.messages.map((m) => ({
+        conversationId: row!.id,
+        senderId: m.from === "starter" ? starterId : target.ownerId,
+        body: m.body,
+        // Okunanlar birkaç dakika sonra okunmuş sayılır (gelecekte olmasın).
+        readAt: m.unread ? null : new Date(Math.min(now, at(m.ago).getTime() + 3 * 60_000)),
+        createdAt: at(m.ago),
+        updatedAt: at(m.ago),
+      }))
+    )
+    messageCount += c.messages.length
+  }
+  console.log(
+    `  konuşma: ${demoConversations.length}, mesaj: ${messageCount}${inbox ? ` (DEMO_INBOX_EMAIL hesabına)` : ""}`
+  )
 }
 
 try {
@@ -235,7 +294,8 @@ try {
   if (command === "seed") {
     console.log("Demo içerik ekleniyor…")
     const owners = await seedUsers()
-    await seedListings(owners)
+    const listings = await seedListings(owners)
+    await seedConversations(owners, listings)
     console.log("Tamam. Silmek için: pnpm db:demo:clear")
   }
 } finally {

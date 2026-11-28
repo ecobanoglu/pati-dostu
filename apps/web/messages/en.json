@@ -747,6 +747,18 @@
       "forum_best_answer": {
         "title": "Your answer was chosen as the best",
         "body": "In \"{title}\". Thank you!"
+      },
+      "user_warned": {
+        "title": "A warning about your account",
+        "body": "Your post was found to break the community rules ({reason}). If this happens again, your account may be suspended."
+      },
+      "report_resolved_action_taken": {
+        "title": "Your report was reviewed",
+        "body": "“{title}” was reviewed and action was taken. Thank you."
+      },
+      "report_resolved_no_violation": {
+        "title": "Your report was reviewed",
+        "body": "“{title}” was reviewed; no rule violation was found."
       }
     }
   },
@@ -1134,7 +1146,10 @@
     "LINK_INVALID": "One of the links is invalid: only https:// or site (/…) addresses are allowed.",
     "SCHEDULE_IN_PAST": "The publish date must be in the future.",
     "REASON_REQUIRED": "Choose a rejection reason or write a note of at least 10 characters.",
-    "REASON_INVALID": "The selected rejection reason no longer exists. Reload and choose again."
+    "REASON_INVALID": "The selected rejection reason no longer exists. Reload and choose again.",
+    "CANNOT_MODERATE_ADMIN": "Warnings and suspensions can't be applied to admin accounts.",
+    "REPORT_NOT_OPEN": "This report has already been closed. Reload the page.",
+    "ACTION_REQUIRED": "Choose at least one action or dismiss the report."
   },
   "Posts": {
     "blogTitle": "Blog",
@@ -1197,6 +1212,7 @@
     "nav": {
       "listingReview": "Listing review",
       "listings": "Listings",
+      "reports": "Reports",
       "blog": "Blog",
       "news": "News"
     },
@@ -1532,5 +1548,91 @@
     "previous": "Previous",
     "next": "Next",
     "pageOf": "Page {page} of {total}"
+  },
+  "AdminReports": {
+    "title": "Reports",
+    "casesTitle": "Report cases",
+    "statusFilter": "Status",
+    "status": {
+      "open": "Open",
+      "closed": "Closed"
+    },
+    "targetFilter": "Reported item",
+    "all": "All",
+    "emptyOpen": "No open reports.",
+    "emptyClosed": "No closed reports yet.",
+    "listNote": "Red time: reports older than 24 hours. Multiple reports about the same item are grouped into one case.",
+    "commentUnder": "Under listing PD-{no} · {name}",
+    "people": "{count, plural, one {# person} other {# people}}",
+    "waitLabel": "Since the first report:",
+    "lateLabel": "Over 24 hours:",
+    "elapsedMin": "{n} min",
+    "elapsedHour": "{n} h",
+    "elapsedDay": "{n} d",
+    "outcome": {
+      "action_taken": "Action taken",
+      "no_violation": "No violation"
+    },
+    "backToList": "Reports",
+    "noCase": "No report to show",
+    "caseMeta": "{count, plural, one {# person reported} other {# people reported}} · first {time} ago",
+    "heading": {
+      "listing": "Listing: {title}",
+      "user": "User: {name}",
+      "comment": "Comment by {name} (listing: {title})",
+      "topic": "Topic by {name}: {title}",
+      "reply": "Answer by {name} (topic: {title})"
+    },
+    "openListing": "View listing",
+    "openTopic": "View topic",
+    "opensNewTab": "(opens in a new tab)",
+    "contentGone": "Content removed",
+    "notesTitle": "Report notes",
+    "reportStatus": {
+      "resolved": "resolved",
+      "dismissed": "dismissed"
+    },
+    "subjectTitle": "Reported user",
+    "memberDays": "member for {days} days",
+    "subjectStats": "Listings: {listings} ({pending} pending) · Previous reports: {reports} · Warnings: {warnings}",
+    "isAdmin": "Admin account",
+    "deletedUser": "Account deleted",
+    "bannedUntil": "Suspended until {date}",
+    "bannedPermanent": "Permanently suspended",
+    "relatedTitle": "Related records",
+    "relatedNone": "No other pending records.",
+    "relatedPending": "<link>Listing PD-{no}</link> is waiting in the review queue.",
+    "actionTitle": "Action",
+    "actionsLegend": "Actions to apply",
+    "removeListing": "Remove the listing",
+    "listingActionLabel": "Listing action",
+    "listingClose": "Unpublish (close)",
+    "listingRemove": "Delete (with reason)",
+    "removeContent": {
+      "comment": "Hide the comment",
+      "topic": "Remove the topic",
+      "reply": "Remove the answer"
+    },
+    "warn": "Warn the user (email + notification)",
+    "ban": "Suspend the account",
+    "banDurationLabel": "Suspension length",
+    "banDuration": {
+      "7d": "7 days",
+      "30d": "30 days",
+      "permanent": "Permanent"
+    },
+    "noActions": "No action applies to this case; you can dismiss it.",
+    "noteLabel": "Internal note (admins only)",
+    "notePlaceholder": "E.g. Fee request, 3 independent reports.",
+    "apply": "Apply selected actions",
+    "dismiss": "Dismiss report",
+    "actionRequired": "Choose at least one action or dismiss the report.",
+    "actionNote": "Reporters are told the outcome (the reported person never sees who reported). The action is recorded in the audit log.",
+    "banConfirmTitle": "Suspend this account?",
+    "banConfirmText": "{name} is suspended for {duration}; all sessions end and they can't sign in.",
+    "cancel": "Cancel",
+    "internalNote": "Internal note:",
+    "noNote": "No internal note.",
+    "toOpen": "Back to open reports"
   }
 }

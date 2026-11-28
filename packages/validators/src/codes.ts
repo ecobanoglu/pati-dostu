@@ -28,6 +28,8 @@ export const ValidationCode = {
   REASON_TOO_SHORT: "REASON_TOO_SHORT",
   /** İlan reddinde gerekçe seçilmedi ve not da yok. */
   REASON_REQUIRED: "REASON_REQUIRED",
+  /** Şikâyeti sonuçlandırırken hiçbir işlem seçilmedi. */
+  ACTION_REQUIRED: "ACTION_REQUIRED",
   // Mesaj
   MESSAGE_TOO_LONG: "MESSAGE_TOO_LONG",
   // Yorum

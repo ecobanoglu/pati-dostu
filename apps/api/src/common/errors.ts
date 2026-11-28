@@ -40,6 +40,12 @@ export const ErrorCode = {
   LISTING_NOT_PENDING: "LISTING_NOT_PENDING",
   /** Seçilen red gerekçesi yok ya da silinmiş. */
   REASON_INVALID: "REASON_INVALID",
+  /** Yaptırım (uyarı / askıya alma) admin hesabına uygulanamaz. */
+  CANNOT_MODERATE_ADMIN: "CANNOT_MODERATE_ADMIN",
+  /** Bu hedefin açık şikâyeti yok (zaten sonuçlanmış). */
+  REPORT_NOT_OPEN: "REPORT_NOT_OPEN",
+  /** Şikâyeti sonuçlandırırken hiçbir işlem seçilmedi. */
+  ACTION_REQUIRED: "ACTION_REQUIRED",
   /** Seçilen ırk seçilen türe ait değil. */
   BREED_MISMATCH: "BREED_MISMATCH",
   /** Seçilen ilçe seçilen ile ait değil. */

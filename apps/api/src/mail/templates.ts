@@ -107,6 +107,32 @@ export function resetPasswordMail(locale: MailLocale, to: string, name: string, 
   return actionMail(locale, "reset", to, name, url)
 }
 
+/** Şikâyet nedenlerinin e-postadaki adları (web: messages › Reports.reasons). */
+const REPORT_REASON_LABELS: Record<MailLocale, Record<string, string>> = {
+  tr: {
+    sale: "Satış / ücret talebi",
+    fake: "Sahte ya da yanıltıcı içerik",
+    animal_abuse: "Hayvana kötü muamele",
+    inappropriate: "Uygunsuz içerik",
+    spam: "Spam",
+    misinformation: "Yanlış bilgi",
+    harassment: "Taciz ya da hakaret",
+    fake_account: "Sahte hesap",
+    other: "Diğer",
+  },
+  en: {
+    sale: "Sale / fee request",
+    fake: "Fake or misleading content",
+    animal_abuse: "Animal abuse",
+    inappropriate: "Inappropriate content",
+    spam: "Spam",
+    misinformation: "Misinformation",
+    harassment: "Harassment or insults",
+    fake_account: "Fake account",
+    other: "Other",
+  },
+}
+
 /** Bildirim e-postalarının metinleri (site içi bildirimlerle aynı anlam; web'deki çeviriler messages › Notifications). */
 const notificationStrings = {
   tr: {
@@ -121,6 +147,20 @@ const notificationStrings = {
       text: (title: string) => `"${title}" ilanınız yayınlanmadı.`,
       detail: "Gerekçe",
       button: "İlanlarıma git",
+    },
+    user_warned: {
+      subject: "Hesabınızla ilgili uyarı",
+      text: (title: string) =>
+        `${title ? `"${title}" paylaşımınız` : "Paylaşımınız"} topluluk kurallarına aykırı bulundu. Tekrarlanırsa hesabınız askıya alınabilir.`,
+      detail: "Neden",
+      button: "Bildirimlere git",
+      reasons: REPORT_REASON_LABELS.tr,
+    },
+    report_resolved: {
+      subject: "Şikayetiniz incelendi",
+      action_taken: (title: string) => `Şikayet ettiğiniz "${title}" incelendi ve gerekli işlem yapıldı.`,
+      no_violation: (title: string) => `Şikayet ettiğiniz "${title}" incelendi; kural ihlali bulunmadı.`,
+      button: "Bildirimlere git",
     },
     listing_closed_by_admin: {
       subject: "İlanınız yayından kaldırıldı",
@@ -190,6 +230,20 @@ const notificationStrings = {
       detail: "Reason",
       button: "Go to my listings",
     },
+    user_warned: {
+      subject: "A warning about your account",
+      text: (title: string) =>
+        `${title ? `Your post "${title}"` : "Your post"} was found to break the community rules. If this happens again, your account may be suspended.`,
+      detail: "Reason",
+      button: "Go to notifications",
+      reasons: REPORT_REASON_LABELS.en,
+    },
+    report_resolved: {
+      subject: "Your report was reviewed",
+      action_taken: (title: string) => `"${title}", which you reported, was reviewed and action was taken.`,
+      no_violation: (title: string) => `"${title}", which you reported, was reviewed; no rule violation was found.`,
+      button: "Go to notifications",
+    },
     listing_closed_by_admin: {
       subject: "Your listing was unpublished",
       text: (title: string) => `Your listing "${title}" was unpublished by the moderators.`,
@@ -253,6 +307,8 @@ export type NotificationMailData =
   | { type: "listing_rejected"; title: string; url: string; reason: string }
   | { type: "listing_changes_requested"; title: string; url: string; note: string }
   | { type: "listing_closed_by_admin"; title: string; url: string }
+  | { type: "user_warned"; title: string; url: string; reason: string }
+  | { type: "report_resolved"; title: string; url: string; outcome: "action_taken" | "no_violation" }
   | { type: "listing_removed"; title: string; url: string; reason: string }
   | { type: "favorite_closed"; title: string; url: string; outcome: "adopted" | "reunited" | "closed" }
   | { type: "new_message"; title: string; url: string; senderName: string; preview: string }
@@ -283,6 +339,15 @@ export function notificationMail(
       ;({ subject, button: buttonLabel } = n.listing_rejected)
       text = n.listing_rejected.text(data.title)
       detail = { label: n.listing_rejected.detail, value: data.reason }
+      break
+    case "user_warned":
+      ;({ subject, button: buttonLabel } = n.user_warned)
+      text = n.user_warned.text(data.title)
+      detail = { label: n.user_warned.detail, value: n.user_warned.reasons[data.reason] ?? data.reason }
+      break
+    case "report_resolved":
+      ;({ subject, button: buttonLabel } = n.report_resolved)
+      text = n.report_resolved[data.outcome](data.title)
       break
     case "listing_closed_by_admin":
       ;({ subject, button: buttonLabel } = n.listing_closed_by_admin)

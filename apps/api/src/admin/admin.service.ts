@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common"
 import { type Database, listing, organization, report } from "@pati-dostu/db"
-import { and, count, eq, isNull } from "drizzle-orm"
+import { and, count, eq, isNull, sql } from "drizzle-orm"
 
 import { InjectDb } from "../database/database.module.js"
 import type { AdminCounts } from "./admin.dto.js"
@@ -10,7 +10,7 @@ import type { AdminCounts } from "./admin.dto.js"
 export class AdminService {
   constructor(@InjectDb() private readonly db: Database) {}
 
-  /** Bekleyen işler: onay bekleyen ilan, değerlendirilmemiş kurum başvurusu, açık şikâyet. */
+  /** Bekleyen işler: onay bekleyen ilan, değerlendirilmemiş kurum başvurusu, açık şikâyet dosyası. */
   async counts(): Promise<AdminCounts> {
     const [[listings], [applications], [reports]] = await Promise.all([
       this.db
@@ -21,7 +21,11 @@ export class AdminService {
         .select({ value: count() })
         .from(organization)
         .where(and(eq(organization.status, "pending"), isNull(organization.deletedAt))),
-      this.db.select({ value: count() }).from(report).where(eq(report.status, "open")),
+      // Şikâyet dosyası sayısı: aynı içeriğe gelen şikâyetler tek dosya (Şikayetler sayfasıyla aynı).
+      this.db
+        .select({ value: sql<number>`count(distinct (${report.targetType}, ${report.targetId}))::int` })
+        .from(report)
+        .where(eq(report.status, "open")),
     ])
     return {
       pendingListings: listings?.value ?? 0,

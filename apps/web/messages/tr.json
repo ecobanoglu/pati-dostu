@@ -747,6 +747,18 @@
       "forum_best_answer": {
         "title": "Cevabınız en iyi cevap seçildi",
         "body": "\"{title}\" konusunda. Teşekkürler!"
+      },
+      "user_warned": {
+        "title": "Hesabınızla ilgili uyarı",
+        "body": "Paylaşımınız topluluk kurallarına aykırı bulundu ({reason}). Tekrarlanırsa hesabınız askıya alınabilir."
+      },
+      "report_resolved_action_taken": {
+        "title": "Şikayetiniz incelendi",
+        "body": "“{title}” incelendi ve gerekli işlem yapıldı. Teşekkürler."
+      },
+      "report_resolved_no_violation": {
+        "title": "Şikayetiniz incelendi",
+        "body": "“{title}” incelendi; kural ihlali bulunmadı."
       }
     }
   },
@@ -1134,7 +1146,10 @@
     "LINK_INVALID": "Metindeki bağlantılardan biri geçersiz: yalnız https:// ya da site içi (/…) adresler eklenebilir.",
     "SCHEDULE_IN_PAST": "Yayın tarihi gelecekte olmalı.",
     "REASON_REQUIRED": "Bir red gerekçesi seçin ya da en az 10 karakterlik not yazın.",
-    "REASON_INVALID": "Seçilen red gerekçesi artık yok. Sayfayı yenileyip tekrar seçin."
+    "REASON_INVALID": "Seçilen red gerekçesi artık yok. Sayfayı yenileyip tekrar seçin.",
+    "CANNOT_MODERATE_ADMIN": "Admin hesabına uyarı ya da askıya alma uygulanamaz.",
+    "REPORT_NOT_OPEN": "Bu şikayet zaten sonuçlanmış. Sayfayı yenileyin.",
+    "ACTION_REQUIRED": "En az bir işlem seçin ya da şikayeti asılsız sayın."
   },
   "Posts": {
     "blogTitle": "Blog",
@@ -1197,6 +1212,7 @@
     "nav": {
       "listingReview": "İlan onayı",
       "listings": "İlanlar",
+      "reports": "Şikayetler",
       "blog": "Blog",
       "news": "Haberler"
     },
@@ -1532,5 +1548,91 @@
     "previous": "Önceki",
     "next": "Sonraki",
     "pageOf": "Sayfa {page} / {total}"
+  },
+  "AdminReports": {
+    "title": "Şikayetler",
+    "casesTitle": "Şikayet dosyaları",
+    "statusFilter": "Durum",
+    "status": {
+      "open": "Açık",
+      "closed": "Sonuçlanan"
+    },
+    "targetFilter": "Şikayet edilen",
+    "all": "Tümü",
+    "emptyOpen": "Açık şikayet yok.",
+    "emptyClosed": "Henüz sonuçlanan şikayet yok.",
+    "listNote": "Kırmızı süre: 24 saati geçen şikayetler. Aynı içerik birden çok kez şikayet edilirse tek kayıtta toplanır.",
+    "commentUnder": "İlan PD-{no} altında · {name}",
+    "people": "{count, plural, one {# kişi} other {# kişi}}",
+    "waitLabel": "İlk şikayetten beri:",
+    "lateLabel": "24 saati geçti:",
+    "elapsedMin": "{n} dk",
+    "elapsedHour": "{n} sa",
+    "elapsedDay": "{n} gün",
+    "outcome": {
+      "action_taken": "İşlem yapıldı",
+      "no_violation": "Asılsız bulundu"
+    },
+    "backToList": "Şikayetler",
+    "noCase": "Görüntülenecek şikayet yok",
+    "caseMeta": "{count, plural, one {# kişi şikayet etti} other {# kişi şikayet etti}} · ilki {time} önce",
+    "heading": {
+      "listing": "İlan: {title}",
+      "user": "Kullanıcı: {name}",
+      "comment": "Yorum: {name} (ilan: {title})",
+      "topic": "Konu: {title} ({name})",
+      "reply": "Cevap: {name} (konu: {title})"
+    },
+    "openListing": "İlanı görüntüle",
+    "openTopic": "Konuyu görüntüle",
+    "opensNewTab": "(yeni sekmede açılır)",
+    "contentGone": "İçerik kaldırılmış",
+    "notesTitle": "Şikayet notları",
+    "reportStatus": {
+      "resolved": "çözüldü",
+      "dismissed": "asılsız"
+    },
+    "subjectTitle": "Şikayet edilen kullanıcı",
+    "memberDays": "üyelik {days} gün",
+    "subjectStats": "İlan: {listings} ({pending} onay bekliyor) · Önceki şikayet: {reports} · Uyarı: {warnings}",
+    "isAdmin": "Admin hesabı",
+    "deletedUser": "Hesap silinmiş",
+    "bannedUntil": "Askıda: {date} tarihine kadar",
+    "bannedPermanent": "Kalıcı olarak askıda",
+    "relatedTitle": "İlgili kayıtlar",
+    "relatedNone": "Onay bekleyen başka kaydı yok.",
+    "relatedPending": "<link>İlan PD-{no}</link> onay kuyruğunda bekliyor.",
+    "actionTitle": "İşlem",
+    "actionsLegend": "Uygulanacak işlemler",
+    "removeListing": "İlanı kaldır",
+    "listingActionLabel": "İlan için işlem",
+    "listingClose": "Yayından kaldır (kapat)",
+    "listingRemove": "Sil (gerekçeli)",
+    "removeContent": {
+      "comment": "Yorumu gizle",
+      "topic": "Konuyu kaldır",
+      "reply": "Cevabı kaldır"
+    },
+    "warn": "Kullanıcıyı uyar (e-posta + bildirim)",
+    "ban": "Hesabı askıya al",
+    "banDurationLabel": "Askı süresi",
+    "banDuration": {
+      "7d": "7 gün",
+      "30d": "30 gün",
+      "permanent": "Kalıcı"
+    },
+    "noActions": "Bu dosya için uygulanabilecek işlem yok; asılsız sayabilirsiniz.",
+    "noteLabel": "İç not (yalnız adminler görür)",
+    "notePlaceholder": "Örn. Ücret talebi, 3 bağımsız şikayet.",
+    "apply": "Seçili işlemleri uygula",
+    "dismiss": "Şikayeti asılsız say",
+    "actionRequired": "En az bir işlem seçin ya da şikayeti asılsız sayın.",
+    "actionNote": "Şikayet edenlere sonuç bildirilir (kimin şikayet ettiği karşı tarafa gösterilmez). İşlem denetim kaydına yazılır.",
+    "banConfirmTitle": "Hesap askıya alınsın mı?",
+    "banConfirmText": "{name} hesabı {duration} askıya alınır; tüm oturumları kapanır ve giriş yapamaz.",
+    "cancel": "Vazgeç",
+    "internalNote": "İç not:",
+    "noNote": "İç not yazılmamış.",
+    "toOpen": "Açık şikayetlere dön"
   }
 }

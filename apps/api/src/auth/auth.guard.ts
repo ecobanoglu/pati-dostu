@@ -36,7 +36,9 @@ export class AuthGuard implements CanActivate {
     if (!session) {
       throw new AppException(HttpStatus.UNAUTHORIZED, ErrorCode.UNAUTHORIZED, "Bu işlem için giriş yapmalısınız.")
     }
-    if (session.user.banned) {
+    // Süresi dolmuş ban geçerli sayılmaz (Better Auth bir sonraki girişte kaldırır).
+    const banExpires = (session.user as { banExpires?: Date | string | null }).banExpires
+    if (session.user.banned && (!banExpires || new Date(banExpires).getTime() > Date.now())) {
       throw new AppException(HttpStatus.FORBIDDEN, ErrorCode.ACCOUNT_BANNED, "Hesabınız askıya alınmış.")
     }
 

@@ -9,5 +9,6 @@ import { CommentsService } from "./comments.service.js"
   imports: [ListingsModule],
   controllers: [CommentsController],
   providers: [CommentsService],
+  exports: [CommentsService],
 })
 export class CommentsModule {}

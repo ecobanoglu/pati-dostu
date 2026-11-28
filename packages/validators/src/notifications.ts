@@ -45,8 +45,21 @@ export const notificationTypes = {
   forum_best_answer: "community",
   /** Yeni şikâyet — yalnız admin'lere (ayarlarda yalnız admin görür). */
   report_created: "admin_report",
-} as const satisfies Record<string, NotificationTopic>
+  /** Yönetim uyarısı: paylaşımınız kurallara aykırı bulundu (neden). Sabit kanal — kapatılamaz. */
+  user_warned: "moderation",
+  /** Şikâyetiniz incelendi (işlem yapıldı / ihlal bulunmadı). Sabit kanal — yalnız site içi. */
+  report_resolved: "moderation",
+} as const satisfies Record<string, NotificationTopic | "moderation">
 export type NotificationType = keyof typeof notificationTypes
+
+/**
+ * Kullanıcı tercihine bağlı olmayan (ayarlarda görünmeyen) bildirimlerin kanalları: yönetim uyarısı her zaman site
+ * içi + e-posta, şikâyet sonucu yalnız site içi.
+ */
+export const fixedNotificationChannels: Partial<Record<NotificationType, { inApp: boolean; email: boolean }>> = {
+  user_warned: { inApp: true, email: true },
+  report_resolved: { inApp: true, email: false },
+}
 export const notificationTypeList = Object.keys(notificationTypes) as NotificationType[]
 
 const channels = z.object({ inApp: z.boolean(), email: z.boolean() })

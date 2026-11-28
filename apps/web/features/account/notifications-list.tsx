@@ -34,6 +34,8 @@ export type NotificationItem = {
     | "forum_reply"
     | "forum_best_answer"
     | "report_created"
+    | "user_warned"
+    | "report_resolved"
   payload: Record<string, unknown>
   readAt: string | null
   createdAt: string
@@ -79,6 +81,8 @@ const tones: Record<NotificationItem["type"], { icon: LucideIcon; className: str
   forum_reply: { icon: MessagesSquare, className: "text-primary" },
   forum_best_answer: { icon: Award, className: "text-success-text" },
   report_created: { icon: Flag, className: "text-danger" },
+  user_warned: { icon: TriangleAlert, className: "text-danger" },
+  report_resolved: { icon: Flag, className: "text-primary" },
 }
 
 /** Payload'daki metin alanını güvenle okur (API `Record<string, unknown>` döndürür). */
@@ -89,10 +93,14 @@ function str(payload: Record<string, unknown>, key: string): string {
 
 /**
  * Çeviri anahtarı: favori bildiriminde sonuca göre (sahiplendirildi / kavuştu / kaldırıldı), topluluk cevabında
- * soru sahibine mi takip edene mi gittiğine göre ayrı metin.
+ * soru sahibine mi takip edene mi gittiğine göre, şikâyet sonucunda işlem yapılıp yapılmadığına göre ayrı metin.
  */
 function messageKey(n: NotificationItem): string {
   if (n.type === "forum_reply") return n.payload.own === false ? "forum_reply_follow" : "forum_reply_own"
+  if (n.type === "report_resolved")
+    return str(n.payload, "outcome") === "no_violation"
+      ? "report_resolved_no_violation"
+      : "report_resolved_action_taken"
   if (n.type !== "favorite_closed") return n.type
   const outcome = str(n.payload, "outcome")
   return `favorite_closed_${outcome === "adopted" || outcome === "reunited" ? outcome : "closed"}`
@@ -249,7 +257,7 @@ export function NotificationsList({ initial, now }: { initial: NotificationPage;
                     body={t(`item.${messageKey(n)}.body` as "item.listing_rejected.body", {
                       title: str(n.payload, "title"),
                       reason:
-                        n.type === "report_created"
+                        n.type === "report_created" || n.type === "user_warned"
                           ? tr(`reasons.${str(n.payload, "reason")}` as "reasons.other")
                           : str(n.payload, "reason"),
                       target:

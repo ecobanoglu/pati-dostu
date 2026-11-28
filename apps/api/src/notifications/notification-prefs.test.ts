@@ -1,4 +1,10 @@
-import { defaultNotificationPrefs, notificationTypes, resolveNotificationPrefs } from "@pati-dostu/validators"
+import {
+  defaultNotificationPrefs,
+  fixedNotificationChannels,
+  type NotificationType,
+  notificationTypes,
+  resolveNotificationPrefs,
+} from "@pati-dostu/validators"
 import { describe, expect, it } from "vitest"
 
 describe("resolveNotificationPrefs", () => {
@@ -20,7 +26,10 @@ describe("resolveNotificationPrefs", () => {
 })
 
 describe("notificationTypes", () => {
-  it("her tür bilinen bir konuya bağlı", () => {
-    for (const topic of Object.values(notificationTypes)) expect(defaultNotificationPrefs[topic]).toBeDefined()
+  it("her tür bilinen bir konuya bağlı ya da sabit kanallı", () => {
+    for (const [type, topic] of Object.entries(notificationTypes)) {
+      if (topic === "moderation") expect(fixedNotificationChannels[type as NotificationType]).toBeDefined()
+      else expect(defaultNotificationPrefs[topic]).toBeDefined()
+    }
   })
 })

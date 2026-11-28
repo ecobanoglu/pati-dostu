@@ -1,6 +1,7 @@
 import { Injectable, Logger } from "@nestjs/common"
 import { type Database, notification, user } from "@pati-dostu/db"
 import {
+  fixedNotificationChannels,
   type NotificationType,
   notificationTypes,
   type NotificationsQuery,
@@ -19,6 +20,20 @@ export type NotificationPayload =
   | { type: "listing_rejected"; listingId: string; listingNo: number; title: string; reason: string }
   | { type: "listing_changes_requested"; listingId: string; listingNo: number; title: string; note: string }
   | { type: "listing_closed_by_admin"; listingId: string; listingNo: number; title: string }
+  | {
+      type: "user_warned"
+      /** Şikâyet nedeni (report_reason; metni istemci/e-posta çevirir). */
+      reason: string
+      targetType: string
+      /** İlgili içeriğin başlığı (ilan / konu); yoksa boş. */
+      title: string
+    }
+  | {
+      type: "report_resolved"
+      outcome: "action_taken" | "no_violation"
+      targetType: string
+      title: string
+    }
   | { type: "listing_removed"; listingId: string; listingNo: number; title: string; reason: string }
   | {
       type: "favorite_closed"
@@ -114,13 +129,17 @@ export class NotificationsService {
       .where(and(inArray(user.id, ids), isNull(user.deletedAt)))
 
     const { type, ...data } = payload
-    const inApp = recipients.filter((r) => resolveNotificationPrefs(r.prefs)[topic].inApp)
+    // Sabit kanallı türler (yönetim uyarısı, şikâyet sonucu) tercihe bakmaz.
+    const fixed = fixedNotificationChannels[type]
+    const channelsOf = (prefs: unknown) =>
+      fixed ?? resolveNotificationPrefs(prefs)[topic as Exclude<typeof topic, "moderation">]
+    const inApp = recipients.filter((r) => channelsOf(r.prefs).inApp)
     if (inApp.length > 0) {
       await this.db.insert(notification).values(inApp.map((r) => ({ userId: r.id, type, payload: data })))
     }
 
     for (const r of recipients) {
-      if (!r.emailVerified || !resolveNotificationPrefs(r.prefs)[topic].email) continue
+      if (!r.emailVerified || !channelsOf(r.prefs).email) continue
       const locale: MailLocale = r.locale === "en" ? "en" : "tr"
       try {
         await this.mail.send(notificationMail(locale, r.email, r.name, this.mailData(payload, locale)))
@@ -221,6 +240,20 @@ export class NotificationsService {
           title: payload.title,
           reason: payload.reason,
           url: `${web}${WEB_PATHS.myListings[locale]}`,
+        }
+      case "user_warned":
+        return {
+          type: payload.type,
+          title: payload.title,
+          reason: payload.reason,
+          url: `${web}${WEB_PATHS.notifications[locale]}`,
+        }
+      case "report_resolved":
+        return {
+          type: payload.type,
+          title: payload.title,
+          outcome: payload.outcome,
+          url: `${web}${WEB_PATHS.notifications[locale]}`,
         }
       case "listing_closed_by_admin":
         return { type: payload.type, title: payload.title, url: `${web}${WEB_PATHS.myListings[locale]}` }

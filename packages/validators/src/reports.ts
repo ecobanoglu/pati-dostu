@@ -36,3 +36,44 @@ export function reportSchema<T extends ReportTarget>(target: T) {
     })
 }
 export type ReportInput = z.infer<ReturnType<typeof reportSchema>>
+
+// --- Admin -----------------------------------------------------------------------------------------------------------
+
+/** Ban süreleri (admin › Şikayetler / Kullanıcılar). */
+export const banDurations = ["7d", "30d", "permanent"] as const
+export type BanDuration = (typeof banDurations)[number]
+
+/** GET /admin/reports: açık ya da sonuçlanmış (çözülen + asılsız) şikâyet dosyaları, hedef türü, sayfa. */
+export const adminReportsQuerySchema = z.object({
+  status: z.enum(["open", "closed"]).default("open"),
+  target: z.enum(reportTargets).optional(),
+  page: z.coerce.number().int().min(1).max(500).default(1),
+  locale: z.enum(["tr", "en"]).default("tr"),
+})
+export type AdminReportsQuery = z.infer<typeof adminReportsQuerySchema>
+
+/** Şikâyet dosyası adres parametreleri: hedef türü + kimliği. */
+export const reportCaseParamsSchema = z.object({
+  targetType: z.enum(reportTargets),
+  targetId: z.string().min(1).max(100),
+})
+
+/**
+ * POST /admin/reports/{targetType}/{targetId}/resolve: seçili işlemleri uygula. `removeContent` içeriği kaldırır
+ * (ilanda `listingAction`: kapat ya da sil; yorum / konu / cevap silinir); `warn` içerik sahibini uyarır (hazır metin +
+ * neden); `ban` hesabı askıya alır. En az bir işlem seçilmeli (yoksa "Şikayeti asılsız say" kullanılır). `note` iç
+ * nottur, yalnız admin'ler görür.
+ */
+export const resolveReportSchema = z
+  .object({
+    removeContent: z.boolean().default(false),
+    listingAction: z.enum(["close", "remove"]).default("close"),
+    warn: z.boolean().default(false),
+    ban: z.enum(["none", ...banDurations]).default("none"),
+    note: z.string().trim().max(1000).optional(),
+  })
+  .refine((v) => v.removeContent || v.warn || v.ban !== "none", { message: C.ACTION_REQUIRED, path: ["removeContent"] })
+export type ResolveReportInput = z.input<typeof resolveReportSchema>
+
+/** POST /admin/reports/{targetType}/{targetId}/dismiss: asılsız say (iç not isteğe bağlı). */
+export const dismissReportSchema = z.object({ note: z.string().trim().max(1000).optional() })

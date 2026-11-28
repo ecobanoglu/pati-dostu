@@ -11,6 +11,6 @@ import { ListingsService } from "./listings.service.js"
 @Module({
   controllers: [ListingsController, MyListingsController, AdminListingsController],
   providers: [ListingsService, ListingImagesService, ListingReviewService, AdminListingsService],
-  exports: [ListingsService],
+  exports: [ListingsService, ListingReviewService, AdminListingsService],
 })
 export class ListingsModule {}

@@ -97,6 +97,24 @@ export class ModerationService {
     }
   }
 
+  /**
+   * Metinleri engellemeden tarar (admin › İlan onayı "Otomatik kontroller"): tüm kalıp türleri (kuralın açık olup
+   * olmadığına bakmadan — admin'e bilgi) ve yasaklı kelimeler. Eşleşen her alan için bir satır döner; sayaç yazılmaz.
+   */
+  async inspect(input: ModerationInput): Promise<Array<{ field: string; reason: BlockReason }>> {
+    const rules = await this.loadRules()
+    const all = new Set<PatternKind>(["phone", "email", "url", "iban", "price"])
+    const out: Array<{ field: string; reason: BlockReason }> = []
+    for (const [field, value] of Object.entries(input)) {
+      if (!value?.trim()) continue
+      const text = normalizeTurkish(value)
+      const pattern = findPattern(text, all)
+      if (pattern) out.push({ field, reason: pattern })
+      if (findBannedTerm(text, rules.terms)) out.push({ field, reason: "banned_term" })
+    }
+    return out
+  }
+
   /** Admin kuralları değiştirince önbelleği hemen boşaltmak için (5. aşama, admin paneli). */
   invalidate(): void {
     this.rules = null

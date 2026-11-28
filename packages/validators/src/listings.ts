@@ -213,11 +213,47 @@ export type ListingQuery = z.output<typeof listingQuerySchema>
 
 // --- Admin -------------------------------------------------------------------
 
-export const rejectListingSchema = z.object({
-  reason: z.string().trim().min(10, C.REASON_TOO_SHORT).max(1000),
-})
+/** Admin notu sınırı (red / düzeltme isteğinde kullanıcıya giden açıklama). */
+export const REVIEW_NOTE_MAX = 1000
 
+/**
+ * POST /admin/listings/{id}/reject: hazır gerekçe (`reasonId`, Sözlük › Red gerekçeleri) ve/veya kullanıcıya not.
+ * Gerekçe seçilmezse not en az 10 karakter olmalı (eski istemciler `reason` gönderir — not olarak kabul edilir).
+ * Kullanıcının gördüğü metin: gerekçenin adı + not.
+ */
+export const rejectListingSchema = z
+  .object({
+    reasonId: z.uuid().optional(),
+    note: z.string().trim().max(REVIEW_NOTE_MAX).optional(),
+    reason: z.string().trim().max(REVIEW_NOTE_MAX).optional(),
+  })
+  .transform(({ reasonId, note, reason }) => ({ reasonId, note: note || reason || "" }))
+  .superRefine((v, ctx) => {
+    if (!v.reasonId && v.note.length < 10)
+      ctx.addIssue({ code: "custom", path: ["reasonId"], message: C.REASON_REQUIRED })
+  })
+export type RejectListingInput = z.input<typeof rejectListingSchema>
+
+/** POST /admin/listings/{id}/request-changes: kullanıcıya not (zorunlu) ve düzeltilecek bölümler (isteğe bağlı). */
 export const requestChangesSchema = z.object({
-  note: z.string().trim().min(10, C.REASON_TOO_SHORT).max(1000),
-  fields: z.array(z.enum(reviewableFields)).min(1, C.REQUIRED),
+  note: z.string().trim().min(10, C.REASON_TOO_SHORT).max(REVIEW_NOTE_MAX),
+  fields: z.array(z.enum(reviewableFields)).default([]),
 })
+export type RequestChangesInput = z.input<typeof requestChangesSchema>
+
+/**
+ * Onay kuyruğundaki işaretler (basit otomatik kontroller — karar): yeni üye (hesap 7 günden yeni ve yayında ilanı
+ * yok), içerik (yasaklı kelime / telefon / fiyat vb. kalıp), benzer ilan (aynı kullanıcının benzer başlıklı başka
+ * ilanı), kurum hesabı (bilgi), düzenlenmiş (daha önce incelenmiş). İlk üçü "İşaretli" süzgecine girer.
+ */
+export const reviewFlags = ["new_user", "content", "similar", "organization", "resubmitted"] as const
+export type ReviewFlag = (typeof reviewFlags)[number]
+export const warningFlags: readonly ReviewFlag[] = ["new_user", "content", "similar"]
+
+/** GET /admin/listings/queue: süzgeç (tümü / işaretli / kurum / düzenlenmiş) ve sıralama. */
+export const reviewQueueQuerySchema = z.object({
+  filter: z.enum(["all", "flagged", "organization", "resubmitted"]).default("all"),
+  sort: z.enum(["oldest", "newest"]).default("oldest"),
+  locale: z.enum(["tr", "en"]).default("tr"),
+})
+export type ReviewQueueQuery = z.infer<typeof reviewQueueQuerySchema>

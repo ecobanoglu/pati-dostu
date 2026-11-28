@@ -12,6 +12,8 @@ import {
   reviewableFields,
   saveListingSchema,
   sizes,
+  reviewFlags,
+  reviewQueueQuerySchema,
 } from "@pati-dostu/validators"
 import { createZodDto } from "nestjs-zod"
 import { z } from "zod"
@@ -182,4 +184,70 @@ export class AdminListingPageDto extends createZodDto(
       pageSize: z.number().int(),
     })
     .meta({ id: "AdminListingPage" })
+) {}
+
+// --- Admin: onay kuyruğu ve inceleme --------------------------------------------------------------------------------
+
+export class ReviewQueueQueryDto extends createZodDto(reviewQueueQuerySchema) {}
+
+const reviewFlag = z.enum(reviewFlags)
+
+const reviewQueueItemSchema = listingCardSchema
+  .extend({
+    submittedAt: z.iso.datetime().nullable(),
+    owner: z.object({ id: z.string(), name: z.string(), role: z.enum(["user", "clinic", "shelter", "admin"]) }),
+    /** Basit otomatik kontrollerin işaretleri. */
+    flags: z.array(reviewFlag),
+  })
+  .meta({ id: "ReviewQueueItem" })
+export type ReviewQueueItem = z.infer<typeof reviewQueueItemSchema>
+
+const reviewQueueSchema = z
+  .object({
+    items: z.array(reviewQueueItemSchema),
+    /** Süzgeç sayıları (kuyruğun tamamı üzerinden). */
+    counts: z.object({
+      all: z.number().int(),
+      flagged: z.number().int(),
+      organization: z.number().int(),
+      resubmitted: z.number().int(),
+    }),
+  })
+  .meta({ id: "ReviewQueue" })
+export type ReviewQueue = z.infer<typeof reviewQueueSchema>
+export class ReviewQueueDto extends createZodDto(reviewQueueSchema) {}
+
+const reviewInfoSchema = z
+  .object({
+    status: z.string(),
+    submittedAt: z.iso.datetime().nullable(),
+    /** Daha önce incelenmiş (reddedilmiş / düzeltme istenmiş / onaylanmış) ve yeniden gönderilmiş. */
+    resubmitted: z.boolean(),
+    /** Önceki incelemede kullanıcıya yazılan not / red gerekçesi (varsa). */
+    previousNote: z.string().nullable(),
+    previousFields: z.array(z.enum(reviewableFields)).nullable(),
+    flags: z.array(reviewFlag),
+    /** İçerik taraması: alan + neden (phone, email, url, iban, price, banned_term). */
+    contentMatches: z.array(z.object({ field: z.string(), reason: z.string() })),
+    owner: z.object({
+      id: z.string(),
+      name: z.string(),
+      email: z.string(),
+      emailVerified: z.boolean(),
+      role: z.enum(["user", "clinic", "shelter", "admin"]),
+      createdAt: z.iso.datetime(),
+      /** Bu ilan dışındaki (silinmemiş) ilanları. */
+      otherListings: z.number().int(),
+      /** Kullanıcı ya da ilanları hakkındaki şikâyetler. */
+      reports: z.number().int(),
+      /** Reddedilen ilan kararları. */
+      rejections: z.number().int(),
+    }),
+  })
+  .meta({ id: "ReviewInfo" })
+export type ReviewInfo = z.infer<typeof reviewInfoSchema>
+export class ReviewInfoDto extends createZodDto(reviewInfoSchema) {}
+
+export class RejectionReasonListDto extends createZodDto(
+  z.array(z.object({ id: z.uuid(), slug: z.string(), label: z.string() })).meta({ id: "RejectionReasonList" })
 ) {}

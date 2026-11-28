@@ -9,7 +9,10 @@ const intl = createMiddleware(routing)
 const SESSION_COOKIES = ["pati-dostu.session_token", "__Secure-pati-dostu.session_token"]
 
 /** Giriş gerektiren bölümler (iç yollar; alt sayfaları da kapsar). */
-const PROTECTED = ["/account", "/organization", "/post-listing", "/community/ask", "/admin/posts"] as const
+const PROTECTED = ["/account", "/organization", "/post-listing", "/community/ask"] as const
+
+/** Admin paneli: tüm dillerde /admin önekiyle başlar (alt adresler çevrilse de önek aynı). */
+const ADMIN_PATH = /^(\/[a-z]{2})?\/admin(\/|$)/
 
 /** Dil öneki: Türkçe öneksiz, diğerleri /en gibi. */
 const prefix = (locale: string) => (locale === routing.defaultLocale ? "" : `/${locale}`)
@@ -32,7 +35,8 @@ const protectedPaths = routing.locales.flatMap((locale) => PROTECTED.map((p) => 
  */
 export default function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl
-  const isProtected = protectedPaths.some((p) => pathname === p || pathname.startsWith(`${p}/`))
+  const isProtected =
+    ADMIN_PATH.test(pathname) || protectedPaths.some((p) => pathname === p || pathname.startsWith(`${p}/`))
   const hasSession = SESSION_COOKIES.some((name) => request.cookies.has(name))
 
   if (isProtected && !hasSession) {

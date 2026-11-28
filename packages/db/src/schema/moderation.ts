@@ -1,10 +1,11 @@
 import { sql } from "drizzle-orm"
-import { boolean, check, index, pgTable, text, uuid } from "drizzle-orm/pg-core"
+import { boolean, check, index, jsonb, pgTable, smallint, text, uuid } from "drizzle-orm/pg-core"
 
 import {
   bannedTermCategoryEnum,
   createdAt,
   id,
+  type LocalizedText,
   moderationAreaEnum,
   moderationRuleKindEnum,
   reportReasonEnum,
@@ -74,3 +75,16 @@ export const moderationHit = pgTable(
     check("moderation_hit_source", sql`${t.ruleId} is not null or ${t.termId} is not null`),
   ]
 )
+
+/**
+ * İlan reddinde seçilen hazır gerekçeler (admin › İlan onayı; Sözlük › Red gerekçeleri sekmesinden yönetilir).
+ * Kullanıcıya gösterilen red metni seçilen gerekçe + admin'in notudur (ilanın `rejectionReason` alanına yazılır).
+ */
+export const rejectionReason = pgTable("rejection_reason", {
+  id: id(),
+  slug: text().notNull().unique(),
+  label: jsonb().$type<LocalizedText>().notNull(),
+  sortOrder: smallint().notNull().default(0),
+  active: boolean().notNull().default(true),
+  ...timestamps,
+})

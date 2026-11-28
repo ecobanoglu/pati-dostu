@@ -26,6 +26,8 @@ export const ValidationCode = {
   IMAGES_REQUIRED: "IMAGES_REQUIRED",
   NO_FEE_NOT_CONFIRMED: "NO_FEE_NOT_CONFIRMED",
   REASON_TOO_SHORT: "REASON_TOO_SHORT",
+  /** İlan reddinde gerekçe seçilmedi ve not da yok. */
+  REASON_REQUIRED: "REASON_REQUIRED",
   // Mesaj
   MESSAGE_TOO_LONG: "MESSAGE_TOO_LONG",
   // Yorum

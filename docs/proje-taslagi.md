@@ -279,6 +279,7 @@ Liste (kapak, başlık, özet, tarih, kategori) ve detay (içindekiler, okuma s�
 | İçerik | `post` | type (blog/news), authorId, title, slug, excerpt, content (jsonb, Tiptap; görseller depo anahtarıyla), coverUrl, categoryId, country, sourceName, sourceUrl, status, featured, publishedAt, readingTime, viewCount |
 | İçerik | `post_category`, `tag`, `post_tag` | Blog/haber kategori (ad `LocalizedText` jsonb; haberde kategori = tür: Haber / Duyuru / Etkinlik) ve etiketleri |
 | Moderasyon | `report` | reporterId, targetType (listing/comment/topic/reply/user), targetId, reason, status, resolvedBy |
+| Moderasyon | `rejection_reason` | slug, label (jsonb { tr, en }), sortOrder, active — ilan reddinde seçilen hazır gerekçeler |
 | Sistem | `notification` | userId, type, payload (jsonb), readAt — tercihler `user.notification_prefs` (jsonb: konu → `{ inApp, email }`) |
 | Sistem | `audit_log` | actorId, action, entity, entityId, diff (jsonb) |
 
@@ -422,7 +423,8 @@ MVP için yaklaşık 60 uç nokta gerekiyor; hepsi NestJS API'de (api.pati-dostu
 | Bildirimler | POST | `/me/notifications/read` | Giriş | Okundu işareti: `ids` verilirse onlar, yoksa tümü |
 | Admin | GET | `/admin/counts` | Admin | Kenar çubuğu rozetleri: onay bekleyen ilan, bekleyen kurum başvurusu, açık şikâyet |
 | Admin | GET | `/admin/listings?status=pending` | Admin | İlan onay kuyruğu |
-| Admin | POST | `/admin/listings/{id}/approve`, `/admin/listings/{id}/reject` | Admin | Onay / red (gerekçe zorunlu), kullanıcıya bildirim |
+| Admin | GET | `/admin/listings/queue?filter=&sort=`, `/admin/listings/{id}/review`, `/admin/listings/rejection-reasons` | Admin | Onay kuyruğu (işaretler: yeni üye, içerik, benzer ilan, kurum, düzenlenmiş; süzgeç sayıları), inceleme bilgisi (içerik taraması, sahibin geçmişi, önceki not), hazır red gerekçeleri |
+| Admin | POST | `/admin/listings/{id}/approve`, `/admin/listings/{id}/reject` | Admin | Onay / red (hazır gerekçe ve/veya not; kullanıcıya "gerekçe — not"), kullanıcıya bildirim |
 | Admin | POST | `/admin/listings/{id}/request-changes` | Admin | Düzeltme iste (not + alan listesi), `status = changes_requested`, kullanıcıya bildirim |
 | Admin | GET / PATCH | `/admin/users`, `/admin/users/{id}` | Admin | Kullanıcı listesi, rol değiştirme, banlama |
 | Admin | GET / POST | `/admin/organizations/applications`, `.../{id}/approve`, `.../{id}/reject` | Admin | Kurum başvurularını değerlendirme |
@@ -629,6 +631,7 @@ Her aşama sonunda çalışan bir sürüm preview ortamına çıkar; v1.1 ve son
 - Blog/haber editörü (4. aşama): otomatik kayıt yalnız taslakta (yayındaki ya da planlı yazı ana eylemle kaydedilir, kaydedilmemiş değişiklikte çıkış uyarısı). Admin sayfaları şimdilik sade bir üst çubukla (`/admin/yazilar`); koyu sol menülü panel 5. aşamada. Yazıların okunma sayısı tutulur (admin listesinde "Okunma"). Yayındaki yazının adresi başlıkla değişmez; elle değiştirilebilir (uyarıyla). İçerikteki görsele alternatif metin zorunlu.
 - Anasayfa (4. aşama): "Topluluktan sorular" en yeni 3 konuyu, "Blogdan son yazılar" en yeni 3 blog yazısını (öne çıkan dahil) gösterir.
 - Admin paneli (5. aşama): kapsam Dashboard, İlan onayı, İlanlar, Kullanıcılar, Kurum başvuruları (kullanıcı başvuru formu dahil; kurum paneli ve klinik dizini v1.1), Topluluk, Şikayetler, Blog/Haberler, Sözlük (içerik filtreleri ve red gerekçeleri dahil), Raporlar + CSV. Denetim kaydı sayfası şimdilik yok (kayıtlar tutulur). İlan onayındaki otomatik kontroller basit (yeni üye, yasaklı kelime/fiyat, benzer başlık, kurum hesabı); görsel benzerliği ve YZ moderasyonu v1.1. Üst çubukta genel arama (ilan no, kullanıcı, e-posta) var. Menüde yalnız yapılmış sayfalar görünür.
+- İlan onayı (5. aşama): red için hazır gerekçeler (`rejection_reason`, Sözlük › Red gerekçeleri) + isteğe bağlı not; düzeltme isteğinde not zorunlu, düzeltilecek bölümler isteğe bağlı. Karardan sonra kuyruktaki sonraki ilan açılır; kısayollar A / R / J / K.
 - Sayfa kabı 1320 px'tir (`--container-site`, iç boşluk dahil; masaüstünde içerik 1272 px). Tasarım görselleri 1200 px içerikle çizildi; genişlikte görseller değil bu karar geçerlidir.
 - Favoriler sayfası (`/hesabim/favoriler`) 2. aşamada yapılır; Hesabım sol menüsü 3. aşamada eklenir. Favorideki ilan sahiplendirilir ya da kapatılırsa listede "artık yayında değil" notuyla soluk ve bağlantısız kalır (kalple çıkarılabilir); silinen ilan listeden düşer. Onay bekleyen / düzeltme istenen / reddedilen ilan favorilerde gösterilmez (onaylanmamış içerik görünmesin); yeniden yayına girince geri gelir.
 - Dosyalar (ilan fotoğrafları, avatar, blog kapakları) Cloudflare R2'de tutulur; S3 API'siyle erişildiği için sağlayıcı değiştirilebilir. Geliştirmede docker-compose'daki RustFS (S3 uyumlu) kullanılır.

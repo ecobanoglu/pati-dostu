@@ -1,3 +1,5 @@
+import type { LocalizedText } from "../../schema/_common.js"
+
 type Area = "listing" | "comment" | "topic" | "reply" | "message" | "contact"
 type Kind = "phone" | "email" | "url" | "iban" | "price" | "duplicate"
 
@@ -69,4 +71,18 @@ export const bannedTermSeed: Array<{
   { term: "gerizekalı", category: "insult", match: "contains" },
   { term: "şerefsiz", category: "insult", match: "contains" },
   { term: "haysiyetsiz", category: "insult", match: "contains" },
+]
+
+/** İlan red gerekçeleri (admin › İlan onayı). Slug sabit; ad ve sıra seed'de güncellenir. */
+export const rejectionReasonSeed: Array<{ slug: string; label: LocalizedText }> = [
+  { slug: "satis", label: { tr: "Satış, ücret ya da kapora içeriyor", en: "Contains a sale, fee or deposit" } },
+  { slug: "yaniltici", label: { tr: "Yanıltıcı ya da gerçek dışı ilan", en: "Misleading or fake listing" } },
+  { slug: "uygunsuz", label: { tr: "Uygunsuz metin ya da fotoğraf", en: "Inappropriate text or photo" } },
+  {
+    slug: "ilgisiz-fotograf",
+    label: { tr: "Fotoğraf ilanla ilgisiz ya da hayvan görünmüyor", en: "Photo is unrelated or shows no animal" },
+  },
+  { slug: "tekrar", label: { tr: "Aynı ilan daha önce verilmiş", en: "Duplicate of an earlier listing" } },
+  { slug: "kurallara-aykiri", label: { tr: "Platform kurallarına aykırı", en: "Violates platform rules" } },
+  { slug: "diger", label: { tr: "Diğer (nota bakın)", en: "Other (see note)" } },
 ]

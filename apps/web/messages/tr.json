@@ -1124,7 +1124,9 @@
     "CONTENT_TOO_LARGE": "Metin çok uzun; bölerek iki yazı yapın.",
     "CONTENT_INVALID": "Metinde desteklenmeyen bir biçim var. Yapıştırdığınız bölümü düz metin olarak yeniden ekleyin.",
     "LINK_INVALID": "Metindeki bağlantılardan biri geçersiz: yalnız https:// ya da site içi (/…) adresler eklenebilir.",
-    "SCHEDULE_IN_PAST": "Yayın tarihi gelecekte olmalı."
+    "SCHEDULE_IN_PAST": "Yayın tarihi gelecekte olmalı.",
+    "REASON_REQUIRED": "Bir red gerekçesi seçin ya da en az 10 karakterlik not yazın.",
+    "REASON_INVALID": "Seçilen red gerekçesi artık yok. Sayfayı yenileyip tekrar seçin."
   },
   "Posts": {
     "blogTitle": "Blog",
@@ -1185,6 +1187,7 @@
     "backToSite": "Siteye dön",
     "breadcrumb": "Konum",
     "nav": {
+      "listingReview": "İlan onayı",
       "blog": "Blog",
       "news": "Haberler"
     },
@@ -1363,5 +1366,110 @@
     },
     "crumbBlog": "Blog",
     "crumbNews": "Haberler"
+  },
+  "AdminReview": {
+    "title": "İlan onayı",
+    "counter": "{n} / {total}",
+    "notFound": "İlan bulunamadı",
+    "emptyTitle": "Onay bekleyen ilan yok",
+    "emptyText": "Yeni ilan gönderildiğinde burada görünür.",
+    "filter": {
+      "all": "Tümü",
+      "flagged": "İşaretli",
+      "organization": "Kurum",
+      "resubmitted": "Düzenlenmiş"
+    },
+    "filterLabel": "Kuyruk süzgeci",
+    "queueTitle": "Kuyruk · {count}",
+    "queueEmpty": "Bu süzgece uyan ilan yok.",
+    "sortLabel": "Sırala",
+    "sort": {
+      "oldest": "En eski önce",
+      "newest": "En yeni önce"
+    },
+    "waiting": "Bekleme süresi:",
+    "elapsedMin": "{n} dk",
+    "elapsedHour": "{n} sa",
+    "elapsedDay": "{n} gün",
+    "flag": {
+      "new_user": "Yeni üye",
+      "content": "İçerik uyarısı",
+      "similar": "Benzer ilan",
+      "organization": "Kurum",
+      "resubmitted": "Düzenlenmiş"
+    },
+    "meta": "PD-{no} · {date} gönderildi",
+    "firstSubmission": "ilk gönderim",
+    "resubmitted": "düzenlenip yeniden gönderildi",
+    "openOnSite": "Sitedeki görünümü aç",
+    "opensNewTab": "(yeni sekmede açılır)",
+    "photos": "Fotoğraflar",
+    "photoAlt": "Fotoğraf {n} (büyük hâli yeni sekmede)",
+    "noPhotos": "Fotoğraf yok.",
+    "rowLocation": "Konum",
+    "rowPhone": "Telefon",
+    "phoneShown": "Gösteriliyor",
+    "phoneHidden": "Gizli",
+    "checksTitle": "Otomatik kontroller",
+    "ok": "Sorun yok",
+    "warning": "Uyarı",
+    "info": "Bilgi",
+    "checkContentOk": "Yasaklı kelime, iletişim bilgisi ya da fiyat ifadesi yok",
+    "checkContent": "İçerikte dikkat: {list}",
+    "field": {
+      "title": "başlık",
+      "description": "açıklama"
+    },
+    "reason": {
+      "phone": "telefon numarası",
+      "email": "e-posta adresi",
+      "url": "bağlantı",
+      "iban": "IBAN",
+      "price": "fiyat ifadesi",
+      "banned_term": "yasaklı kelime"
+    },
+    "checkSimilarOk": "Aynı kullanıcının benzer başlıklı başka ilanı yok",
+    "checkSimilar": "Aynı kullanıcının benzer başlıklı başka bir ilanı var (tekrar olabilir)",
+    "checkNewUserOk": "Hesap {days} günlük; yeni üye işareti yok",
+    "checkNewUser": "Yeni üye: hesap {days} günlük, daha önce yayına girmiş ilanı yok",
+    "checkOrganization": "Kurum hesabı (klinik / barınak)",
+    "previousNote": "Önceki not:",
+    "ownerTitle": "İlan sahibi",
+    "role": {
+      "user": "Bireysel",
+      "clinic": "Veteriner kliniği",
+      "shelter": "Barınak",
+      "admin": "Admin"
+    },
+    "memberSince": "Üyelik: {date}",
+    "emailVerified": "e-posta doğrulandı",
+    "emailUnverified": "e-posta doğrulanmadı",
+    "ownerStats": "Diğer ilan: {listings} · Şikayet: {reports} · Red: {rejections}",
+    "decisionTitle": "Karar",
+    "notPending": "Bu ilan onay beklemiyor; karar verilemez.",
+    "reasonLabel": "Red gerekçesi",
+    "reasonPlaceholder": "Seçin (yalnız red için)",
+    "reasonRequired": "Reddetmek için bir gerekçe seçin ya da en az 10 karakterlik not yazın.",
+    "noteLabel": "Kullanıcıya not",
+    "notePlaceholder": "Örn. 2. fotoğraftaki telefon numarasını kaldırın",
+    "noteHint": "Ret veya düzeltme isteğinde kullanıcıya e-posta ve bildirimle gider.",
+    "noteRequired": "Düzeltme istemek için en az 10 karakterlik not yazın.",
+    "fieldsToggle": "Düzeltilecek bölümleri işaretle (isteğe bağlı)",
+    "fieldsLabel": "Düzeltilecek bölümler",
+    "approve": "Onayla ve yayınla",
+    "approveShort": "Onayla",
+    "requestChanges": "Düzeltme iste",
+    "changesShort": "Düzeltme",
+    "reject": "Reddet",
+    "rejectTitle": "İlanı reddet",
+    "changesTitle": "Düzeltme iste",
+    "cancel": "Vazgeç",
+    "shortcuts": "Kısayollar: <kbd>A</kbd> onayla · <kbd>R</kbd> reddet · <kbd>J</kbd> / <kbd>K</kbd> sonraki / önceki",
+    "auditNote": "Her karar denetim kaydına işlenir. Onaylanınca ilan yayına girer ve kullanıcıya bildirim gider.",
+    "done": {
+      "approve": "İlan onaylandı ve yayına girdi.",
+      "reject": "İlan reddedildi.",
+      "changes": "Düzeltme istendi."
+    }
   }
 }

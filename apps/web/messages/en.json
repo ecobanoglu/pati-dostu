@@ -1124,7 +1124,9 @@
     "CONTENT_TOO_LARGE": "The text is too long; split it into two posts.",
     "CONTENT_INVALID": "The text contains an unsupported format. Paste that part again as plain text.",
     "LINK_INVALID": "One of the links is invalid: only https:// or site (/…) addresses are allowed.",
-    "SCHEDULE_IN_PAST": "The publish date must be in the future."
+    "SCHEDULE_IN_PAST": "The publish date must be in the future.",
+    "REASON_REQUIRED": "Choose a rejection reason or write a note of at least 10 characters.",
+    "REASON_INVALID": "The selected rejection reason no longer exists. Reload and choose again."
   },
   "Posts": {
     "blogTitle": "Blog",
@@ -1185,6 +1187,7 @@
     "backToSite": "Back to site",
     "breadcrumb": "Location",
     "nav": {
+      "listingReview": "Listing review",
       "blog": "Blog",
       "news": "News"
     },
@@ -1363,5 +1366,110 @@
     },
     "crumbBlog": "Blog",
     "crumbNews": "News"
+  },
+  "AdminReview": {
+    "title": "Listing review",
+    "counter": "{n} / {total}",
+    "notFound": "Listing not found",
+    "emptyTitle": "No listings awaiting review",
+    "emptyText": "New submissions appear here.",
+    "filter": {
+      "all": "All",
+      "flagged": "Flagged",
+      "organization": "Organization",
+      "resubmitted": "Edited"
+    },
+    "filterLabel": "Queue filter",
+    "queueTitle": "Queue · {count}",
+    "queueEmpty": "No listings match this filter.",
+    "sortLabel": "Sort",
+    "sort": {
+      "oldest": "Oldest first",
+      "newest": "Newest first"
+    },
+    "waiting": "Waiting:",
+    "elapsedMin": "{n} min",
+    "elapsedHour": "{n} h",
+    "elapsedDay": "{n} d",
+    "flag": {
+      "new_user": "New member",
+      "content": "Content warning",
+      "similar": "Similar listing",
+      "organization": "Organization",
+      "resubmitted": "Edited"
+    },
+    "meta": "PD-{no} · submitted {date}",
+    "firstSubmission": "first submission",
+    "resubmitted": "edited and resubmitted",
+    "openOnSite": "Open on site",
+    "opensNewTab": "(opens in a new tab)",
+    "photos": "Photos",
+    "photoAlt": "Photo {n} (full size in a new tab)",
+    "noPhotos": "No photos.",
+    "rowLocation": "Location",
+    "rowPhone": "Phone",
+    "phoneShown": "Shown",
+    "phoneHidden": "Hidden",
+    "checksTitle": "Automatic checks",
+    "ok": "OK",
+    "warning": "Warning",
+    "info": "Info",
+    "checkContentOk": "No banned words, contact details or price expressions",
+    "checkContent": "Check the content: {list}",
+    "field": {
+      "title": "title",
+      "description": "description"
+    },
+    "reason": {
+      "phone": "phone number",
+      "email": "email address",
+      "url": "link",
+      "iban": "IBAN",
+      "price": "price expression",
+      "banned_term": "banned word"
+    },
+    "checkSimilarOk": "The same user has no other listing with a similar title",
+    "checkSimilar": "The same user has another listing with a similar title (may be a duplicate)",
+    "checkNewUserOk": "Account is {days} days old; not a new member",
+    "checkNewUser": "New member: account is {days} days old with no previously published listing",
+    "checkOrganization": "Organization account (clinic / shelter)",
+    "previousNote": "Previous note:",
+    "ownerTitle": "Listing owner",
+    "role": {
+      "user": "Individual",
+      "clinic": "Veterinary clinic",
+      "shelter": "Shelter",
+      "admin": "Admin"
+    },
+    "memberSince": "Member since {date}",
+    "emailVerified": "email verified",
+    "emailUnverified": "email not verified",
+    "ownerStats": "Other listings: {listings} · Reports: {reports} · Rejections: {rejections}",
+    "decisionTitle": "Decision",
+    "notPending": "This listing is not awaiting review; no decision can be made.",
+    "reasonLabel": "Rejection reason",
+    "reasonPlaceholder": "Choose (rejection only)",
+    "reasonRequired": "To reject, choose a reason or write a note of at least 10 characters.",
+    "noteLabel": "Note to the user",
+    "notePlaceholder": "E.g. remove the phone number in the 2nd photo",
+    "noteHint": "Sent to the user by email and notification with a rejection or change request.",
+    "noteRequired": "Write a note of at least 10 characters to request changes.",
+    "fieldsToggle": "Mark sections to fix (optional)",
+    "fieldsLabel": "Sections to fix",
+    "approve": "Approve and publish",
+    "approveShort": "Approve",
+    "requestChanges": "Request changes",
+    "changesShort": "Changes",
+    "reject": "Reject",
+    "rejectTitle": "Reject listing",
+    "changesTitle": "Request changes",
+    "cancel": "Cancel",
+    "shortcuts": "Shortcuts: <kbd>A</kbd> approve · <kbd>R</kbd> reject · <kbd>J</kbd> / <kbd>K</kbd> next / previous",
+    "auditNote": "Every decision is recorded in the audit log. Approved listings go live and the user is notified.",
+    "done": {
+      "approve": "Listing approved and published.",
+      "reject": "Listing rejected.",
+      "changes": "Changes requested."
+    }
   }
 }

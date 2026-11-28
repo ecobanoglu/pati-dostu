@@ -38,6 +38,8 @@ export const ErrorCode = {
   LISTING_NOT_EDITABLE: "LISTING_NOT_EDITABLE",
   LISTING_STATUS_INVALID: "LISTING_STATUS_INVALID",
   LISTING_NOT_PENDING: "LISTING_NOT_PENDING",
+  /** Seçilen red gerekçesi yok ya da silinmiş. */
+  REASON_INVALID: "REASON_INVALID",
   /** Seçilen ırk seçilen türe ait değil. */
   BREED_MISMATCH: "BREED_MISMATCH",
   /** Seçilen ilçe seçilen ile ait değil. */

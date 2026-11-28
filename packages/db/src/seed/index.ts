@@ -19,12 +19,13 @@ import {
   district,
   forumCategory,
   moderationRule,
+  rejectionReason,
   postCategory,
   species,
 } from "../schema/index.js"
 import { normalizeTurkish, slugify } from "../text.js"
 import { forumCategorySeed } from "./data/forum.js"
-import { bannedTermSeed, moderationRuleSeed } from "./data/moderation.js"
+import { bannedTermSeed, moderationRuleSeed, rejectionReasonSeed } from "./data/moderation.js"
 import { postCategorySeed } from "./data/posts.js"
 import { mixedBreedName, speciesSeed } from "./data/species.js"
 
@@ -120,6 +121,13 @@ async function seedModeration() {
     .values(bannedTermSeed.map((t) => ({ ...t, term: normalizeTurkish(t.term) })))
     .onConflictDoNothing()
   console.log(`  içerik kuralı: ${moderationRuleSeed.length}, yasaklı kelime: ${bannedTermSeed.length}`)
+  for (const [index, r] of rejectionReasonSeed.entries()) {
+    await db
+      .insert(rejectionReason)
+      .values({ slug: r.slug, label: r.label, sortOrder: index })
+      .onConflictDoUpdate({ target: rejectionReason.slug, set: { label: r.label, sortOrder: index } })
+  }
+  console.log(`  red gerekçesi: ${rejectionReasonSeed.length}`)
 }
 
 /** Seed sonrası hızlı tutarlılık kontrolü: İstanbul ve 39 ilçesi. */

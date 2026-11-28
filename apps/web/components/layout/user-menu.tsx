@@ -15,13 +15,14 @@ import type { Me } from "@/lib/api"
 
 import { accountLinks, isOrganization, organizationApplyIcon as ApplyIcon } from "./account-links"
 import { UserAvatar } from "./user-avatar"
+import { VerifiedOrgBadge } from "./verified-org-badge"
 import { useSignOut } from "./use-sign-out"
 
 const itemClass = "min-h-11 gap-3 rounded-md px-3 text-[15px] font-bold text-heading [&_svg]:size-[18px]"
 
 /**
  * Masaüstü profil menüsü (avatar + ilk ad). Esc veya dışarı tıklayınca kapanır; klavyeyle gezilebilir (Base UI Menu).
- * Bireysel hesap: panel bağlantıları + kurumsal başvuru; kurum hesabı: kurum paneli bağlantıları; admin: ayrıca
+ * Bireysel hesap: panel bağlantıları + kurumsal başvuru; kurum hesabı: aynı bağlantılar + "Doğrulanmış" rozeti; admin: ayrıca
  * "Blog ve haberler (yönetim)" (admin paneli 5. aşamada).
  */
 export function UserMenu({ user }: { user: Me }) {
@@ -46,14 +47,16 @@ export function UserMenu({ user }: { user: Me }) {
           <UserAvatar user={user} className="size-11 text-base" />
           <div className="min-w-0">
             <p className="truncate font-extrabold text-heading">{user.name}</p>
-            <p className="truncate text-xs text-body">
-              {org ? t(user.role === "clinic" ? "clinicAccount" : "shelterAccount") : user.email}
-            </p>
+            {org ? (
+              <VerifiedOrgBadge role={user.role as "clinic" | "shelter"} className="text-xs" />
+            ) : (
+              <p className="truncate text-xs text-body">{user.email}</p>
+            )}
           </div>
         </div>
         <DropdownMenuSeparator />
 
-        {accountLinks(user).map(({ href, key, icon: Icon }) => (
+        {accountLinks().map(({ href, key, icon: Icon }) => (
           <DropdownMenuItem key={href} className={itemClass} render={<Link href={href} />}>
             <Icon aria-hidden="true" />
             {t(key)}

@@ -156,6 +156,18 @@ const notificationStrings = {
       button: "Bildirimlere git",
       reasons: REPORT_REASON_LABELS.tr,
     },
+    org_application_approved: {
+      subject: "Kurumsal başvurunuz onaylandı",
+      text: (name: string, type: "clinic" | "shelter") =>
+        `"${name}" başvurunuz onaylandı. Hesabınız artık ${type === "clinic" ? "veteriner kliniği" : "barınak"} hesabı ve doğrulanmış rozetle görünüyor.`,
+      button: "Hesabıma git",
+    },
+    org_application_rejected: {
+      subject: "Kurumsal başvurunuz onaylanmadı",
+      text: (name: string) => `"${name}" başvurunuz onaylanmadı. Bilgileri düzeltip yeniden gönderebilirsiniz.`,
+      detail: "Gerekçe",
+      button: "Başvuruyu düzenle",
+    },
     report_resolved: {
       subject: "Şikayetiniz incelendi",
       action_taken: (title: string) => `Şikayet ettiğiniz "${title}" incelendi ve gerekli işlem yapıldı.`,
@@ -238,6 +250,19 @@ const notificationStrings = {
       button: "Go to notifications",
       reasons: REPORT_REASON_LABELS.en,
     },
+    org_application_approved: {
+      subject: "Your organization application was approved",
+      text: (name: string, type: "clinic" | "shelter") =>
+        `Your application for "${name}" was approved. Your account now appears as a ${type === "clinic" ? "veterinary clinic" : "shelter"} with a verified badge.`,
+      button: "Go to my account",
+    },
+    org_application_rejected: {
+      subject: "Your organization application wasn't approved",
+      text: (name: string) =>
+        `Your application for "${name}" wasn't approved. You can correct the details and resubmit.`,
+      detail: "Reason",
+      button: "Edit application",
+    },
     report_resolved: {
       subject: "Your report was reviewed",
       action_taken: (title: string) => `"${title}", which you reported, was reviewed and action was taken.`,
@@ -309,6 +334,8 @@ export type NotificationMailData =
   | { type: "listing_closed_by_admin"; title: string; url: string }
   | { type: "user_warned"; title: string; url: string; reason: string }
   | { type: "report_resolved"; title: string; url: string; outcome: "action_taken" | "no_violation" }
+  | { type: "org_application_approved"; title: string; url: string; orgType: "clinic" | "shelter" }
+  | { type: "org_application_rejected"; title: string; url: string; reason: string }
   | { type: "listing_removed"; title: string; url: string; reason: string }
   | { type: "favorite_closed"; title: string; url: string; outcome: "adopted" | "reunited" | "closed" }
   | { type: "new_message"; title: string; url: string; senderName: string; preview: string }
@@ -344,6 +371,15 @@ export function notificationMail(
       ;({ subject, button: buttonLabel } = n.user_warned)
       text = n.user_warned.text(data.title)
       detail = { label: n.user_warned.detail, value: n.user_warned.reasons[data.reason] ?? data.reason }
+      break
+    case "org_application_approved":
+      ;({ subject, button: buttonLabel } = n.org_application_approved)
+      text = n.org_application_approved.text(data.title, data.orgType)
+      break
+    case "org_application_rejected":
+      ;({ subject, button: buttonLabel } = n.org_application_rejected)
+      text = n.org_application_rejected.text(data.title)
+      detail = { label: n.org_application_rejected.detail, value: data.reason }
       break
     case "report_resolved":
       ;({ subject, button: buttonLabel } = n.report_resolved)

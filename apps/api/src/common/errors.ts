@@ -44,6 +44,13 @@ export const ErrorCode = {
   CANNOT_MODERATE_ADMIN: "CANNOT_MODERATE_ADMIN",
   /** Rol değişikliğine izin yok (kurum hesabı, kendi rolü, son admin, askıdaki hesap). */
   ROLE_CHANGE_NOT_ALLOWED: "ROLE_CHANGE_NOT_ALLOWED",
+  // Kurumsal başvuru
+  /** Bekleyen bir başvurunuz var (sonuçlanmadan yenisi gönderilemez). */
+  APPLICATION_PENDING: "APPLICATION_PENDING",
+  /** Hesap zaten kurum (klinik / barınak) ya da admin; başvuru yapamaz. */
+  ALREADY_ORGANIZATION: "ALREADY_ORGANIZATION",
+  /** Başvuru beklemede değil (zaten sonuçlanmış). */
+  APPLICATION_NOT_PENDING: "APPLICATION_NOT_PENDING",
   /** Bu hedefin açık şikâyeti yok (zaten sonuçlanmış). */
   REPORT_NOT_OPEN: "REPORT_NOT_OPEN",
   /** Şikâyeti sonuçlandırırken hiçbir işlem seçilmedi. */

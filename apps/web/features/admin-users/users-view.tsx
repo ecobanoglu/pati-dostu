@@ -2,6 +2,7 @@ import { ArrowLeft, ArrowRight, X } from "lucide-react"
 import type { Metadata } from "next"
 import { getFormatter, getTranslations } from "next-intl/server"
 
+import { ApplicationActions } from "@/components/admin/application-actions"
 import { AdminTopBar } from "@/components/layout/admin/admin-top-bar"
 import { Badge } from "@/components/ui/badge"
 import { buttonVariants } from "@/components/ui/button"
@@ -26,7 +27,8 @@ export async function usersMetadata(): Promise<Metadata> {
 }
 
 /**
- * Admin › Kullanıcılar (tasarım 07-admin/03; sağdaki kurum başvuruları 6. adımda). Tablo: kullanıcı (baş harf, ad,
+ * Admin › Kullanıcılar (tasarım 07-admin/03). Kullanıcı seçili değilken sağda "Kurum başvuruları · N" kutusu (en eski 3
+ * bekleyen; Onayla / Reddet; tümü Kurum başvuruları sayfasında; mobilde tablonun altında). Tablo: kullanıcı (baş harf, ad,
  * e-posta), rol, şehir, ilan, şikâyet, kayıt, durum, "İşlemler"; seçilen kullanıcının ayrıntısı sağda (mobilde ayrı
  * ekran): üyelik, iletişim, ilanlar, şikâyetler, uyarılar, yaptırım geçmişi ve işlemler. Süzgeçler ve seçim adreste.
  * Oturum ve adres okuduğu için <Suspense> içinde.
@@ -34,12 +36,14 @@ export async function usersMetadata(): Promise<Metadata> {
 export async function UsersView({ searchParams }: { searchParams: Promise<SearchParams> }) {
   const me = await requireAdmin()
   const state = parseUsersQuery(await searchParams)
-  const [t, format, page, detail] = await Promise.all([
+  const [t, format, page, detail, applications] = await Promise.all([
     getTranslations("AdminUsers"),
     getFormatter(),
     apiServer<AdminUserPage>(`/admin/users?${toUsersApiQuery(state)}`),
     state.selected ? apiServer<AdminUserDetail>(`/admin/users/${encodeURIComponent(state.selected)}`) : null,
+    state.selected ? null : apiServer<PendingApplications>("/admin/organizations/applications?status=pending"),
   ])
+  const pendingApps = applications && applications.counts.pending > 0 ? applications : null
   if (!page) throw new Error("Kullanıcı listesi okunamadı")
   const totalPages = Math.max(1, Math.ceil(page.total / page.pageSize))
   const from = page.items.length ? (state.page - 1) * page.pageSize + 1 : 0
@@ -50,7 +54,8 @@ export async function UsersView({ searchParams }: { searchParams: Promise<Search
       <div
         className={cn(
           "grid grid-cols-[minmax(0,1fr)] items-start gap-5 px-4 py-5 lg:px-7 lg:py-6",
-          state.selected && "xl:grid-cols-[minmax(0,1fr)_420px]"
+          state.selected && "xl:grid-cols-[minmax(0,1fr)_420px]",
+          pendingApps && "xl:grid-cols-[minmax(0,1fr)_320px]"
         )}
       >
         <section
@@ -96,6 +101,8 @@ export async function UsersView({ searchParams }: { searchParams: Promise<Search
           </div>
         </section>
 
+        {pendingApps && <ApplicationsBox data={pendingApps} />}
+
         {state.selected && (
           <aside
             aria-labelledby="user-detail-title"
@@ -110,6 +117,68 @@ export async function UsersView({ searchParams }: { searchParams: Promise<Search
         )}
       </div>
     </>
+  )
+}
+
+/** Bekleyen kurum başvuruları (yalnız kutuda gereken alanlar). */
+type PendingApplications = {
+  items: Array<{
+    id: string
+    type: "clinic" | "shelter"
+    name: string
+    city: string
+    contactName: string | null
+    submittedAt: string
+  }>
+  counts: { pending: number }
+}
+
+/** "Kurum başvuruları · N" kutusu (tasarım 03 sağ sütun): en eski 3 bekleyen başvuru, Onayla / Reddet, tümü bağlantısı. */
+async function ApplicationsBox({ data }: { data: PendingApplications }) {
+  const [t, ta, format] = await Promise.all([
+    getTranslations("AdminUsers"),
+    getTranslations("AdminApplications"),
+    getFormatter(),
+  ])
+  return (
+    <section
+      aria-labelledby="apps-box-title"
+      className="grid gap-3 rounded-card border border-border bg-background p-5 xl:sticky xl:top-24"
+    >
+      <h2 id="apps-box-title" className="text-xl font-extrabold text-heading">
+        {t("applicationsTitle", { count: data.counts.pending })}
+      </h2>
+      <p className="text-sm text-body">{t("applicationsHint")}</p>
+      <ul className="divide-y divide-border border-t border-border">
+        {data.items.slice(0, 3).map((a) => (
+          <li key={a.id} className="grid gap-2 py-4">
+            <div>
+              <Link
+                href={{ pathname: "/admin/organization-applications", query: { basvuru: a.id } }}
+                className="font-extrabold text-heading hover:text-primary hover:underline"
+              >
+                {a.name}
+              </Link>
+              <p className="text-[13px] text-body">
+                {ta(`roles.${a.type}`)} · {a.city} ·{" "}
+                {format.dateTime(new Date(a.submittedAt), {
+                  day: "numeric",
+                  month: "short",
+                  timeZone: "Europe/Istanbul",
+                })}
+              </p>
+            </div>
+            <ApplicationActions id={a.id} name={a.name} type={a.type} size="sm" />
+          </li>
+        ))}
+      </ul>
+      <Link
+        href="/admin/organization-applications"
+        className="inline-flex min-h-tap items-center font-extrabold text-primary underline underline-offset-4"
+      >
+        {t("applicationsAll")}
+      </Link>
+    </section>
   )
 }
 

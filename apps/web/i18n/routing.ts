@@ -48,6 +48,10 @@ export const routing = defineRouting({
     "/admin/listings": { tr: "/admin/ilanlar", en: "/admin/listings" },
     "/admin/reports": { tr: "/admin/sikayetler", en: "/admin/reports" },
     "/admin/users": { tr: "/admin/kullanicilar", en: "/admin/users" },
+    "/admin/organization-applications": {
+      tr: "/admin/kurum-basvurulari",
+      en: "/admin/organization-applications",
+    },
     "/admin/listing-review": { tr: "/admin/ilan-onayi", en: "/admin/listing-review" },
     "/admin/posts": { tr: "/admin/yazilar", en: "/admin/posts" },
     "/admin/posts/new": { tr: "/admin/yazilar/yeni", en: "/admin/posts/new" },

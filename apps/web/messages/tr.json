@@ -39,11 +39,6 @@
     "savedSearches": "Kayıtlı aramalar",
     "settings": "Profil ve ayarlar",
     "applyOrganization": "Kurumsal başvuru yap",
-    "organizationPanel": "Kurum paneli",
-    "appointments": "Randevu talepleri",
-    "organizationSettings": "Ayarlar",
-    "clinicAccount": "Veteriner kliniği",
-    "shelterAccount": "Barınak",
     "signOut": "Çıkış yap",
     "signOutFailed": "Çıkış yapılamadı. Lütfen tekrar deneyin.",
     "messages": "Mesajlar",
@@ -533,7 +528,8 @@
       "clinic": "Veteriner kliniği",
       "shelter": "Barınak",
       "admin": "Yönetici"
-    }
+    },
+    "verified": "Doğrulanmış"
   },
   "Dashboard": {
     "metaTitle": "Panel özeti",
@@ -759,6 +755,14 @@
       "report_resolved_no_violation": {
         "title": "Şikayetiniz incelendi",
         "body": "“{title}” incelendi; kural ihlali bulunmadı."
+      },
+      "org_application_approved": {
+        "title": "Kurumsal başvurunuz onaylandı",
+        "body": "“{name}” artık doğrulanmış kurum hesabı."
+      },
+      "org_application_rejected": {
+        "title": "Kurumsal başvurunuz onaylanmadı",
+        "body": "“{name}”: {reason}. Bilgileri düzeltip yeniden gönderebilirsiniz."
       }
     }
   },
@@ -1150,7 +1154,19 @@
     "CANNOT_MODERATE_ADMIN": "Admin hesabına uyarı ya da askıya alma uygulanamaz.",
     "REPORT_NOT_OPEN": "Bu şikayet zaten sonuçlanmış. Sayfayı yenileyin.",
     "ACTION_REQUIRED": "En az bir işlem seçin ya da şikayeti asılsız sayın.",
-    "ROLE_CHANGE_NOT_ALLOWED": "Bu rol değişikliği yapılamaz (kurum hesabı, kendi hesabınız, son admin ya da askıdaki hesap)."
+    "ROLE_CHANGE_NOT_ALLOWED": "Bu rol değişikliği yapılamaz (kurum hesabı, kendi hesabınız, son admin ya da askıdaki hesap).",
+    "ORG_NAME_TOO_SHORT": "Kurum adı en az 3 karakter olmalı.",
+    "ORG_NAME_TOO_LONG": "Kurum adı en fazla 120 karakter olabilir.",
+    "REGISTRY_NO_INVALID": "Geçerli bir vergi / kütük numarası girin (5–30 karakter; harf, rakam, nokta, tire).",
+    "ADDRESS_TOO_SHORT": "Açık adres en az 10 karakter olmalı.",
+    "SERVICES_REQUIRED": "En az bir hizmet seçin.",
+    "HOURS_REQUIRED": "En az bir gün için çalışma saati girin ya da \"7/24 açığız\"ı işaretleyin.",
+    "HOURS_INVALID": "Saat aralıklarını kontrol edin: açılış kapanıştan önce olmalı, aralıklar çakışmamalı.",
+    "DECLARATION_REQUIRED": "Devam etmek için beyanı onaylayın.",
+    "ORG_TYPE_REQUIRED": "Kurum türünü seçin.",
+    "APPLICATION_PENDING": "Bekleyen bir başvurunuz var; sonuçlanmadan yenisi gönderilemez.",
+    "ALREADY_ORGANIZATION": "Bu hesap kurumsal başvuru yapamaz (zaten kurum ya da yönetici hesabı).",
+    "APPLICATION_NOT_PENDING": "Bu başvuru zaten sonuçlanmış."
   },
   "Posts": {
     "blogTitle": "Blog",
@@ -1216,7 +1232,8 @@
       "users": "Kullanıcılar",
       "reports": "Şikayetler",
       "blog": "Blog",
-      "news": "Haberler"
+      "news": "Haberler",
+      "applications": "Kurum başvuruları"
     },
     "pending": "bekliyor",
     "searchLabel": "Admin panelinde ara",
@@ -1732,6 +1749,172 @@
       "warn": "Uyarı gönderildi.",
       "ban": "Hesap askıya alındı.",
       "unban": "Askı kaldırıldı."
+    },
+    "applicationsTitle": "Kurum başvuruları · {count}",
+    "applicationsHint": "Onaylanınca rol klinik veya barınak olur ve rozet görünür.",
+    "applicationsAll": "Tüm başvurular"
+  },
+  "OrgApplication": {
+    "metaTitle": "Kurumsal başvuru",
+    "title": "Kurumsal başvuru",
+    "subtitle": "Veteriner kliniği veya barınak olarak Pati Dostu'da doğrulanmış profil açın.",
+    "asideLabel": "Başvuru hakkında",
+    "verifyFirst": "Başvuru göndermek için önce e-posta adresinizi doğrulayın.",
+    "verifyLink": "Doğrulama e-postası gönder",
+    "sectionType": "Kurum türü",
+    "sectionInfo": "Kurum bilgileri",
+    "sectionAddress": "Adres",
+    "sectionServices": "Hizmetler ve çalışma saatleri",
+    "sectionConsent": "Onay",
+    "types": {
+      "clinic": "Veteriner kliniği",
+      "clinicHint": "Ruhsatlı klinik veya hayvan hastanesi",
+      "shelter": "Barınak / dernek",
+      "shelterHint": "Belediye barınağı, dernek, vakıf veya gönüllü ağı"
+    },
+    "name": "Kurum adı",
+    "registryNo": "Vergi numarası",
+    "registryNoHint": "Barınak/dernek için kütük numarası",
+    "contactName": "Yetkili kişi",
+    "phone": "Kurum telefonu",
+    "phoneHint": "Profilde gösterilir",
+    "email": "Kurum e-postası",
+    "city": "Şehir",
+    "district": "İlçe",
+    "choose": "Seçin",
+    "chooseCityFirst": "Önce şehir seçin",
+    "address": "Açık adres",
+    "servicesLabel": "Hizmetler",
+    "services": {
+      "vaccination": "Aşı",
+      "neutering": "Kısırlaştırma",
+      "emergency": "Acil 7/24",
+      "surgery": "Ameliyat",
+      "dental": "Diş bakımı",
+      "laboratory": "Laboratuvar",
+      "microchip": "Mikroçip",
+      "adoption": "Sahiplendirme",
+      "foster": "Geçici yuva",
+      "rescue": "Kurtarma",
+      "treatment": "Tedavi",
+      "volunteering": "Gönüllülük"
+    },
+    "chooseTypeFirst": "Hizmetleri seçmek için önce kurum türünü seçin.",
+    "hours": "Çalışma saatleri",
+    "is24h": "7/24 açığız",
+    "is24hHint": "(işaretlenirse gün listesi gizlenir)",
+    "open": "Açık",
+    "closed": "Kapalı",
+    "closedNote": "Bu gün kapalı görünecek",
+    "dayOpen": "{day} açık",
+    "opensAt": "{day}, {n}. aralık açılış",
+    "closesAt": "{day}, {n}. aralık kapanış",
+    "removeRange": "{day}, {n}. aralığı kaldır",
+    "addRange": "+ Ara ekle",
+    "addRangeFor": "{day} için aralık ekle",
+    "copyAll": "Tüm günlere kopyala",
+    "hoursNote": "Öğle arası için \"+ Ara ekle\" ile ikinci bir saat aralığı girin. Bayram ve resmî tatil kapanışları onaydan sonra eklenebilecek. Barınaklarda bu saatler \"Ziyaret saatleri\" olarak gösterilir.",
+    "declaration": "Bilgilerin doğru olduğunu ve kurumu temsil etmeye yetkili olduğumu beyan ederim.",
+    "acceptTerms": "<kvkk>KVKK Aydınlatma Metni</kvkk>'ni ve <terms>Kurumsal Üyelik Şartları</terms>'nı kabul ediyorum.",
+    "submit": "Başvuruyu gönder",
+    "resubmit": "Başvuruyu yeniden gönder",
+    "sending": "Gönderiliyor…",
+    "pendingTitle": "Başvurunuz inceleniyor",
+    "pendingText": "Ekibimiz bilgileri 1–3 iş günü içinde kontrol eder; sonuç size bildirim ve e-postayla iletilir.",
+    "summaryName": "Kurum",
+    "summaryType": "Tür",
+    "summaryCity": "Konum",
+    "summarySubmitted": "Gönderim",
+    "approvedTitle": "Başvurunuz onaylandı",
+    "approvedText": "{name} artık {type} hesabı olarak doğrulanmış rozetle görünüyor.",
+    "goToAccount": "Hesabıma git",
+    "rejectedTitle": "Başvurunuz onaylanmadı",
+    "rejectedReason": "Gerekçe",
+    "rejectedText": "Bilgileri düzeltip aşağıdan yeniden gönderebilirsiniz.",
+    "adminTitle": "Admin hesapları başvuru yapamaz",
+    "adminText": "Kurum başvuruları Admin › Kurum başvuruları sayfasından değerlendirilir.",
+    "alreadyTitle": "Hesabınız zaten kurum hesabı",
+    "alreadyText": "Kurum bilgileriniz için bizimle iletişime geçebilirsiniz.",
+    "processTitle": "Süreç",
+    "process": {
+      "1": {
+        "title": "Başvuru",
+        "text": "Formu doldurup gönderin."
+      },
+      "2": {
+        "title": "İnceleme",
+        "text": "Ekibimiz 1–3 iş günü içinde bilgileri kontrol eder; gerekirse sizinle iletişime geçer."
+      },
+      "3": {
+        "title": "Onay",
+        "text": "Hesabınız klinik/barınak rolüne geçer, doğrulanmış rozet görünür."
+      }
+    },
+    "benefitsTitle": "Kurumsal üyelikle",
+    "benefits": {
+      "1": "Doğrulanmış rozet ve kurum hesabı",
+      "2": "Toplulukta \"Veteriner\" / \"Barınak\" rozeti",
+      "3": "Kurum profili, randevu talepleri ve ihtiyaç listesi (yakında)"
     }
+  },
+  "AdminApplications": {
+    "title": "Kurum başvuruları",
+    "listTitle": "Başvurular",
+    "statusFilter": "Başvuru durumu",
+    "status": {
+      "pending": "Bekleyen",
+      "approved": "Onaylanan",
+      "rejected": "Reddedilen"
+    },
+    "state": {
+      "pending": "Bekliyor",
+      "approved": "Onaylandı",
+      "rejected": "Reddedildi"
+    },
+    "empty": {
+      "pending": "Bekleyen başvuru yok.",
+      "approved": "Onaylanmış başvuru yok.",
+      "rejected": "Reddedilmiş başvuru yok."
+    },
+    "pagination": "Sayfalar",
+    "pageOf": "Sayfa {page} / {pages}",
+    "prev": "Önceki sayfa",
+    "next": "Sonraki sayfa",
+    "backToList": "Başvurulara dön",
+    "noApplication": "Gösterilecek başvuru yok",
+    "roles": {
+      "clinic": "Klinik",
+      "shelter": "Barınak"
+    },
+    "resubmitted": "Yeniden gönderildi",
+    "submittedOn": "Gönderim: {date}",
+    "addressLabel": "Adres",
+    "open24h": "7/24 açık",
+    "applicant": "Başvuran",
+    "memberSince": "Üyelik: {date}",
+    "listingCount": "{count, plural, =0 {İlanı yok} other {# ilan}}",
+    "emailVerified": "E-posta doğrulanmış",
+    "emailNotVerified": "E-posta doğrulanmamış",
+    "openUser": "Kullanıcıyı aç",
+    "decision": "Karar",
+    "decisionHint": "Onaylanınca hesabın rolü klinik veya barınak olur ve doğrulanmış rozet görünür. Sonuç kullanıcıya bildirim ve e-postayla gider.",
+    "previousReason": "Önceki red gerekçesi",
+    "result": "Sonuç",
+    "approvedBy": "{name} tarafından {date} tarihinde onaylandı.",
+    "rejectedBy": "{name} tarafından {date} tarihinde reddedildi.",
+    "reasonLabel": "Gerekçe",
+    "approve": "Onayla",
+    "reject": "Reddet",
+    "approveFor": "{name} başvurusunu onayla",
+    "rejectFor": "{name} başvurusunu reddet",
+    "cancel": "Vazgeç",
+    "approveTitle": "Başvuru onaylansın mı?",
+    "approveText": "{name} doğrulanacak ve hesabın rolü \"{role}\" olacak.",
+    "rejectTitle": "Başvuru reddedilsin mi?",
+    "rejectText": "{name} başvurusu reddedilecek. Kullanıcı gerekçeyi görür ve bilgileri düzeltip yeniden gönderebilir.",
+    "reasonHint": "Kullanıcıya gönderilir; en az 10 karakter.",
+    "reasonTooShort": "Gerekçe en az 10 karakter olmalı.",
+    "approved": "Başvuru onaylandı.",
+    "rejected": "Başvuru reddedildi."
   }
 }

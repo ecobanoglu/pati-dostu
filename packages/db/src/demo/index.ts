@@ -31,6 +31,8 @@ import {
   listingComment,
   listingImage,
   message,
+  orgHours,
+  organization,
   post,
   postCategory,
   postTag,
@@ -46,6 +48,7 @@ import {
   demoComments,
   demoConversations,
   demoListings,
+  demoOrganizations,
   demoReports,
   demoUsers,
 } from "./data.js"
@@ -204,6 +207,8 @@ async function clearDemo() {
       )
     )
   }
+  // Kurum kayıtları (çalışma saatleri cascade ile).
+  await db.delete(organization).where(inArray(organization.userId, userIds))
   await db.delete(user).where(inArray(user.id, userIds))
   console.log(`  silindi: ${users.length} kullanıcı, ${listings.length} ilan`)
 }
@@ -224,6 +229,55 @@ async function seedUsers(): Promise<Map<string, string>> {
   }))
   await db.insert(user).values(rows)
   return new Map(demoUsers.map((u) => [u.key, `demo-${u.key}`]))
+}
+
+/**
+ * Kurum kayıtları: demo klinik / barınağın onaylı başvuruları (doğrulanmış, değerlendiren demo editör) ve bekleyen
+ * başvurular (biri önceki red gerekçesiyle — "yeniden gönderildi"), çalışma saatleriyle.
+ */
+async function seedOrganizations(owners: Map<string, string>) {
+  const dict = await loadDictionary()
+  const DAY = 86_400_000
+  for (const o of demoOrganizations) {
+    const at = new Date(Date.now() - o.daysAgo * DAY)
+    const approved = o.status === "approved"
+    const [row] = await db
+      .insert(organization)
+      .values({
+        userId: owners.get(o.owner)!,
+        type: o.type,
+        name: o.name,
+        slug: slugify(o.name),
+        contactName: o.contactName,
+        registryNo: o.registryNo,
+        phone: o.phone,
+        email: o.email,
+        address: o.address,
+        cityId: dict.cityId(o.city),
+        districtId: dict.districtId(o.city, o.district),
+        services: o.services,
+        is24h: o.is24h ?? false,
+        status: o.status,
+        reviewedBy: approved ? owners.get("editor")! : null,
+        reviewedAt: approved
+          ? new Date(at.getTime() + 2 * DAY)
+          : o.previousRejection
+            ? new Date(at.getTime() - 3 * DAY)
+            : null,
+        verifiedAt: approved ? new Date(at.getTime() + 2 * DAY) : null,
+        rejectionReason: o.previousRejection ?? null,
+        createdAt: o.previousRejection ? new Date(at.getTime() - 5 * DAY) : at,
+        updatedAt: approved ? new Date(at.getTime() + 2 * DAY) : at,
+      })
+      .returning({ id: organization.id })
+    const hours = o.hours.flatMap(([days, opensAt, closesAt]) =>
+      days.map((weekday) => ({ orgId: row!.id, weekday, opensAt, closesAt }))
+    )
+    if (hours.length > 0) await db.insert(orgHours).values(hours)
+  }
+  console.log(
+    `  kurum: ${demoOrganizations.length} (${demoOrganizations.filter((o) => o.status === "pending").length} bekleyen başvuru)`
+  )
 }
 
 /** Sözlük kimlikleri: tür (slug), ırk (tür + Türkçe ad), il (slug), ilçe (il + ad). */
@@ -605,6 +659,7 @@ try {
     console.log("Demo içerik ekleniyor…")
     const owners = await seedUsers()
     const listings = await seedListings(owners)
+    await seedOrganizations(owners)
     await seedConversations(owners, listings)
     const comments = await seedComments(owners, listings)
     await seedReports(owners, listings, comments)

@@ -34,6 +34,8 @@ export const organization = pgTable(
     type: organizationTypeEnum().notNull(),
     name: text().notNull(),
     slug: text().notNull().unique(),
+    /** Başvuruyu yapan yetkili kişinin adı (kurumu temsil eden). */
+    contactName: text(),
     /** Vergi no (klinik) veya kütük / kayıt no (barınak). */
     registryNo: text().notNull(),
     description: text(),

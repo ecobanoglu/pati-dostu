@@ -28,6 +28,8 @@ export type NotificationPayload =
       /** İlgili içeriğin başlığı (ilan / konu); yoksa boş. */
       title: string
     }
+  | { type: "org_application_approved"; orgType: "clinic" | "shelter"; name: string }
+  | { type: "org_application_rejected"; orgType: "clinic" | "shelter"; name: string; reason: string }
   | {
       type: "report_resolved"
       outcome: "action_taken" | "no_violation"
@@ -92,6 +94,8 @@ const WEB_PATHS = {
   messages: { tr: "/hesabim/mesajlar", en: "/en/account/messages" },
   notifications: { tr: "/hesabim/bildirimler", en: "/en/account/notifications" },
   community: { tr: "/topluluk", en: "/en/community" },
+  account: { tr: "/hesabim", en: "/en/account" },
+  orgApplication: { tr: "/hesabim/kurumsal-basvuru", en: "/en/account/organization-application" },
 } as const
 
 /**
@@ -247,6 +251,20 @@ export class NotificationsService {
           title: payload.title,
           reason: payload.reason,
           url: `${web}${WEB_PATHS.notifications[locale]}`,
+        }
+      case "org_application_approved":
+        return {
+          type: payload.type,
+          title: payload.name,
+          orgType: payload.orgType,
+          url: `${web}${WEB_PATHS.account[locale]}`,
+        }
+      case "org_application_rejected":
+        return {
+          type: payload.type,
+          title: payload.name,
+          reason: payload.reason,
+          url: `${web}${WEB_PATHS.orgApplication[locale]}`,
         }
       case "report_resolved":
         return {

@@ -16,6 +16,7 @@ import { MailModule } from "./mail/mail.module.js"
 import { MessagingModule } from "./messaging/messaging.module.js"
 import { ModerationModule } from "./moderation/moderation.module.js"
 import { NotificationsModule } from "./notifications/notifications.module.js"
+import { OrganizationsModule } from "./organizations/organizations.module.js"
 import { PostsModule } from "./posts/posts.module.js"
 import { RedisModule } from "./redis/redis.module.js"
 import { ReportsModule } from "./reports/reports.module.js"
@@ -43,6 +44,7 @@ import { UsersModule } from "./users/users.module.js"
     ReportsModule,
     ForumModule,
     PostsModule,
+    OrganizationsModule,
     AdminModule,
   ],
   providers: [

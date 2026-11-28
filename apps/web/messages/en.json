@@ -39,11 +39,6 @@
     "savedSearches": "Saved searches",
     "settings": "Profile & settings",
     "applyOrganization": "Apply as an organization",
-    "organizationPanel": "Organization panel",
-    "appointments": "Appointment requests",
-    "organizationSettings": "Settings",
-    "clinicAccount": "Veterinary clinic",
-    "shelterAccount": "Shelter",
     "signOut": "Sign out",
     "signOutFailed": "Couldn't sign out. Please try again.",
     "messages": "Messages",
@@ -533,7 +528,8 @@
       "clinic": "Vet clinic",
       "shelter": "Shelter",
       "admin": "Administrator"
-    }
+    },
+    "verified": "Verified"
   },
   "Dashboard": {
     "metaTitle": "Dashboard",
@@ -759,6 +755,14 @@
       "report_resolved_no_violation": {
         "title": "Your report was reviewed",
         "body": "“{title}” was reviewed; no rule violation was found."
+      },
+      "org_application_approved": {
+        "title": "Your organization application was approved",
+        "body": "“{name}” is now a verified organization account."
+      },
+      "org_application_rejected": {
+        "title": "Your organization application wasn't approved",
+        "body": "“{name}”: {reason}. You can correct the details and resend."
       }
     }
   },
@@ -1150,7 +1154,19 @@
     "CANNOT_MODERATE_ADMIN": "Warnings and suspensions can't be applied to admin accounts.",
     "REPORT_NOT_OPEN": "This report has already been closed. Reload the page.",
     "ACTION_REQUIRED": "Choose at least one action or dismiss the report.",
-    "ROLE_CHANGE_NOT_ALLOWED": "This role change isn’t allowed (organization account, your own account, the last admin or a suspended account)."
+    "ROLE_CHANGE_NOT_ALLOWED": "This role change isn’t allowed (organization account, your own account, the last admin or a suspended account).",
+    "ORG_NAME_TOO_SHORT": "The organization name must be at least 3 characters.",
+    "ORG_NAME_TOO_LONG": "The organization name can be at most 120 characters.",
+    "REGISTRY_NO_INVALID": "Enter a valid tax / registry number (5–30 characters; letters, digits, dot, dash).",
+    "ADDRESS_TOO_SHORT": "The street address must be at least 10 characters.",
+    "SERVICES_REQUIRED": "Choose at least one service.",
+    "HOURS_REQUIRED": "Enter opening hours for at least one day or tick \"Open 24/7\".",
+    "HOURS_INVALID": "Check the time ranges: opening must be before closing and ranges must not overlap.",
+    "DECLARATION_REQUIRED": "Confirm the declaration to continue.",
+    "ORG_TYPE_REQUIRED": "Choose the organization type.",
+    "APPLICATION_PENDING": "You already have a pending application; you can't send another until it's reviewed.",
+    "ALREADY_ORGANIZATION": "This account can't apply (it's already an organization or admin account).",
+    "APPLICATION_NOT_PENDING": "This application has already been reviewed."
   },
   "Posts": {
     "blogTitle": "Blog",
@@ -1216,7 +1232,8 @@
       "users": "Users",
       "reports": "Reports",
       "blog": "Blog",
-      "news": "News"
+      "news": "News",
+      "applications": "Organization applications"
     },
     "pending": "pending",
     "searchLabel": "Search the admin panel",
@@ -1732,6 +1749,172 @@
       "warn": "Warning sent.",
       "ban": "Account suspended.",
       "unban": "Suspension lifted."
+    },
+    "applicationsTitle": "Organization applications · {count}",
+    "applicationsHint": "On approval the role becomes clinic or shelter and the badge appears.",
+    "applicationsAll": "All applications"
+  },
+  "OrgApplication": {
+    "metaTitle": "Organization application",
+    "title": "Organization application",
+    "subtitle": "Open a verified profile on Pati Dostu as a veterinary clinic or shelter.",
+    "asideLabel": "About the application",
+    "verifyFirst": "Verify your email address before sending an application.",
+    "verifyLink": "Send verification email",
+    "sectionType": "Organization type",
+    "sectionInfo": "Organization details",
+    "sectionAddress": "Address",
+    "sectionServices": "Services and opening hours",
+    "sectionConsent": "Consent",
+    "types": {
+      "clinic": "Veterinary clinic",
+      "clinicHint": "Licensed clinic or animal hospital",
+      "shelter": "Shelter / association",
+      "shelterHint": "Municipal shelter, association, foundation or volunteer network"
+    },
+    "name": "Organization name",
+    "registryNo": "Tax number",
+    "registryNoHint": "Registry number for shelters/associations",
+    "contactName": "Contact person",
+    "phone": "Organization phone",
+    "phoneHint": "Shown on the profile",
+    "email": "Organization email",
+    "city": "City",
+    "district": "District",
+    "choose": "Choose",
+    "chooseCityFirst": "Choose a city first",
+    "address": "Street address",
+    "servicesLabel": "Services",
+    "services": {
+      "vaccination": "Vaccination",
+      "neutering": "Neutering",
+      "emergency": "24/7 emergency",
+      "surgery": "Surgery",
+      "dental": "Dental care",
+      "laboratory": "Laboratory",
+      "microchip": "Microchip",
+      "adoption": "Adoption",
+      "foster": "Foster care",
+      "rescue": "Rescue",
+      "treatment": "Treatment",
+      "volunteering": "Volunteering"
+    },
+    "chooseTypeFirst": "Choose the organization type to pick services.",
+    "hours": "Opening hours",
+    "is24h": "Open 24/7",
+    "is24hHint": "(hides the day list)",
+    "open": "Open",
+    "closed": "Closed",
+    "closedNote": "This day will appear closed",
+    "dayOpen": "{day} open",
+    "opensAt": "{day}, range {n} opens",
+    "closesAt": "{day}, range {n} closes",
+    "removeRange": "Remove {day} range {n}",
+    "addRange": "+ Add break",
+    "addRangeFor": "Add a range for {day}",
+    "copyAll": "Copy to all days",
+    "hoursNote": "Use \"+ Add break\" to enter a second range for a lunch break. Holiday closures can be added after approval. For shelters these hours are shown as \"Visiting hours\".",
+    "declaration": "I declare that the information is correct and that I am authorized to represent the organization.",
+    "acceptTerms": "I accept the <kvkk>Privacy Notice</kvkk> and the <terms>Organization Membership Terms</terms>.",
+    "submit": "Send application",
+    "resubmit": "Resend application",
+    "sending": "Sending…",
+    "pendingTitle": "Your application is under review",
+    "pendingText": "Our team checks the details within 1–3 business days; you'll be notified in the app and by email.",
+    "summaryName": "Organization",
+    "summaryType": "Type",
+    "summaryCity": "Location",
+    "summarySubmitted": "Submitted",
+    "approvedTitle": "Your application was approved",
+    "approvedText": "{name} now appears as a {type} account with a verified badge.",
+    "goToAccount": "Go to my account",
+    "rejectedTitle": "Your application wasn't approved",
+    "rejectedReason": "Reason",
+    "rejectedText": "You can correct the details and resend below.",
+    "adminTitle": "Admin accounts can't apply",
+    "adminText": "Organization applications are reviewed under Admin › Organization applications.",
+    "alreadyTitle": "Your account is already an organization account",
+    "alreadyText": "Contact us about your organization details.",
+    "processTitle": "Process",
+    "process": {
+      "1": {
+        "title": "Application",
+        "text": "Fill in and send the form."
+      },
+      "2": {
+        "title": "Review",
+        "text": "Our team checks the details within 1–3 business days and contacts you if needed."
+      },
+      "3": {
+        "title": "Approval",
+        "text": "Your account becomes a clinic/shelter account with a verified badge."
+      }
+    },
+    "benefitsTitle": "With an organization account",
+    "benefits": {
+      "1": "Verified badge and organization account",
+      "2": "\"Veterinarian\" / \"Shelter\" badge in the community",
+      "3": "Organization profile, appointment requests and needs list (coming soon)"
     }
+  },
+  "AdminApplications": {
+    "title": "Organization applications",
+    "listTitle": "Applications",
+    "statusFilter": "Application status",
+    "status": {
+      "pending": "Pending",
+      "approved": "Approved",
+      "rejected": "Rejected"
+    },
+    "state": {
+      "pending": "Pending",
+      "approved": "Approved",
+      "rejected": "Rejected"
+    },
+    "empty": {
+      "pending": "No pending applications.",
+      "approved": "No approved applications.",
+      "rejected": "No rejected applications."
+    },
+    "pagination": "Pages",
+    "pageOf": "Page {page} of {pages}",
+    "prev": "Previous page",
+    "next": "Next page",
+    "backToList": "Back to applications",
+    "noApplication": "No application to show",
+    "roles": {
+      "clinic": "Clinic",
+      "shelter": "Shelter"
+    },
+    "resubmitted": "Resubmitted",
+    "submittedOn": "Submitted: {date}",
+    "addressLabel": "Address",
+    "open24h": "Open 24/7",
+    "applicant": "Applicant",
+    "memberSince": "Member since {date}",
+    "listingCount": "{count, plural, =0 {No listings} one {# listing} other {# listings}}",
+    "emailVerified": "Email verified",
+    "emailNotVerified": "Email not verified",
+    "openUser": "Open user",
+    "decision": "Decision",
+    "decisionHint": "On approval the account becomes a clinic or shelter account with a verified badge. The user is notified in the app and by email.",
+    "previousReason": "Previous rejection reason",
+    "result": "Result",
+    "approvedBy": "Approved by {name} on {date}.",
+    "rejectedBy": "Rejected by {name} on {date}.",
+    "reasonLabel": "Reason",
+    "approve": "Approve",
+    "reject": "Reject",
+    "approveFor": "Approve {name}",
+    "rejectFor": "Reject {name}",
+    "cancel": "Cancel",
+    "approveTitle": "Approve the application?",
+    "approveText": "{name} will be verified and the account's role will become \"{role}\".",
+    "rejectTitle": "Reject the application?",
+    "rejectText": "The application for {name} will be rejected. The user sees the reason and can correct and resend it.",
+    "reasonHint": "Sent to the user; at least 10 characters.",
+    "reasonTooShort": "The reason must be at least 10 characters.",
+    "approved": "Application approved.",
+    "rejected": "Application rejected."
   }
 }

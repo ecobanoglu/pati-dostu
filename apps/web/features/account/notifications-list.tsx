@@ -2,15 +2,16 @@
 
 import {
   Award,
+  BadgeCheck,
   Check,
   FilePen,
   Flag,
   Heart,
+  type LucideIcon,
   MessageCircle,
   MessageSquareText,
   MessagesSquare,
   TriangleAlert,
-  type LucideIcon,
 } from "lucide-react"
 import { useFormatter, useTranslations } from "next-intl"
 import { useEffect, useState } from "react"
@@ -36,6 +37,8 @@ export type NotificationItem = {
     | "report_created"
     | "user_warned"
     | "report_resolved"
+    | "org_application_approved"
+    | "org_application_rejected"
   payload: Record<string, unknown>
   readAt: string | null
   createdAt: string
@@ -83,6 +86,8 @@ const tones: Record<NotificationItem["type"], { icon: LucideIcon; className: str
   report_created: { icon: Flag, className: "text-danger" },
   user_warned: { icon: TriangleAlert, className: "text-danger" },
   report_resolved: { icon: Flag, className: "text-primary" },
+  org_application_approved: { icon: BadgeCheck, className: "text-success-text" },
+  org_application_rejected: { icon: TriangleAlert, className: "text-danger" },
 }
 
 /** Payload'daki metin alanını güvenle okur (API `Record<string, unknown>` döndürür). */
@@ -143,6 +148,8 @@ function targetOf(n: NotificationItem) {
     return "/community" as const
   }
   if (n.type === "favorite_closed") return "/account/favorites" as const
+  if (n.type === "org_application_approved") return "/account" as const
+  if (n.type === "org_application_rejected") return "/account/organization-application" as const
   if (n.type === "new_message") {
     const c = str(n.payload, "conversationId")
     return c ? { pathname: "/account/messages" as const, query: { c } } : ("/account/messages" as const)
@@ -267,6 +274,7 @@ export function NotificationsList({ initial, now }: { initial: NotificationPage;
                       note: str(n.payload, "note"),
                       sender: str(n.payload, "senderName") || str(n.payload, "authorName"),
                       preview: str(n.payload, "preview"),
+                      name: str(n.payload, "name"),
                     })}
                     time={
                       group.key === "yesterday" ? t("yesterday") : format.relativeTime(new Date(n.createdAt), nowDate)

@@ -1,6 +1,5 @@
 import {
   Briefcase,
-  CalendarClock,
   Bell,
   Heart,
   House,
@@ -22,42 +21,22 @@ type AccountLink = {
     | "/account/questions"
     | "/account/notifications"
     | "/account/settings"
-    | "/organization"
-    | "/organization/appointments"
   /** messages › UserMenu anahtarı */
-  key:
-    | "dashboard"
-    | "myListings"
-    | "favorites"
-    | "messages"
-    | "myQuestions"
-    | "notifications"
-    | "settings"
-    | "organizationPanel"
-    | "appointments"
-    | "organizationSettings"
+  key: "dashboard" | "myListings" | "favorites" | "messages" | "myQuestions" | "notifications" | "settings"
   icon: LucideIcon
 }
 
-/** Klinik ve barınak hesapları kurum menüsünü görür (avatar kare, Kurum paneli). */
+/** Klinik ve barınak hesabı mı (avatar kare, "Doğrulanmış" rozeti). */
 export function isOrganization(user: Pick<Me, "role">): boolean {
   return user.role === "clinic" || user.role === "shelter"
 }
 
 /**
- * Profil menüsündeki bağlantılar, role göre (tasarım: 02-hesabim/07-ust-menu-giris-yapilmis).
- * Okunmamış/adet rozetleri ilgili modüller (ilanlar, favoriler, randevular) eklenince gelecek.
- * Kayıtlı aramalar (v1.2) sayfası yapılana kadar gizli (karar: yapılmamış sayfa menüde yok).
+ * Profil menüsündeki bağlantılar (tasarım: 02-hesabim/07-ust-menu-giris-yapilmis). Karar (5. aşama 6. adım): kurum
+ * hesapları (klinik / barınak) da üye menüsünü görür; hesap türü "Doğrulanmış" rozetiyle belirtilir. Kurum paneli
+ * (randevular, ihtiyaç listesi) v1.1'de eklenince buraya kurum bağlantıları gelecek. Kayıtlı aramalar (v1.2) gizli.
  */
-export function accountLinks(user: Pick<Me, "role">): AccountLink[] {
-  if (isOrganization(user)) {
-    return [
-      { href: "/organization", key: "organizationPanel", icon: House },
-      { href: "/organization/appointments", key: "appointments", icon: CalendarClock },
-      { href: "/account/listings", key: "myListings", icon: LayoutGrid },
-      { href: "/account/settings", key: "organizationSettings", icon: Settings },
-    ]
-  }
+export function accountLinks(): AccountLink[] {
   return [
     { href: "/account", key: "dashboard", icon: House },
     { href: "/account/listings", key: "myListings", icon: LayoutGrid },

@@ -18,6 +18,10 @@ export const demoUsers: DemoUser[] = [
   { key: "can", name: "Can Öztürk", role: "user", phone: null },
   { key: "barinak", name: "Patiler Barınağı", role: "shelter", phone: "+905301002030" },
   { key: "klinik", name: "Can Dostlar Veteriner Kliniği", role: "clinic", phone: "+905367778899" },
+  // Kurum başvurusu bekleyen üyeler (Admin › Kurum başvuruları).
+  { key: "cigli", name: "Deniz Arslan", role: "user", phone: "+905332224455" },
+  { key: "buca", name: "Dr. Selin Aydın", role: "user", phone: "+905426667788" },
+  { key: "patievi", name: "Burak Şahin", role: "user", phone: null },
   // Blog ve haber yazılarının yazarı (giriş yapılamaz; yalnız içerik sahibi).
   { key: "editor", name: "Pati Dostu Editör", role: "admin", phone: null },
 ]
@@ -1219,5 +1223,124 @@ export const demoReports: DemoReport[] = [
     reason: "harassment",
     details: "Mesajlarda kaba bir dil kullandı.",
     ago: 3 * DAY,
+  },
+]
+
+/** Gün grubu + saat aralığı: [[0, 1, 2], "09:00", "19:00"] = pazartesi–çarşamba 09:00–19:00 (0 = pazartesi). */
+type DemoHours = Array<[number[], string, string]>
+
+export type DemoOrganization = {
+  owner: string
+  type: "clinic" | "shelter"
+  name: string
+  registryNo: string
+  contactName: string
+  phone: string
+  email: string
+  city: string
+  district: string
+  address: string
+  services: string[]
+  is24h?: boolean
+  hours: DemoHours
+  status: "approved" | "pending"
+  /** Bekleyende: daha önce reddedilip yeniden gönderilmiş (admin önceki gerekçeyi görür). */
+  previousRejection?: string
+  /** Kaç gün önce gönderildi. */
+  daysAgo: number
+}
+
+const WEEKDAYS = [0, 1, 2, 3, 4]
+
+/**
+ * Kurum kayıtları: demo klinik ve barınak hesaplarının onaylı başvuruları (rolleri zaten clinic / shelter) ve
+ * Admin › Kurum başvuruları için üç bekleyen başvuru (biri reddedilip düzeltilerek yeniden gönderilmiş).
+ */
+export const demoOrganizations: DemoOrganization[] = [
+  {
+    owner: "klinik",
+    type: "clinic",
+    name: "Can Dostlar Veteriner Kliniği",
+    registryNo: "4810372615",
+    contactName: "Dr. Ahmet Kara",
+    phone: "+902323456789",
+    email: "klinik@demo.pati-dostu.test",
+    city: "izmir",
+    district: "Bornova",
+    address: "Kazımdirik Mah. 372. Sok. No: 12",
+    services: ["vaccination", "neutering", "emergency", "surgery", "microchip"],
+    hours: [
+      [WEEKDAYS, "09:00", "19:00"],
+      [[5], "10:00", "13:00"],
+      [[5], "14:00", "17:00"],
+    ],
+    status: "approved",
+    daysAgo: 60,
+  },
+  {
+    owner: "barinak",
+    type: "shelter",
+    name: "Patiler Barınağı",
+    registryNo: "35-123-045",
+    contactName: "Ayten Yıldız",
+    phone: "+902324441122",
+    email: "barinak@demo.pati-dostu.test",
+    city: "izmir",
+    district: "Karşıyaka",
+    address: "Örnekköy Mah. Barınak Yolu No: 4",
+    services: ["adoption", "foster", "rescue", "volunteering"],
+    hours: [[[...WEEKDAYS, 5, 6], "10:00", "16:00"]],
+    status: "approved",
+    daysAgo: 90,
+  },
+  {
+    owner: "cigli",
+    type: "shelter",
+    name: "Çiğli Can Dostlar Barınağı",
+    registryNo: "35-456-112",
+    contactName: "Deniz Arslan",
+    phone: "+902323862030",
+    email: "cigli@demo.pati-dostu.test",
+    city: "izmir",
+    district: "Çiğli",
+    address: "Ataşehir Mah. 8019. Sok. No: 3",
+    services: ["adoption", "rescue", "treatment"],
+    hours: [[[...WEEKDAYS, 5], "09:00", "17:00"]],
+    status: "pending",
+    daysAgo: 6,
+  },
+  {
+    owner: "buca",
+    type: "clinic",
+    name: "Buca Vet Kliniği",
+    registryNo: "1984736251",
+    contactName: "Dr. Selin Aydın",
+    phone: "+902324205566",
+    email: "buca@demo.pati-dostu.test",
+    city: "izmir",
+    district: "Buca",
+    address: "Menderes Cad. No: 145/A",
+    services: ["vaccination", "neutering", "dental", "laboratory"],
+    is24h: true,
+    hours: [],
+    status: "pending",
+    daysAgo: 7,
+  },
+  {
+    owner: "patievi",
+    type: "shelter",
+    name: "Pati Evi Geçici Yuva",
+    registryNo: "35-789-301",
+    contactName: "Burak Şahin",
+    phone: "+905426663344",
+    email: "patievi@demo.pati-dostu.test",
+    city: "izmir",
+    district: "Bornova",
+    address: "Erzene Mah. 85. Sok. No: 7 D: 2",
+    services: ["foster", "adoption"],
+    hours: [[[5, 6], "11:00", "18:00"]],
+    status: "pending",
+    previousRejection: "Kütük numarası dernek adıyla eşleşmiyor; dernek kaydındaki numarayı yazın.",
+    daysAgo: 9,
   },
 ]

@@ -4,9 +4,8 @@ import { ChevronDown } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { useEffect, useState } from "react"
 
+import type { TocItem } from "@/components/content/tiptap"
 import { cn } from "@/lib/utils"
-
-import type { TocItem } from "./tiptap"
 
 /**
  * Okunan bölümü izler: ekranın üst kısmını geçen son başlık "etkin" olur (IntersectionObserver yerine kaydırma +

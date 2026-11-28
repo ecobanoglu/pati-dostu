@@ -10,6 +10,7 @@ import {
   MessageCircle,
   Newspaper,
   Settings,
+  ShieldCheck,
   Stethoscope,
 } from "lucide-react"
 import { useTranslations } from "next-intl"
@@ -114,6 +115,14 @@ export function MobileMenu({ user }: { user: Me | null }) {
                   {t("UserMenu.settings")}
                 </Link>
               </li>
+              {user.role === "admin" && (
+                <li>
+                  <Link href="/admin/posts" onClick={close} className={rowClass}>
+                    <ShieldCheck aria-hidden="true" />
+                    {t("UserMenu.adminPosts")}
+                  </Link>
+                </li>
+              )}
             </ul>
           )}
           <ul className={user ? "pt-3" : undefined}>

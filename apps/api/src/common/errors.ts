@@ -63,6 +63,15 @@ export const ErrorCode = {
   CATEGORY_INVALID: "CATEGORY_INVALID",
   /** Kendi cevabını "Faydalı" işaretleyemez. */
   CANNOT_LIKE_OWN: "CANNOT_LIKE_OWN",
+  // Blog / haber (admin)
+  /** Elle girilen adres parçası (slug) başka bir yazıda kullanılıyor. */
+  SLUG_TAKEN: "SLUG_TAKEN",
+  /** Planlı yayın saati geçmişte. */
+  SCHEDULE_IN_PAST: "SCHEDULE_IN_PAST",
+  /** İçerikte izin verilmeyen düğüm ya da bozuk belge. */
+  CONTENT_INVALID: "CONTENT_INVALID",
+  /** İçerikteki bağlantı yalnız http(s) ya da site içi olabilir. */
+  LINK_INVALID: "LINK_INVALID",
 } as const
 
 export type ErrorCode = (typeof ErrorCode)[keyof typeof ErrorCode]

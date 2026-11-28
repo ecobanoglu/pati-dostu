@@ -174,6 +174,7 @@ Sayfalar üç route grubunda toplanır: herkese açık `(public)`, giriş gerekt
 | `/hakkimizda`, `/iletisim`, `/sss` | Kurumsal sayfalar | Önbellekli (statik) | Herkes |
 | `/yasal/[slug]` (kvkk, gizlilik, cerez, kullanim-sartlari, kurumsal-uyelik) | Yasal metinler | Önbellekli (statik) | Herkes |
 | `not-found.tsx`, `error.tsx` | 404 ve hata / bakım sayfaları | — | Herkes |
+| `/admin/yazilar`, `/admin/yazilar/yeni`, `/admin/yazilar/[id]` | Blog ve haber listesi ve editörü (4. aşama; sade admin düzeni, 5. aşamada panelin içine alınır) | CSR | Admin |
 | `/admin/*` | Admin paneli: dashboard, ilan onayı, ilanlar, kullanıcılar, kurum başvuruları, şikayetler, blog/haber (liste + editör), sözlük ve içerik filtreleri, raporlar, denetim kaydı | CSR | Admin |
 
 ### Anasayfa
@@ -275,7 +276,7 @@ Liste (kapak, başlık, özet, tarih, kategori) ve detay (içindekiler, okuma s�
 | Topluluk | `forum_topic` | categoryId, authorId, title, slug, body, status, isSolved, viewCount, answerCount |
 | Topluluk | `forum_reply` | topicId, authorId, body, isBestAnswer, likeCount |
 | Topluluk | `forum_reply_like` | replyId, userId |
-| İçerik | `post` | type (blog/news), authorId, title, slug, excerpt, content (jsonb, Tiptap), coverUrl, categoryId, country, sourceName, sourceUrl, status, featured, publishedAt, readingTime |
+| İçerik | `post` | type (blog/news), authorId, title, slug, excerpt, content (jsonb, Tiptap; görseller depo anahtarıyla), coverUrl, categoryId, country, sourceName, sourceUrl, status, featured, publishedAt, readingTime, viewCount |
 | İçerik | `post_category`, `tag`, `post_tag` | Blog/haber kategori (ad `LocalizedText` jsonb; haberde kategori = tür: Haber / Duyuru / Etkinlik) ve etiketleri |
 | Moderasyon | `report` | reporterId, targetType (listing/comment/topic/reply/user), targetId, reason, status, resolvedBy |
 | Sistem | `notification` | userId, type, payload (jsonb), readAt — tercihler `user.notification_prefs` (jsonb: konu → `{ inApp, email }`) |
@@ -424,7 +425,8 @@ MVP için yaklaşık 60 uç nokta gerekiyor; hepsi NestJS API'de (api.pati-dostu
 | Admin | POST | `/admin/listings/{id}/request-changes` | Admin | Düzeltme iste (not + alan listesi), `status = changes_requested`, kullanıcıya bildirim |
 | Admin | GET / PATCH | `/admin/users`, `/admin/users/{id}` | Admin | Kullanıcı listesi, rol değiştirme, banlama |
 | Admin | GET / POST | `/admin/organizations/applications`, `.../{id}/approve`, `.../{id}/reject` | Admin | Kurum başvurularını değerlendirme |
-| Admin | GET / POST / PATCH / DELETE | `/admin/posts` | Admin | Blog ve haber yönetimi (taslak, yayın, planlı) |
+| Admin | GET / POST / PATCH / DELETE | `/admin/posts`, `/admin/posts/{id}`, `/admin/posts/options`, `POST /admin/posts/bulk` | Admin | Blog ve haber yönetimi: liste (tür, durum, kategori, arama, sıralama, sayılar), taslak / yayın / planlı kayıt (tam kayıt, slug başlıktan ya da elle), toplu yayından kaldır / sil; görsel `POST /uploads/post-image` |
+| İçerik | POST | `/posts/{id}/views` | Herkes | Okunma sayacı (oturum başına bir kez; yazarın kendi bakışı sayılmaz) |
 | Admin | GET / POST / PATCH / DELETE | `/admin/taxonomy/{species\|breeds\|forum-categories\|post-categories}` | Admin | Sözlük yönetimi |
 | Admin | GET / POST | `/admin/reports`, `/admin/reports/{id}/resolve` | Admin | Şikayetler |
 | Admin | GET | `/admin/stats?from=&to=` | Admin | Dashboard metrikleri |
@@ -623,6 +625,7 @@ Her aşama sonunda çalışan bir sürüm preview ortamına çıkar; v1.1 ve son
 - Topluluk API'si (4. aşama): soru sahibine yeni cevap bildirimi her durumda gider, takip edenlere de gider (varsayılan site içi; e-posta tercihten). Soru sahibi konusunu otomatik takip eder. Kendi cevabı "Faydalı" işaretlenemez. Hesap silindiğinde topluluk konu ve cevapları kalır, yazar "Silinmiş kullanıcı" görünür (başkalarının cevapları kaybolmasın).
 - Topluluk adresleri: kategori `/topluluk/[kategori]`, konu `/topluluk/[kategori]/[konu]` (konu sayfası mobilde ayrı düzen kullandığı için). Toplulukta bireysel üyelerin adı "Ad S." biçiminde, kurum hesaplarının adı tam gösterilir (tasarım).
 - Blog ve haberler (4. aşama): yazı yayın durumundaysa ya da planlı yayın saati geldiyse görünür (ayrı zamanlanmış iş yok). Haberin bölgesi ülkeye göre: `TR` Türkiye, diğerleri (ve ülkesi boş olan) Dünya; haberde kategori "tür"dür. Etiketler yalnız gösterilir (etiket sayfası yok). "Haftalık bülten" kutusunda e-posta alanı yok: üye tek tıkla abone olur (`marketingOptIn`, Ayarlar'daki bülten tercihi), misafire kayıt / giriş bağlantısı; ayrı bülten aboneliği (`/newsletter/*`) v1.1'de.
+- Blog/haber editörü (4. aşama): otomatik kayıt yalnız taslakta (yayındaki ya da planlı yazı ana eylemle kaydedilir, kaydedilmemiş değişiklikte çıkış uyarısı). Admin sayfaları şimdilik sade bir üst çubukla (`/admin/yazilar`); koyu sol menülü panel 5. aşamada. Yazıların okunma sayısı tutulur (admin listesinde "Okunma"). Yayındaki yazının adresi başlıkla değişmez; elle değiştirilebilir (uyarıyla). İçerikteki görsele alternatif metin zorunlu.
 - Sayfa kabı 1320 px'tir (`--container-site`, iç boşluk dahil; masaüstünde içerik 1272 px). Tasarım görselleri 1200 px içerikle çizildi; genişlikte görseller değil bu karar geçerlidir.
 - Favoriler sayfası (`/hesabim/favoriler`) 2. aşamada yapılır; Hesabım sol menüsü 3. aşamada eklenir. Favorideki ilan sahiplendirilir ya da kapatılırsa listede "artık yayında değil" notuyla soluk ve bağlantısız kalır (kalple çıkarılabilir); silinen ilan listeden düşer. Onay bekleyen / düzeltme istenen / reddedilen ilan favorilerde gösterilmez (onaylanmamış içerik görünmesin); yeniden yayına girince geri gelir.
 - Dosyalar (ilan fotoğrafları, avatar, blog kapakları) Cloudflare R2'de tutulur; S3 API'siyle erişildiği için sağlayıcı değiştirilebilir. Geliştirmede docker-compose'daki RustFS (S3 uyumlu) kullanılır.

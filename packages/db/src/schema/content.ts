@@ -1,4 +1,15 @@
-import { boolean, index, jsonb, pgTable, primaryKey, smallint, text, timestamp, uuid } from "drizzle-orm/pg-core"
+import {
+  boolean,
+  index,
+  integer,
+  jsonb,
+  pgTable,
+  primaryKey,
+  smallint,
+  text,
+  timestamp,
+  uuid,
+} from "drizzle-orm/pg-core"
 
 import { createdAt, id, type LocalizedText, postStatusEnum, postTypeEnum, timestamps } from "./_common.js"
 import { user } from "./auth.js"
@@ -49,6 +60,8 @@ export const post = pgTable(
     publishedAt: timestamp({ withTimezone: true }),
     /** Dakika. */
     readingTime: smallint(),
+    /** Okunma sayısı (detay oturum başına bir kez sayar; yazarın kendi bakışı sayılmaz). */
+    viewCount: integer().notNull().default(0),
     ...timestamps,
   },
   (t) => [index().on(t.type, t.status, t.publishedAt.desc()), index().on(t.categoryId)]

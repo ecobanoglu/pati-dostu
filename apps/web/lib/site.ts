@@ -1,5 +1,7 @@
 /** Sitenin sabit bilgileri: iletişim ve sosyal medya (taslak › Alınan kararlar; hesap adları uygunluğa göre değişebilir). */
 export const site = {
+  /** Alan adı (admin editöründe adres ve arama görünümü önizlemesi). */
+  host: "pati-dostu.com",
   email: "iletisim@pati-dostu.com",
   socialHandle: "@pati_dostu",
   social: [

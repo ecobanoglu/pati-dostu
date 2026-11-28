@@ -1,3 +1,4 @@
+import { isSafeHref } from "@pati-dostu/validators"
 import type { ReactNode } from "react"
 
 import { cn } from "@/lib/utils"
@@ -59,13 +60,6 @@ export function extractToc(doc: unknown): TocItem[] {
   return out
 }
 
-/** Bağlantı adresi güvenli mi: yalnız http(s) ya da site içi ("/…"). `javascript:` vb. çizilmez. */
-function safeHref(href: unknown): string | null {
-  if (typeof href !== "string") return null
-  if (href.startsWith("/") && !href.startsWith("//")) return href
-  return /^https?:\/\//i.test(href) ? href : null
-}
-
 /** Metin düğümünü işaretleriyle (kalın, italik, bağlantı) çizer. */
 function renderText(node: TiptapNode, key: number): ReactNode {
   let out: ReactNode = node.text ?? ""
@@ -73,8 +67,8 @@ function renderText(node: TiptapNode, key: number): ReactNode {
     if (mark.type === "bold") out = <strong className="font-extrabold">{out}</strong>
     else if (mark.type === "italic") out = <em>{out}</em>
     else if (mark.type === "link") {
-      const href = safeHref(mark.attrs?.href)
-      if (!href) continue
+      const href = mark.attrs?.href
+      if (!isSafeHref(href)) continue
       const external = !href.startsWith("/")
       out = (
         <a
@@ -100,7 +94,9 @@ function renderInline(nodes: TiptapNode[] | undefined): ReactNode {
 /**
  * Tiptap belgesini React düğümlerine çevirir (HTML basılmaz; bilinmeyen düğümler atlanır). İzinli düğümler: paragraf,
  * H2/H3 (içindekiler kimlikleriyle), madde / numaralı liste, alıntı, ayraç, vurgulu kutu (`callout`: "tip" mor zemin,
- * başlık ilk satırın başında; "info" çerçeveli, başlıklı). Bloglarda ilk paragraf giriş olarak büyük yazılır.
+ * başlık ilk satırın başında; "info" çerçeveli, başlıklı), görsel (yalnız http(s) adres; alternatif metinle). Bloglarda
+ * ilk paragraf giriş olarak büyük yazılır. Kurallar `@pati-dostu/validators › post-content` ile aynıdır; blog/haber
+ * detayı ve admin editörünün önizlemesi kullanır.
  */
 export function TiptapContent({ doc, lead = false }: { doc: unknown; lead?: boolean }) {
   const toc = extractToc(doc)
@@ -180,6 +176,21 @@ export function TiptapContent({ doc, lead = false }: { doc: unknown; lead?: bool
             )}
             {rest.map((c, i) => block(c, i))}
           </aside>
+        )
+      }
+      case "image": {
+        const src = node.attrs?.src
+        if (typeof src !== "string" || !/^https?:\/\//i.test(src)) return null
+        return (
+          <figure key={key}>
+            {/* eslint-disable-next-line @next/next/no-img-element -- depo adresi (posts/); next/image uzak yükleyici yayına çıkarken ayarlanacak */}
+            <img
+              src={src}
+              alt={typeof node.attrs?.alt === "string" ? node.attrs.alt : ""}
+              loading="lazy"
+              className="w-full rounded-card bg-smoke-2"
+            />
+          </figure>
         )
       }
       default:

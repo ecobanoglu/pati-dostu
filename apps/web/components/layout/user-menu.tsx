@@ -1,6 +1,6 @@
 "use client"
 
-import { ChevronDown, LogOut } from "lucide-react"
+import { ChevronDown, LogOut, ShieldCheck } from "lucide-react"
 import { useTranslations } from "next-intl"
 
 import {
@@ -21,7 +21,8 @@ const itemClass = "min-h-11 gap-3 rounded-md px-3 text-[15px] font-bold text-hea
 
 /**
  * Masaüstü profil menüsü (avatar + ilk ad). Esc veya dışarı tıklayınca kapanır; klavyeyle gezilebilir (Base UI Menu).
- * Bireysel hesap: panel bağlantıları + kurumsal başvuru; kurum hesabı: kurum paneli bağlantıları.
+ * Bireysel hesap: panel bağlantıları + kurumsal başvuru; kurum hesabı: kurum paneli bağlantıları; admin: ayrıca
+ * "Blog ve haberler (yönetim)" (admin paneli 5. aşamada).
  */
 export function UserMenu({ user }: { user: Me }) {
   const t = useTranslations("UserMenu")
@@ -58,6 +59,16 @@ export function UserMenu({ user }: { user: Me }) {
             {t(key)}
           </DropdownMenuItem>
         ))}
+
+        {user.role === "admin" && (
+          <>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem className={itemClass} render={<Link href="/admin/posts" />}>
+              <ShieldCheck aria-hidden="true" />
+              {t("adminPosts")}
+            </DropdownMenuItem>
+          </>
+        )}
 
         {user.role === "user" && (
           <>

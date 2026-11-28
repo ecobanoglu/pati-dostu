@@ -6,11 +6,12 @@ import { imageExtensions } from "@pati-dostu/validators"
 import { ZodResponse } from "nestjs-zod"
 
 import type { AuthSession } from "../auth/auth.js"
-import { CurrentSession } from "../auth/decorators.js"
+import { CurrentSession, RequirePermissions } from "../auth/decorators.js"
 import { AppException, ErrorCode } from "../common/errors.js"
 import { StorageService } from "../storage/storage.service.js"
+import { POST_MEDIA_PREFIX } from "../posts/admin-posts.service.js"
 import { TMP_AVATARS } from "../users/profile.service.js"
-import { ImageUploadRequestDto, PresignedUploadDto } from "./uploads.dto.js"
+import { ImageUploadRequestDto, PostImageUploadDto, PresignedUploadDto } from "./uploads.dto.js"
 
 /** Henüz bir ilana bağlanmamış yüklemelerin öneki; okuma izni yoktur. R2'de bu önek için 1 günlük silme kuralı kurulur. */
 export const TMP_LISTING_IMAGES = "tmp/listing-images"
@@ -76,5 +77,21 @@ export class UploadsController {
   ): Promise<PresignedUploadDto> {
     const key = `${TMP_AVATARS}/${session.user.id}/${randomUUID()}.${imageExtensions[contentType]}`
     return this.storage.presignPut(key, contentType, size)
+  }
+
+  /**
+   * Blog / haber görseli (kapak ya da içerik) için imzalı yükleme adresi — yalnız admin. Geçici alan yerine doğrudan
+   * herkese açık posts/media/ altına yüklenir ki editör hemen gösterebilsin; yazı kaydedilirken API anahtarın varlığını
+   * ve türünü denetler. Yanıtta görselin herkese açık adresi de vardır.
+   */
+  @Post("post-image")
+  @RequirePermissions({ post: ["publish"] })
+  @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({ summary: "Blog / haber görseli için imzalı yükleme adresi (admin)" })
+  @ZodResponse({ status: 201, type: PostImageUploadDto })
+  async postImage(@Body() { contentType, size }: ImageUploadRequestDto): Promise<PostImageUploadDto> {
+    const key = `${POST_MEDIA_PREFIX}/${randomUUID()}.${imageExtensions[contentType]}`
+    const upload = await this.storage.presignPut(key, contentType, size)
+    return { ...upload, url: this.storage.publicUrl(key) }
   }
 }

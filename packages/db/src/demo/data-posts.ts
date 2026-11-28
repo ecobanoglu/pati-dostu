@@ -43,18 +43,24 @@ export type DemoPost = {
   category: string
   title: string
   excerpt: string
-  /** Kaç gün önce yayınlandı. */
+  /** Kaç gün önce yayınlandı (planlıda eksi: kaç gün sonra yayınlanacak; taslakta oluşturulma). */
   daysAgo: number
+  /** Varsayılan yayında; admin listesi için birer taslak ve planlı yazı. */
+  status?: "draft" | "scheduled"
+  /** Okunma sayısı (admin listesindeki "Okunma"). */
+  views?: number
   featured?: true
   country?: string
   tags?: string[]
-  photo: string
+  /** Commons'ta aranacak kapak; yoksa kapaksız (taslak / planlı örnekler). */
+  photo?: string
   content: TiptapNode
 }
 
 export const demoPosts: DemoPost[] = [
   {
     key: "yedi-soru",
+    views: 2140,
     type: "blog",
     category: "sahiplenme",
     title: "Sahiplenmeden önce kendinize sormanız gereken 7 soru",
@@ -87,6 +93,7 @@ export const demoPosts: DemoPost[] = [
   },
   {
     key: "ilk-kedi",
+    views: 1830,
     type: "blog",
     category: "sahiplenme",
     title: "İlk kez kedi sahiplenecekler için hazırlık listesi",
@@ -126,6 +133,7 @@ export const demoPosts: DemoPost[] = [
   },
   {
     key: "kisirlastirma",
+    views: 1265,
     type: "blog",
     category: "saglik",
     title: "Kısırlaştırma hakkında doğru bilinen yanlışlar",
@@ -150,6 +158,7 @@ export const demoPosts: DemoPost[] = [
   },
   {
     key: "kis-sokak",
+    views: 980,
     type: "blog",
     category: "bakim",
     title: "Kışın sokak hayvanlarına nasıl yardım edebiliriz?",
@@ -174,6 +183,7 @@ export const demoPosts: DemoPost[] = [
   },
   {
     key: "yeni-kopek",
+    views: 742,
     type: "blog",
     category: "davranis",
     title: "Yeni köpeğiniz eve alışırken ilk iki hafta",
@@ -193,6 +203,7 @@ export const demoPosts: DemoPost[] = [
   },
   {
     key: "yavru-beslenme",
+    views: 615,
     type: "blog",
     category: "beslenme",
     title: "Yavru kediler için beslenme rehberi",
@@ -210,6 +221,7 @@ export const demoPosts: DemoPost[] = [
   },
   {
     key: "gecici-yuva",
+    views: 388,
     type: "blog",
     category: "sahiplenme",
     title: "Geçici yuva olmak: neler beklemelisiniz?",
@@ -230,6 +242,7 @@ export const demoPosts: DemoPost[] = [
   },
   {
     key: "kampanya",
+    views: 860,
     type: "news",
     category: "duyuru",
     title: "Belediyeden ücretsiz kısırlaştırma kampanyası",
@@ -257,6 +270,7 @@ export const demoPosts: DemoPost[] = [
   },
   {
     key: "avrupa",
+    views: 410,
     type: "news",
     category: "haber",
     title: "Avrupa'da sahiplendirme ilgisi artıyor",
@@ -271,6 +285,7 @@ export const demoPosts: DemoPost[] = [
   },
   {
     key: "sahiplendirme-gunu",
+    views: 530,
     type: "news",
     category: "etkinlik",
     title: "Hafta sonu sahiplendirme günü",
@@ -289,6 +304,7 @@ export const demoPosts: DemoPost[] = [
   },
   {
     key: "mikrocip",
+    views: 295,
     type: "news",
     category: "haber",
     title: "Kayıp hayvanlar için mikroçip zorunluluğu tartışılıyor",
@@ -301,6 +317,38 @@ export const demoPosts: DemoPost[] = [
       p(
         "Mikroçip, kaybolan bir hayvanın sahibine ulaşmanın en güvenilir yollarından biridir; kayıt bilgilerinin güncel tutulması da önemlidir."
       )
+    ),
+  },
+  {
+    key: "yasli-kopek",
+    type: "blog",
+    category: "bakim",
+    title: "Yaşlı köpeklerin bakımında dikkat edilmesi gerekenler",
+    excerpt: "Yaşlanan köpeğinizin konforu için beslenme, hareket ve veteriner kontrollerinde küçük değişiklikler.",
+    daysAgo: 2,
+    status: "draft",
+    tags: ["kopek", "saglik"],
+    content: doc(
+      p("Köpekler yaşlandıkça daha az hareket eder, daha çok uyur ve bazı ihtiyaçları değişir."),
+      h2("Düzenli kontroller"),
+      p("Yılda iki kez veteriner kontrolü, sorunları erken fark etmeyi kolaylaştırır."),
+      ul("Diş ve ağız sağlığı", "Eklem ağrısı belirtileri", "Kilo takibi")
+    ),
+  },
+  {
+    key: "tuy-dokulmesi",
+    type: "blog",
+    category: "saglik",
+    title: "Kedilerde tüy dökülmesi: ne zaman veterinere gitmeli?",
+    excerpt: "Mevsimsel tüy dökülmesini sağlık sorunlarından ayırmanın yolları.",
+    daysAgo: -3,
+    status: "scheduled",
+    tags: ["kedi", "saglik"],
+    content: doc(
+      p("Kediler özellikle ilkbahar ve sonbaharda daha fazla tüy döker; bu çoğu zaman doğaldır."),
+      h2("Endişelenmeniz gereken durumlar"),
+      ul("Tüysüz kalan, kızaran bölgeler", "Sürekli kaşınma ya da yalanma", "İştahsızlık ve halsizlik"),
+      callout("tip", "İpucu", p("Düzenli taramak hem tüy topaklarını azaltır hem de deriyi kontrol etmenizi sağlar."))
     ),
   },
 ]

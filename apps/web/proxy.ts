@@ -9,7 +9,7 @@ const intl = createMiddleware(routing)
 const SESSION_COOKIES = ["pati-dostu.session_token", "__Secure-pati-dostu.session_token"]
 
 /** Giriş gerektiren bölümler (iç yollar; alt sayfaları da kapsar). */
-const PROTECTED = ["/account", "/organization", "/post-listing", "/community/ask"] as const
+const PROTECTED = ["/account", "/organization", "/post-listing", "/community/ask", "/admin/posts"] as const
 
 /** Dil öneki: Türkçe öneksiz, diğerleri /en gibi. */
 const prefix = (locale: string) => (locale === routing.defaultLocale ? "" : `/${locale}`)

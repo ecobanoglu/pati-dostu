@@ -1,6 +1,6 @@
 import { HttpStatus, Injectable } from "@nestjs/common"
 import { type Database, localize, post, postCategory, postTag, tag, user } from "@pati-dostu/db"
-import { POSTS_PAGE_SIZE, type PostsQuery } from "@pati-dostu/validators"
+import { mapPostImages, type PostNode, POSTS_PAGE_SIZE, type PostsQuery } from "@pati-dostu/validators"
 import { and, asc, count, desc, eq, isNull, ne, or, type SQL, sql } from "drizzle-orm"
 
 import { AppException, ErrorCode } from "../common/errors.js"
@@ -124,11 +124,24 @@ export class PostsService {
     ])
     return {
       ...this.toCard(row, locale),
-      content: row.content,
+      content: mapPostImages(row.content as PostNode, (src) =>
+        src.startsWith("http") ? src : this.storage.publicUrl(src)
+      ) as Record<string, unknown>,
       sourceUrl: row.sourceUrl,
       tags,
       related: related.map((r) => this.toCard(r, locale)),
     }
+  }
+
+  /**
+   * Okunma sayısını 1 artırır (web oturum başına bir kez çağırır). Yalnız yayındaki yazıda; yazarın kendi bakışı
+   * sayılmaz.
+   */
+  async view(id: string, meId: string | null): Promise<void> {
+    await this.db
+      .update(post)
+      .set({ viewCount: sql`${post.viewCount} + 1` })
+      .where(and(eq(post.id, id), visible, meId ? ne(post.authorId, meId) : undefined))
   }
 
   /** Kart sorgusunun temeli: yazar ve kategori birleştirilmiş. */

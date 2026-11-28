@@ -439,7 +439,9 @@ async function seedPosts(owners: Map<string, string>) {
     .select({ id: tag.id, slug: tag.slug })
     .from(tag)
     .where(inArray(tag.slug, Object.keys(demoTags)))
-  const photos = await preparePhotos(demoPosts.map((d) => ({ key: `post-${d.key}`, query: d.photo, count: 1 })))
+  const photos = await preparePhotos(
+    demoPosts.flatMap((d) => (d.photo ? [{ key: `post-${d.key}`, query: d.photo, count: 1 }] : []))
+  )
   for (const d of demoPosts) {
     const id = randomUUID()
     const file = photos.get(`post-${d.key}`)?.[0]
@@ -451,7 +453,10 @@ async function seedPosts(owners: Map<string, string>) {
       )
     }
     const words = plainText(d.content).split(/\s+/).filter(Boolean).length
-    const published = new Date(Date.now() - d.daysAgo * 86_400_000)
+    const at = new Date(Date.now() - d.daysAgo * 86_400_000)
+    // Taslağın yayın tarihi yok; planlı yazınınki gelecekte (saati gelince görünür).
+    const publishedAt = d.status === "draft" ? null : at
+    const created = d.status === "scheduled" ? new Date(Date.now() - 86_400_000) : at
     await db.insert(post).values({
       id,
       type: d.type,
@@ -464,18 +469,19 @@ async function seedPosts(owners: Map<string, string>) {
       coverUrl,
       country: d.country ?? null,
       sourceName: d.type === "news" ? "Demo içerik" : null,
-      status: "published",
+      status: d.status ?? "published",
       featured: Boolean(d.featured),
-      publishedAt: published,
+      publishedAt,
       readingTime: Math.max(1, Math.round(words / 200)),
-      createdAt: published,
-      updatedAt: published,
+      viewCount: d.views ?? 0,
+      createdAt: created,
+      updatedAt: created,
     })
     const tagIds = (d.tags ?? []).map((slug) => tags.find((t) => t.slug === slug)?.id).filter(Boolean) as string[]
     if (tagIds.length > 0) await db.insert(postTag).values(tagIds.map((tagId) => ({ postId: id, tagId })))
   }
   console.log(
-    `  blog/haber: ${demoPosts.filter((d) => d.type === "blog").length} yazı, ${demoPosts.filter((d) => d.type === "news").length} haber`
+    `  blog/haber: ${demoPosts.filter((d) => d.type === "blog").length} yazı (1 taslak, 1 planlı), ${demoPosts.filter((d) => d.type === "news").length} haber`
   )
 }
 

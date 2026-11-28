@@ -4,6 +4,8 @@ import { notFound } from "next/navigation"
 import { getFormatter, getLocale, getTranslations } from "next-intl/server"
 
 import { PdMark } from "@/components/brand/logo"
+import { extractToc, TiptapContent } from "@/components/content/tiptap"
+import { ViewTracker } from "@/components/tracking/view-tracker"
 import { Link, permanentRedirect } from "@/i18n/navigation"
 import type { Locale } from "@/i18n/routing"
 import { getPost, type PostDetailData } from "@/lib/posts"
@@ -11,7 +13,6 @@ import { getPost, type PostDetailData } from "@/lib/posts"
 import { BlogCard, CategoryBadge, PostCover, postHref, RegionLabel } from "./post-cards"
 import { ShareBox } from "./share-box"
 import { TableOfContents } from "./table-of-contents"
-import { extractToc, TiptapContent } from "./tiptap"
 
 type PostType = "blog" | "news"
 type Params = Promise<{ slug: string }>
@@ -83,6 +84,7 @@ export async function PostDetailView({ type, params }: { type: PostType; params:
 
   return (
     <>
+      <ViewTracker storageKey={`post:${post.id}`} path={`/posts/${post.id}/views`} />
       {/* Mobilde site şeridi: "Blog" / "Haberler" (tasarım 11, 13) — bölüme dönüş bağlantısı */}
       <div className="bg-smoke lg:hidden">
         <Link

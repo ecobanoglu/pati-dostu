@@ -18,3 +18,8 @@ export const presignedUploadSchema = z
   .meta({ id: "PresignedUpload" })
 
 export class PresignedUploadDto extends createZodDto(presignedUploadSchema) {}
+
+/** Blog / haber görseli yüklemesi: imzalı adres + yüklenince görselin herkese açık adresi. */
+export class PostImageUploadDto extends createZodDto(
+  presignedUploadSchema.extend({ url: z.url() }).meta({ id: "PostImageUpload" })
+) {}

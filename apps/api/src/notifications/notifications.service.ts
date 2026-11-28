@@ -18,6 +18,8 @@ export type NotificationPayload =
   | { type: "listing_approved"; listingId: string; listingNo: number; slug: string | null; title: string }
   | { type: "listing_rejected"; listingId: string; listingNo: number; title: string; reason: string }
   | { type: "listing_changes_requested"; listingId: string; listingNo: number; title: string; note: string }
+  | { type: "listing_closed_by_admin"; listingId: string; listingNo: number; title: string }
+  | { type: "listing_removed"; listingId: string; listingNo: number; title: string; reason: string }
   | {
       type: "favorite_closed"
       listingNo: number
@@ -214,6 +216,15 @@ export class NotificationsService {
           url: `${web}${WEB_PATHS.listing[locale]}/${payload.slug ? `${payload.slug}-` : ""}${payload.listingNo}`,
         }
       case "listing_rejected":
+        return {
+          type: payload.type,
+          title: payload.title,
+          reason: payload.reason,
+          url: `${web}${WEB_PATHS.myListings[locale]}`,
+        }
+      case "listing_closed_by_admin":
+        return { type: payload.type, title: payload.title, url: `${web}${WEB_PATHS.myListings[locale]}` }
+      case "listing_removed":
         return {
           type: payload.type,
           title: payload.title,

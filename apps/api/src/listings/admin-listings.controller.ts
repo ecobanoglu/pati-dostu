@@ -4,14 +4,16 @@ import { ZodResponse } from "nestjs-zod"
 
 import type { AuthSession } from "../auth/auth.js"
 import { CurrentSession, RequirePermissions } from "../auth/decorators.js"
+import { AdminListingsService } from "./admin-listings.service.js"
 import { ListingReviewService } from "./listing-review.service.js"
 import {
   AdminListingPageDto,
-  AdminQueueQueryDto,
+  AdminListingsQueryDto,
   ListingIdParamDto,
   LocaleQueryDto,
   RejectionReasonListDto,
   RejectListingDto,
+  RemoveListingDto,
   RequestChangesDto,
   ReviewInfoDto,
   ReviewQueueDto,
@@ -27,7 +29,8 @@ import { ListingsService } from "./listings.service.js"
 export class AdminListingsController {
   constructor(
     private readonly listings: ListingsService,
-    private readonly review: ListingReviewService
+    private readonly review: ListingReviewService,
+    private readonly admin: AdminListingsService
   ) {}
 
   /** Onay kuyruğu (işaretli, süzgeçli; en fazla 200). */
@@ -54,12 +57,32 @@ export class AdminListingsController {
     return this.review.info(id)
   }
 
-  /** Onay kuyruğu (varsayılan: onay bekleyenler, en eski önce). */
+  /** Tüm ilanlar (taslaklar hariç): durum, tür, arama, sıralama, sayfa; durum sayıları. */
   @Get()
-  @ApiOperation({ summary: "İlan onay kuyruğu" })
+  @ApiOperation({ summary: "İlanlar (admin)" })
   @ZodResponse({ status: 200, type: AdminListingPageDto })
-  queue(@Query() { status, page, locale }: AdminQueueQueryDto): Promise<AdminListingPageDto> {
-    return this.listings.adminQueue(status, page, locale)
+  list(@Query() query: AdminListingsQueryDto): Promise<AdminListingPageDto> {
+    return this.admin.list(query)
+  }
+
+  /** Yayından kaldır: yayındaki ilan kapatılır, sahibine bildirim gider. */
+  @Post(":id/close")
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({ summary: "İlanı yayından kaldır" })
+  async close(@CurrentSession() session: AuthSession, @Param() { id }: ListingIdParamDto): Promise<void> {
+    await this.admin.close(session.user, id)
+  }
+
+  /** Sil (yumuşak): hazır gerekçe ve/veya not; sahibine gerekçeli bildirim. */
+  @Post(":id/remove")
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({ summary: "İlanı sil (gerekçeli)" })
+  async remove(
+    @CurrentSession() session: AuthSession,
+    @Param() { id }: ListingIdParamDto,
+    @Body() body: RemoveListingDto
+  ): Promise<void> {
+    await this.admin.remove(session.user, id, body)
   }
 
   /** Onayla: ilan yayına girer. */

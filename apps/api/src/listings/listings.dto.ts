@@ -14,6 +14,8 @@ import {
   sizes,
   reviewFlags,
   reviewQueueQuerySchema,
+  adminListingsQuerySchema,
+  removeListingSchema,
 } from "@pati-dostu/validators"
 import { createZodDto } from "nestjs-zod"
 import { z } from "zod"
@@ -34,13 +36,8 @@ export class ListingRefParamDto extends createZodDto(
 ) {}
 export class ListingIdParamDto extends createZodDto(z.object({ id: z.uuid() })) {}
 export class LocaleQueryDto extends createZodDto(z.object({ locale: z.enum(["tr", "en"]).default("tr") })) {}
-export class AdminQueueQueryDto extends createZodDto(
-  z.object({
-    status: z.enum(listingStatuses).default("pending"),
-    page: z.coerce.number().int().min(1).default(1),
-    locale: z.enum(["tr", "en"]).default("tr"),
-  })
-) {}
+export class AdminListingsQueryDto extends createZodDto(adminListingsQuerySchema) {}
+export class RemoveListingDto extends createZodDto(removeListingSchema) {}
 
 // --- Yanıt -------------------------------------------------------------------
 
@@ -170,21 +167,36 @@ export class OwnListingDto extends createZodDto(
 export class ListingPhoneDto extends createZodDto(z.object({ phone: z.string() }).meta({ id: "ListingPhone" })) {}
 
 /** Admin onay kuyruğundaki ilan: kart + gönderen. */
-export class AdminListingPageDto extends createZodDto(
-  z
-    .object({
-      items: z.array(
-        listingCardSchema.extend({
-          owner: z.object({ id: z.string(), name: z.string(), email: z.string() }),
-          submittedAt: z.iso.datetime().nullable(),
-        })
-      ),
-      total: z.number().int(),
-      page: z.number().int(),
-      pageSize: z.number().int(),
-    })
-    .meta({ id: "AdminListingPage" })
-) {}
+const adminListingRowSchema = listingCardSchema
+  .extend({
+    owner: z.object({ id: z.string(), name: z.string(), email: z.string() }),
+    submittedAt: z.iso.datetime().nullable(),
+    viewCount: z.number().int(),
+    updatedAt: z.iso.datetime(),
+  })
+  .meta({ id: "AdminListingRow" })
+export type AdminListingRow = z.infer<typeof adminListingRowSchema>
+
+const adminListingPageSchema = z
+  .object({
+    items: z.array(adminListingRowSchema),
+    total: z.number().int(),
+    page: z.number().int(),
+    pageSize: z.number().int(),
+    /** Durum sekmelerinin sayıları (tür ve arama süzgeci uygulanmış; taslaklar hariç). */
+    counts: z.object({
+      all: z.number().int(),
+      pending: z.number().int(),
+      active: z.number().int(),
+      changes_requested: z.number().int(),
+      rejected: z.number().int(),
+      adopted: z.number().int(),
+      closed: z.number().int(),
+    }),
+  })
+  .meta({ id: "AdminListingPage" })
+export type AdminListingPage = z.infer<typeof adminListingPageSchema>
+export class AdminListingPageDto extends createZodDto(adminListingPageSchema) {}
 
 // --- Admin: onay kuyruğu ve inceleme --------------------------------------------------------------------------------
 

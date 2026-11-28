@@ -1,6 +1,6 @@
 "use client"
 
-import { ArrowLeft, BookOpen, type LucideIcon, Newspaper, ShieldCheck } from "lucide-react"
+import { ArrowLeft, BookOpen, LayoutGrid, type LucideIcon, Newspaper, ShieldCheck } from "lucide-react"
 import { useSearchParams } from "next/navigation"
 import { useTranslations } from "next-intl"
 import { Suspense } from "react"
@@ -11,8 +11,8 @@ import { type AdminCounts, useAdminCounts } from "@/lib/use-admin-counts"
 import { cn } from "@/lib/utils"
 
 type NavItem = {
-  key: "listingReview" | "blog" | "news"
-  href: { pathname: "/admin/listing-review" | "/admin/posts"; query?: Record<string, string> }
+  key: "listingReview" | "listings" | "blog" | "news"
+  href: { pathname: "/admin/listing-review" | "/admin/listings" | "/admin/posts"; query?: Record<string, string> }
   icon: LucideIcon
   /** Rozet sayısı (kenar çubuğu); `urgent` turuncu, diğerleri gri. */
   count?: keyof AdminCounts
@@ -35,6 +35,12 @@ const NAV: NavItem[] = [
     count: "pendingListings",
     urgent: true,
     isActive: (p) => p === "/admin/listing-review",
+  },
+  {
+    key: "listings",
+    href: { pathname: "/admin/listings" },
+    icon: LayoutGrid,
+    isActive: (p) => p === "/admin/listings",
   },
   {
     key: "blog",

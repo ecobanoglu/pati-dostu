@@ -704,6 +704,14 @@
         "title": "Changes requested for your listing",
         "body": "\"{title}\": {note}"
       },
+      "listing_closed_by_admin": {
+        "title": "Your listing was unpublished",
+        "body": "\"{title}\" was unpublished by the moderators."
+      },
+      "listing_removed": {
+        "title": "Your listing was removed",
+        "body": "\"{title}\": {reason}"
+      },
       "favorite_closed_adopted": {
         "title": "A saved listing was adopted",
         "body": "\"{title}\" found a new home."
@@ -1188,6 +1196,7 @@
     "breadcrumb": "Location",
     "nav": {
       "listingReview": "Listing review",
+      "listings": "Listings",
       "blog": "Blog",
       "news": "News"
     },
@@ -1471,5 +1480,57 @@
       "reject": "Listing rejected.",
       "changes": "Changes requested."
     }
+  },
+  "AdminListings": {
+    "title": "Listings",
+    "all": "All",
+    "statusFilter": "Status",
+    "searchLabel": "Search listings",
+    "searchPlaceholder": "Listing no (PD-104611), title, owner’s name or email",
+    "typeLabel": "Listing type",
+    "allTypes": "All types",
+    "sortLabel": "Sort",
+    "sort": {
+      "new": "Newest",
+      "old": "Oldest",
+      "views": "Most viewed"
+    },
+    "tableCaption": "Submitted listings",
+    "colListing": "Listing",
+    "colType": "Type",
+    "colOwner": "Owner",
+    "colLocation": "Location",
+    "colStatus": "Status",
+    "colDate": "Submitted",
+    "colViews": "Views",
+    "colActions": "Actions",
+    "review": "Review",
+    "reviewRow": "Review: {title}",
+    "view": "View",
+    "viewRow": "View on site: {title} (opens in a new tab)",
+    "more": "More actions: {title}",
+    "close": "Unpublish",
+    "remove": "Delete",
+    "viewsShort": "{count, plural, =0 {no views} one {# view} other {# views}}",
+    "closeTitle": "Unpublish this listing?",
+    "closeText": "“{title}” is closed and disappears from the site; the owner can’t republish it. The owner and people who saved it are notified.",
+    "closed": "“{title}” was unpublished.",
+    "removeTitle": "Delete listing",
+    "removeText": "“{title}” is deleted and also removed from the owner’s My listings page. The owner is notified by notification and email, with the reason.",
+    "removed": "“{title}” was deleted.",
+    "reasonLabel": "Reason",
+    "reasonPlaceholder": "Choose",
+    "reasonRequired": "Choose a reason or write a note of at least 10 characters.",
+    "noteLabel": "Note to the user",
+    "noteHint": "Optional; shown next to the reason.",
+    "cancel": "Cancel",
+    "empty": "No submitted listings yet.",
+    "emptyFiltered": "No listings match these filters.",
+    "clearFilters": "Clear filters",
+    "range": "{from}–{to} of {total}",
+    "pagination": "Pages",
+    "previous": "Previous",
+    "next": "Next",
+    "pageOf": "Page {page} of {total}"
   }
 }

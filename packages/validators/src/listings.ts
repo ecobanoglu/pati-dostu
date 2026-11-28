@@ -257,3 +257,33 @@ export const reviewQueueQuerySchema = z.object({
   locale: z.enum(["tr", "en"]).default("tr"),
 })
 export type ReviewQueueQuery = z.infer<typeof reviewQueueQuerySchema>
+
+/** Admin › İlanlar: sayfa boyutu. */
+export const ADMIN_LISTINGS_PAGE_SIZE = 20
+
+/** Admin listesinde görünen durumlar (taslaklar kullanıcının özel çalışması — gösterilmez, karar). */
+export const adminListingStatuses = [
+  "pending",
+  "active",
+  "changes_requested",
+  "rejected",
+  "adopted",
+  "closed",
+] as const satisfies readonly ListingStatus[]
+
+/**
+ * GET /admin/listings: durum, tür, arama (`q` — ilan no "104611" / "PD-104611", başlık, sahibin adı ya da
+ * e-postası), sıralama (yeni / eski / okunma), sayfa.
+ */
+export const adminListingsQuerySchema = z.object({
+  status: z.enum(adminListingStatuses).optional(),
+  type: z.enum(listingTypes).optional(),
+  q: z.string().trim().max(100).optional(),
+  sort: z.enum(["new", "old", "views"]).default("new"),
+  page: z.coerce.number().int().min(1).max(500).default(1),
+  locale: z.enum(["tr", "en"]).default("tr"),
+})
+export type AdminListingsQuery = z.infer<typeof adminListingsQuerySchema>
+
+/** POST /admin/listings/{id}/remove: silme gerekçesi (hazır gerekçe ve/veya not; red ile aynı kural). */
+export const removeListingSchema = rejectListingSchema

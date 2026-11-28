@@ -704,6 +704,14 @@
         "title": "İlanınız için düzeltme istendi",
         "body": "\"{title}\": {note}"
       },
+      "listing_closed_by_admin": {
+        "title": "İlanınız yayından kaldırıldı",
+        "body": "\"{title}\" yönetim tarafından yayından kaldırıldı."
+      },
+      "listing_removed": {
+        "title": "İlanınız kaldırıldı",
+        "body": "\"{title}\": {reason}"
+      },
       "favorite_closed_adopted": {
         "title": "Favori ilanınız sahiplendirildi",
         "body": "\"{title}\" yeni yuvasına kavuştu."
@@ -1188,6 +1196,7 @@
     "breadcrumb": "Konum",
     "nav": {
       "listingReview": "İlan onayı",
+      "listings": "İlanlar",
       "blog": "Blog",
       "news": "Haberler"
     },
@@ -1471,5 +1480,57 @@
       "reject": "İlan reddedildi.",
       "changes": "Düzeltme istendi."
     }
+  },
+  "AdminListings": {
+    "title": "İlanlar",
+    "all": "Tümü",
+    "statusFilter": "Durum",
+    "searchLabel": "İlan ara",
+    "searchPlaceholder": "İlan no (PD-104611), başlık, sahibin adı ya da e-postası",
+    "typeLabel": "İlan türü",
+    "allTypes": "Tüm türler",
+    "sortLabel": "Sıralama",
+    "sort": {
+      "new": "En yeni",
+      "old": "En eski",
+      "views": "En çok görüntülenen"
+    },
+    "tableCaption": "Gönderilmiş ilanlar",
+    "colListing": "İlan",
+    "colType": "Tür",
+    "colOwner": "Sahibi",
+    "colLocation": "Konum",
+    "colStatus": "Durum",
+    "colDate": "Gönderim",
+    "colViews": "Görüntülenme",
+    "colActions": "İşlemler",
+    "review": "İncele",
+    "reviewRow": "İncele: {title}",
+    "view": "Görüntüle",
+    "viewRow": "Sitede görüntüle: {title} (yeni sekmede açılır)",
+    "more": "Diğer işlemler: {title}",
+    "close": "Yayından kaldır",
+    "remove": "Sil",
+    "viewsShort": "{count, plural, =0 {görüntülenme yok} other {# görüntülenme}}",
+    "closeTitle": "İlan yayından kaldırılsın mı?",
+    "closeText": "“{title}” kapatılır ve sitede görünmez; sahibi yeniden yayına alamaz. Sahibine ve favoriye ekleyenlere bildirim gider.",
+    "closed": "“{title}” yayından kaldırıldı.",
+    "removeTitle": "İlanı sil",
+    "removeText": "“{title}” silinir ve sahibinin İlanlarım sayfasından da kalkar. Sahibine gerekçeyle birlikte bildirim ve e-posta gider.",
+    "removed": "“{title}” silindi.",
+    "reasonLabel": "Gerekçe",
+    "reasonPlaceholder": "Seçin",
+    "reasonRequired": "Bir gerekçe seçin ya da en az 10 karakterlik not yazın.",
+    "noteLabel": "Kullanıcıya not",
+    "noteHint": "İsteğe bağlı; gerekçenin yanında gösterilir.",
+    "cancel": "Vazgeç",
+    "empty": "Henüz gönderilmiş ilan yok.",
+    "emptyFiltered": "Bu süzgeçlere uyan ilan yok.",
+    "clearFilters": "Süzgeçleri temizle",
+    "range": "{from}–{to} / {total}",
+    "pagination": "Sayfalar",
+    "previous": "Önceki",
+    "next": "Sonraki",
+    "pageOf": "Sayfa {page} / {total}"
   }
 }

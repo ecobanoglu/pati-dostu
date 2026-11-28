@@ -16,7 +16,7 @@ import { reviewFieldLabel } from "@/lib/review-fields"
 import { refreshAdminCounts } from "@/lib/use-admin-counts"
 import { cn } from "@/lib/utils"
 
-import { refreshListingCaches } from "./actions"
+import { refreshListingCaches } from "@/lib/admin-actions"
 import { type ReviewState, reviewHref } from "./query"
 import type { RejectionReasonOption } from "./types"
 

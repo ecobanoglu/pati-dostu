@@ -26,6 +26,8 @@ export type NotificationItem = {
     | "listing_approved"
     | "listing_rejected"
     | "listing_changes_requested"
+    | "listing_closed_by_admin"
+    | "listing_removed"
     | "favorite_closed"
     | "new_message"
     | "listing_comment"
@@ -69,6 +71,8 @@ const tones: Record<NotificationItem["type"], { icon: LucideIcon; className: str
   listing_approved: { icon: Check, className: "text-success-text" },
   listing_rejected: { icon: TriangleAlert, className: "text-danger" },
   listing_changes_requested: { icon: FilePen, className: "text-notice-text" },
+  listing_closed_by_admin: { icon: TriangleAlert, className: "text-notice-text" },
+  listing_removed: { icon: TriangleAlert, className: "text-danger" },
   favorite_closed: { icon: Heart, className: "text-success-text" },
   new_message: { icon: MessageCircle, className: "text-primary" },
   listing_comment: { icon: MessageSquareText, className: "text-primary" },

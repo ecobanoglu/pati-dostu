@@ -140,16 +140,16 @@ export class ListingReviewService {
   }
 
   /**
-   * Reddet: kullanıcıya giden metin = seçilen gerekçenin adı (ilan sahibinin dilinde) + not ("Gerekçe — not").
-   * Gerekçe yoksa yalnız not (en az 10 karakter; şema denetler).
+   * Kullanıcıya giden gerekçe metni: seçilen hazır gerekçenin adı (ilan sahibinin dilinde) + " — " + not. Gerekçe
+   * yoksa yalnız not (şema en az 10 karakter ister). Red ve admin silmesi kullanır.
    */
-  async reject(admin: SessionUser, id: string, input: z.output<typeof rejectListingSchema>): Promise<void> {
+  async reasonText(listingId: string, input: z.output<typeof rejectListingSchema>): Promise<string> {
     let label: string | null = null
     if (input.reasonId) {
       const [row] = await this.db
         .select({ label: rejectionReason.label, locale: user.locale })
         .from(rejectionReason)
-        .innerJoin(listing, eq(listing.id, id))
+        .innerJoin(listing, eq(listing.id, listingId))
         .innerJoin(user, eq(user.id, listing.ownerId))
         .where(and(eq(rejectionReason.id, input.reasonId), isNull(rejectionReason.deletedAt)))
       if (!row) {
@@ -159,8 +159,12 @@ export class ListingReviewService {
       }
       label = localize(row.label, row.locale as Locale)
     }
-    const reason = [label, input.note].filter(Boolean).join(" — ")
-    await this.listings.review(admin, id, { kind: "reject", reason })
+    return [label, input.note].filter(Boolean).join(" — ")
+  }
+
+  /** Reddet: gerekçe metni + `ListingsService.review` (durum, bildirim, denetim kaydı). */
+  async reject(admin: SessionUser, id: string, input: z.output<typeof rejectListingSchema>): Promise<void> {
+    await this.listings.review(admin, id, { kind: "reject", reason: await this.reasonText(id, input) })
   }
 
   /**

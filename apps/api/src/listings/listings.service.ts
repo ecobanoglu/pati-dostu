@@ -400,31 +400,6 @@ export class ListingsService {
 
   // --- Admin --------------------------------------------------------------------------------------------------
 
-  /** Onay kuyruğu (varsayılan: onay bekleyenler, en eski gönderim önce). */
-  async adminQueue(status: ListingStatus, page: number, locale: Locale) {
-    const pageSize = 24
-    const where = and(eq(listing.status, status), isNull(listing.deletedAt))
-    const [rows, [total]] = await Promise.all([
-      this.cardQuery()
-        .where(where)
-        .orderBy(asc(listing.submittedAt))
-        .limit(pageSize)
-        .offset((page - 1) * pageSize),
-      this.db.select({ value: count() }).from(listing).where(where),
-    ])
-    const owners = await this.ownerSummaries(rows.map((r) => r.id))
-    return {
-      items: rows.map((r) => ({
-        ...this.toCard(r, locale),
-        owner: owners.get(r.id) ?? { id: "", name: "", email: "" },
-        submittedAt: iso(r.submittedAt),
-      })),
-      total: total?.value ?? 0,
-      page,
-      pageSize,
-    }
-  }
-
   /** Admin kararı: onayla (yayına al), düzeltme iste (not + alanlar) ya da reddet (gerekçe). Denetim kaydı yazılır. */
   async review(
     admin: SessionUser,
@@ -681,7 +656,7 @@ export class ListingsService {
   }
 
   /** Kuyruktaki ilanların gönderenleri. */
-  private async ownerSummaries(ids: string[]) {
+  async ownerSummaries(ids: string[]) {
     if (!ids.length) return new Map<string, { id: string; name: string; email: string }>()
     const rows = await this.db
       .select({ listingId: listing.id, id: user.id, name: user.name, email: user.email })

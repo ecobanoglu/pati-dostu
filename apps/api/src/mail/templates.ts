@@ -122,6 +122,17 @@ const notificationStrings = {
       detail: "Gerekçe",
       button: "İlanlarıma git",
     },
+    listing_closed_by_admin: {
+      subject: "İlanınız yayından kaldırıldı",
+      text: (title: string) => `"${title}" ilanınız yönetim tarafından yayından kaldırıldı.`,
+      button: "İlanlarıma git",
+    },
+    listing_removed: {
+      subject: "İlanınız kaldırıldı",
+      text: (title: string) => `"${title}" ilanınız platform kurallarına uymadığı için kaldırıldı.`,
+      detail: "Gerekçe",
+      button: "İlanlarıma git",
+    },
     listing_changes_requested: {
       subject: "İlanınız için düzeltme istendi",
       text: (title: string) => `"${title}" ilanınızın yayınlanması için birkaç düzeltme gerekiyor.`,
@@ -179,6 +190,17 @@ const notificationStrings = {
       detail: "Reason",
       button: "Go to my listings",
     },
+    listing_closed_by_admin: {
+      subject: "Your listing was unpublished",
+      text: (title: string) => `Your listing "${title}" was unpublished by the moderators.`,
+      button: "Go to my listings",
+    },
+    listing_removed: {
+      subject: "Your listing was removed",
+      text: (title: string) => `Your listing "${title}" was removed because it doesn't follow the platform rules.`,
+      detail: "Reason",
+      button: "Go to my listings",
+    },
     listing_changes_requested: {
       subject: "Changes requested for your listing",
       text: (title: string) => `Your listing "${title}" needs a few changes before it can be published.`,
@@ -230,6 +252,8 @@ export type NotificationMailData =
   | { type: "listing_approved"; title: string; url: string }
   | { type: "listing_rejected"; title: string; url: string; reason: string }
   | { type: "listing_changes_requested"; title: string; url: string; note: string }
+  | { type: "listing_closed_by_admin"; title: string; url: string }
+  | { type: "listing_removed"; title: string; url: string; reason: string }
   | { type: "favorite_closed"; title: string; url: string; outcome: "adopted" | "reunited" | "closed" }
   | { type: "new_message"; title: string; url: string; senderName: string; preview: string }
   | { type: "listing_comment"; title: string; url: string; senderName: string; preview: string }
@@ -259,6 +283,15 @@ export function notificationMail(
       ;({ subject, button: buttonLabel } = n.listing_rejected)
       text = n.listing_rejected.text(data.title)
       detail = { label: n.listing_rejected.detail, value: data.reason }
+      break
+    case "listing_closed_by_admin":
+      ;({ subject, button: buttonLabel } = n.listing_closed_by_admin)
+      text = n.listing_closed_by_admin.text(data.title)
+      break
+    case "listing_removed":
+      ;({ subject, button: buttonLabel } = n.listing_removed)
+      text = n.listing_removed.text(data.title)
+      detail = { label: n.listing_removed.detail, value: data.reason }
       break
     case "listing_changes_requested":
       ;({ subject, button: buttonLabel } = n.listing_changes_requested)

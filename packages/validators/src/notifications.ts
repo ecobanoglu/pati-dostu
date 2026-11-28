@@ -26,6 +26,10 @@ export const notificationTypes = {
   listing_rejected: "listing_review",
   /** İlanınız için düzeltme istendi (not + bölümler). */
   listing_changes_requested: "listing_review",
+  /** İlanınız yönetim tarafından yayından kaldırıldı (kapatıldı; gerekçe yok — karar). */
+  listing_closed_by_admin: "listing_review",
+  /** İlanınız yönetim tarafından silindi (gerekçeyle). */
+  listing_removed: "listing_review",
   /** Favorinizdeki ilan sahiplendirildi / kavuştu ya da yayından kaldırıldı. */
   favorite_closed: "favorite_update",
   /**

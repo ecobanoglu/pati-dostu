@@ -2,11 +2,11 @@ import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import { getLocale, getTranslations } from "next-intl/server"
 
+import { AdminTopBar } from "@/components/layout/admin/admin-top-bar"
 import { requireAdmin } from "@/lib/admin"
 import { apiServer } from "@/lib/server-api"
 
 import { PostEditor } from "./post-editor"
-import { AdminPageHeader } from "./posts-list-view"
 import type { AdminPostDetail, AdminPostOptions } from "./types"
 
 type SearchParams = Record<string, string | string[] | undefined>
@@ -43,18 +43,22 @@ export async function PostEditorPage({
   if (id && !post) notFound()
   if (!options) throw new Error("Editör seçenekleri okunamadı")
 
+  const type = post?.type ?? (sp.tur === "haber" ? "news" : "blog")
   return (
-    <div className="mx-auto grid max-w-site gap-5 px-4 py-6 lg:px-6 lg:py-8">
-      <AdminPageHeader
+    <>
+      <AdminTopBar
         title={t("editorTitle")}
-        crumbs={[{ label: t("listTitle"), href: "/admin/posts" }, { label: post ? t("editCrumb") : t("newCrumb") }]}
+        crumbs={[
+          {
+            label: t(type === "news" ? "crumbNews" : "crumbBlog"),
+            href: { pathname: "/admin/posts", query: { tur: type === "news" ? "haber" : "blog" } },
+          },
+          { label: post ? t("editCrumb") : t("newCrumb") },
+        ]}
       />
-      <PostEditor
-        key={post?.id ?? "new"}
-        initial={post}
-        options={options}
-        defaultType={sp.tur === "haber" ? "news" : "blog"}
-      />
-    </div>
+      <div className="px-4 py-5 lg:px-7 lg:py-6">
+        <PostEditor key={post?.id ?? "new"} initial={post} options={options} defaultType={type} />
+      </div>
+    </>
   )
 }

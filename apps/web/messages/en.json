@@ -1182,9 +1182,13 @@
   "Admin": {
     "badge": "Admin",
     "navLabel": "Admin menu",
-    "posts": "Blog and news",
     "backToSite": "Back to site",
-    "breadcrumb": "Location"
+    "breadcrumb": "Location",
+    "nav": {
+      "blog": "Blog",
+      "news": "News"
+    },
+    "pending": "pending"
   },
   "AdminPosts": {
     "listTitle": "Blog and news",
@@ -1356,6 +1360,8 @@
     "typeToggle": {
       "blog": "Blog post",
       "news": "News / announcement"
-    }
+    },
+    "crumbBlog": "Blog",
+    "crumbNews": "News"
   }
 }

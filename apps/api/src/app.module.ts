@@ -2,6 +2,7 @@ import { Module } from "@nestjs/common"
 import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from "@nestjs/core"
 import { ZodSerializerInterceptor, ZodValidationPipe } from "nestjs-zod"
 
+import { AdminModule } from "./admin/admin.module.js"
 import { AuthModule } from "./auth/auth.module.js"
 import { CommentsModule } from "./comments/comments.module.js"
 import { HttpExceptionFilter } from "./common/http-exception.filter.js"
@@ -42,6 +43,7 @@ import { UsersModule } from "./users/users.module.js"
     ReportsModule,
     ForumModule,
     PostsModule,
+    AdminModule,
   ],
   providers: [
     // Tüm girişler Zod şemalarıyla (createZodDto) doğrulanır.

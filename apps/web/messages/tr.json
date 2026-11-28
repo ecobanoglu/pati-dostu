@@ -1182,9 +1182,13 @@
   "Admin": {
     "badge": "Admin",
     "navLabel": "Yönetim menüsü",
-    "posts": "Blog ve haberler",
     "backToSite": "Siteye dön",
-    "breadcrumb": "Konum"
+    "breadcrumb": "Konum",
+    "nav": {
+      "blog": "Blog",
+      "news": "Haberler"
+    },
+    "pending": "bekliyor"
   },
   "AdminPosts": {
     "listTitle": "Blog ve haberler",
@@ -1356,6 +1360,8 @@
     "typeToggle": {
       "blog": "Blog yazısı",
       "news": "Haber / duyuru"
-    }
+    },
+    "crumbBlog": "Blog",
+    "crumbNews": "Haberler"
   }
 }

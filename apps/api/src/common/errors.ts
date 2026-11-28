@@ -42,6 +42,8 @@ export const ErrorCode = {
   REASON_INVALID: "REASON_INVALID",
   /** Yaptırım (uyarı / askıya alma) admin hesabına uygulanamaz. */
   CANNOT_MODERATE_ADMIN: "CANNOT_MODERATE_ADMIN",
+  /** Rol değişikliğine izin yok (kurum hesabı, kendi rolü, son admin, askıdaki hesap). */
+  ROLE_CHANGE_NOT_ALLOWED: "ROLE_CHANGE_NOT_ALLOWED",
   /** Bu hedefin açık şikâyeti yok (zaten sonuçlanmış). */
   REPORT_NOT_OPEN: "REPORT_NOT_OPEN",
   /** Şikâyeti sonuçlandırırken hiçbir işlem seçilmedi. */

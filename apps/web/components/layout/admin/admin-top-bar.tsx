@@ -7,9 +7,10 @@ import { getCurrentUser } from "@/lib/session"
 import { NotificationBell } from "../notification-bell"
 import { UserMenu } from "../user-menu"
 import { AdminMobileMenu } from "./admin-mobile-menu"
+import { AdminSearch } from "./admin-search"
 
 /** Yol izindeki bağlantı verilebilen admin sayfaları. */
-type CrumbHref = "/admin/posts"
+type CrumbHref = "/admin/posts" | "/admin/users"
 
 /** Oturumdaki admin'in profil menüsü (cookie okuduğu için Suspense içinde). */
 async function AdminUser() {
@@ -19,7 +20,7 @@ async function AdminUser() {
 
 /**
  * Admin sayfasının üst çubuğu (tasarım 07-admin/*): masaüstünde beyaz çubukta "Admin / …" yol izi ve sayfa başlığı
- * (h1), sağda zil ve profil menüsü; mobilde koyu çubukta hamburger menü, başlık ve isteğe bağlı sağ öğe (`mobileEnd`,
+ * (h1), sağda genel arama (ilan no / kullanıcı / e-posta), zil ve profil menüsü; mobilde koyu çubukta hamburger menü, başlık ve isteğe bağlı sağ öğe (`mobileEnd`,
  * ör. ilan onayında "1 / 12"). Her admin sayfası en üstte bunu çizer.
  */
 export async function AdminTopBar({
@@ -68,6 +69,7 @@ export async function AdminTopBar({
           <h1 className="truncate text-h3 font-extrabold text-heading">{title}</h1>
         </div>
         <div className="flex items-center gap-2">
+          <AdminSearch />
           <NotificationBell />
           <Suspense fallback={<div aria-hidden="true" className="h-tap w-28" />}>
             <AdminUser />

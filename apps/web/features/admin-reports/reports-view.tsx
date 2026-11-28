@@ -384,6 +384,12 @@ async function SubjectCard({ data, now }: { data: ReportCase; now: number }) {
             })}
           </p>
           <p className="text-sm break-all text-body">{s.email}</p>
+          <Link
+            href={{ pathname: "/admin/users", query: { kullanici: s.id } }}
+            className="inline-flex min-h-tap items-center font-bold text-primary underline underline-offset-4"
+          >
+            {t("openUser")}
+          </Link>
           {s.role === "admin" && <Badge variant="soft">{t("isAdmin")}</Badge>}
           {s.deleted && <Badge variant="neutral">{t("deletedUser")}</Badge>}
           {s.banned && (

@@ -1149,7 +1149,8 @@
     "REASON_INVALID": "Seçilen red gerekçesi artık yok. Sayfayı yenileyip tekrar seçin.",
     "CANNOT_MODERATE_ADMIN": "Admin hesabına uyarı ya da askıya alma uygulanamaz.",
     "REPORT_NOT_OPEN": "Bu şikayet zaten sonuçlanmış. Sayfayı yenileyin.",
-    "ACTION_REQUIRED": "En az bir işlem seçin ya da şikayeti asılsız sayın."
+    "ACTION_REQUIRED": "En az bir işlem seçin ya da şikayeti asılsız sayın.",
+    "ROLE_CHANGE_NOT_ALLOWED": "Bu rol değişikliği yapılamaz (kurum hesabı, kendi hesabınız, son admin ya da askıdaki hesap)."
   },
   "Posts": {
     "blogTitle": "Blog",
@@ -1212,11 +1213,14 @@
     "nav": {
       "listingReview": "İlan onayı",
       "listings": "İlanlar",
+      "users": "Kullanıcılar",
       "reports": "Şikayetler",
       "blog": "Blog",
       "news": "Haberler"
     },
-    "pending": "bekliyor"
+    "pending": "bekliyor",
+    "searchLabel": "Admin panelinde ara",
+    "searchPlaceholder": "İlan no, kullanıcı, e-posta"
   },
   "AdminPosts": {
     "listTitle": "Blog ve haberler",
@@ -1633,6 +1637,101 @@
     "cancel": "Vazgeç",
     "internalNote": "İç not:",
     "noNote": "İç not yazılmamış.",
-    "toOpen": "Açık şikayetlere dön"
+    "toOpen": "Açık şikayetlere dön",
+    "openUser": "Kullanıcıyı aç"
+  },
+  "AdminUsers": {
+    "title": "Kullanıcılar",
+    "searchLabel": "Kullanıcı ara",
+    "searchPlaceholder": "Ad, e-posta veya telefon",
+    "roleLabel": "Rol",
+    "statusLabel": "Durum",
+    "all": "Tümü",
+    "allNotDeleted": "Tümü (silinmişler hariç)",
+    "role": {
+      "user": "Üye",
+      "clinic": "Klinik",
+      "shelter": "Barınak",
+      "admin": "Admin"
+    },
+    "status": {
+      "active": "Etkin",
+      "banned": "Askıda",
+      "deleted": "Silinmiş"
+    },
+    "csv": "CSV indir",
+    "tableCaption": "Kullanıcılar",
+    "colUser": "Kullanıcı",
+    "colRole": "Rol",
+    "colCity": "Şehir",
+    "colListings": "İlan",
+    "colReports": "Şikayet",
+    "colCreated": "Kayıt",
+    "colStatus": "Durum",
+    "colActions": "İşlemler",
+    "actions": "İşlemler",
+    "openRow": "İşlemler: {name}",
+    "countsShort": "{listings} ilan · {reports} şikayet",
+    "empty": "Bu süzgeçlere uyan kullanıcı yok.",
+    "range": "{from}–{to} / {total} kullanıcı",
+    "pagination": "Sayfalar",
+    "previous": "Önceki sayfa",
+    "next": "Sonraki sayfa",
+    "notFound": "Kullanıcı bulunamadı.",
+    "closeDetail": "Ayrıntıyı kapat",
+    "email": "E-posta",
+    "verified": "doğrulandı",
+    "unverified": "doğrulanmadı",
+    "phone": "Telefon",
+    "memberSince": "Üyelik",
+    "lastSeen": "Son etkinlik",
+    "organization": "Kurum",
+    "bannedUntil": "Askıda: {date} tarihine kadar",
+    "bannedPermanent": "Kalıcı olarak askıda",
+    "listingsTitle": "İlanlar ({count})",
+    "noListings": "Gönderilmiş ilanı yok.",
+    "reportsTitle": "Hakkındaki şikayetler: {count}",
+    "warningItem": "{date} · uyarıldı ({reason})",
+    "noWarnings": "Uyarı almamış.",
+    "historyTitle": "Yönetim geçmişi",
+    "history": {
+      "role": "rol değiştirildi",
+      "warn": "uyarıldı",
+      "ban": "askıya alındı",
+      "unban": "askı kaldırıldı"
+    },
+    "actionsTitle": "İşlemler",
+    "noActions": "Bu hesaba uygulanabilecek işlem yok.",
+    "roleNow": "Rol: {role}",
+    "makeAdmin": "Admin yap",
+    "makeUser": "Üye yap",
+    "makeAdminTitle": "Admin yetkisi verilsin mi?",
+    "makeAdminText": "{name} admin panelinin tamamına erişebilir: ilanları onaylar, kullanıcıları yönetir.",
+    "makeUserTitle": "Admin yetkisi alınsın mı?",
+    "makeUserText": "{name} yeniden üye olur ve admin paneline erişemez.",
+    "warnReason": "Uyarı nedeni",
+    "warn": "Uyar",
+    "warnTitle": "Kullanıcı uyarılsın mı?",
+    "warnText": "{name} kullanıcısına “Paylaşımınız topluluk kurallarına aykırı bulundu” uyarısı gider (neden: {reason}); site içi bildirim + e-posta.",
+    "banDurationLabel": "Askı süresi",
+    "banDuration": {
+      "7d": "7 gün",
+      "30d": "30 gün",
+      "permanent": "Kalıcı"
+    },
+    "banReasonLabel": "İç gerekçe",
+    "ban": "Askıya al",
+    "banTitle": "Hesap askıya alınsın mı?",
+    "banText": "{name} hesabı {duration} askıya alınır; tüm oturumları kapanır ve giriş yapamaz.",
+    "unban": "Askıyı kaldır",
+    "unbanTitle": "Askı kaldırılsın mı?",
+    "unbanText": "{name} yeniden giriş yapabilir.",
+    "cancel": "Vazgeç",
+    "done": {
+      "role": "Rol değiştirildi.",
+      "warn": "Uyarı gönderildi.",
+      "ban": "Hesap askıya alındı.",
+      "unban": "Askı kaldırıldı."
+    }
   }
 }

@@ -1149,7 +1149,8 @@
     "REASON_INVALID": "The selected rejection reason no longer exists. Reload and choose again.",
     "CANNOT_MODERATE_ADMIN": "Warnings and suspensions can't be applied to admin accounts.",
     "REPORT_NOT_OPEN": "This report has already been closed. Reload the page.",
-    "ACTION_REQUIRED": "Choose at least one action or dismiss the report."
+    "ACTION_REQUIRED": "Choose at least one action or dismiss the report.",
+    "ROLE_CHANGE_NOT_ALLOWED": "This role change isn’t allowed (organization account, your own account, the last admin or a suspended account)."
   },
   "Posts": {
     "blogTitle": "Blog",
@@ -1212,11 +1213,14 @@
     "nav": {
       "listingReview": "Listing review",
       "listings": "Listings",
+      "users": "Users",
       "reports": "Reports",
       "blog": "Blog",
       "news": "News"
     },
-    "pending": "pending"
+    "pending": "pending",
+    "searchLabel": "Search the admin panel",
+    "searchPlaceholder": "Listing no, user, email"
   },
   "AdminPosts": {
     "listTitle": "Blog and news",
@@ -1633,6 +1637,101 @@
     "cancel": "Cancel",
     "internalNote": "Internal note:",
     "noNote": "No internal note.",
-    "toOpen": "Back to open reports"
+    "toOpen": "Back to open reports",
+    "openUser": "Open user"
+  },
+  "AdminUsers": {
+    "title": "Users",
+    "searchLabel": "Search users",
+    "searchPlaceholder": "Name, email or phone",
+    "roleLabel": "Role",
+    "statusLabel": "Status",
+    "all": "All",
+    "allNotDeleted": "All (excluding deleted)",
+    "role": {
+      "user": "Member",
+      "clinic": "Clinic",
+      "shelter": "Shelter",
+      "admin": "Admin"
+    },
+    "status": {
+      "active": "Active",
+      "banned": "Suspended",
+      "deleted": "Deleted"
+    },
+    "csv": "Download CSV",
+    "tableCaption": "Users",
+    "colUser": "User",
+    "colRole": "Role",
+    "colCity": "City",
+    "colListings": "Listings",
+    "colReports": "Reports",
+    "colCreated": "Joined",
+    "colStatus": "Status",
+    "colActions": "Actions",
+    "actions": "Actions",
+    "openRow": "Actions: {name}",
+    "countsShort": "{listings} listings · {reports} reports",
+    "empty": "No users match these filters.",
+    "range": "{from}–{to} of {total} users",
+    "pagination": "Pages",
+    "previous": "Previous page",
+    "next": "Next page",
+    "notFound": "User not found.",
+    "closeDetail": "Close details",
+    "email": "Email",
+    "verified": "verified",
+    "unverified": "not verified",
+    "phone": "Phone",
+    "memberSince": "Joined",
+    "lastSeen": "Last active",
+    "organization": "Organization",
+    "bannedUntil": "Suspended until {date}",
+    "bannedPermanent": "Permanently suspended",
+    "listingsTitle": "Listings ({count})",
+    "noListings": "No submitted listings.",
+    "reportsTitle": "Reports about them: {count}",
+    "warningItem": "{date} · warned ({reason})",
+    "noWarnings": "No warnings.",
+    "historyTitle": "Moderation history",
+    "history": {
+      "role": "role changed",
+      "warn": "warned",
+      "ban": "suspended",
+      "unban": "suspension lifted"
+    },
+    "actionsTitle": "Actions",
+    "noActions": "No actions apply to this account.",
+    "roleNow": "Role: {role}",
+    "makeAdmin": "Make admin",
+    "makeUser": "Make member",
+    "makeAdminTitle": "Grant admin rights?",
+    "makeAdminText": "{name} gets full access to the admin panel: approving listings and managing users.",
+    "makeUserTitle": "Remove admin rights?",
+    "makeUserText": "{name} becomes a member again and can't access the admin panel.",
+    "warnReason": "Warning reason",
+    "warn": "Warn",
+    "warnTitle": "Warn this user?",
+    "warnText": "{name} receives the warning “Your post was found to break the community rules” (reason: {reason}); notification + email.",
+    "banDurationLabel": "Suspension length",
+    "banDuration": {
+      "7d": "7 days",
+      "30d": "30 days",
+      "permanent": "Permanent"
+    },
+    "banReasonLabel": "Internal reason",
+    "ban": "Suspend",
+    "banTitle": "Suspend this account?",
+    "banText": "{name} is suspended for {duration}; all sessions end and they can’t sign in.",
+    "unban": "Lift suspension",
+    "unbanTitle": "Lift the suspension?",
+    "unbanText": "{name} can sign in again.",
+    "cancel": "Cancel",
+    "done": {
+      "role": "Role changed.",
+      "warn": "Warning sent.",
+      "ban": "Account suspended.",
+      "unban": "Suspension lifted."
+    }
   }
 }

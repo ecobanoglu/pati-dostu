@@ -47,6 +47,7 @@ export const routing = defineRouting({
     // Admin (4. aşama: yalnız blog/haber; 5. aşamada panelin diğer sayfaları)
     "/admin/listings": { tr: "/admin/ilanlar", en: "/admin/listings" },
     "/admin/reports": { tr: "/admin/sikayetler", en: "/admin/reports" },
+    "/admin/users": { tr: "/admin/kullanicilar", en: "/admin/users" },
     "/admin/listing-review": { tr: "/admin/ilan-onayi", en: "/admin/listing-review" },
     "/admin/posts": { tr: "/admin/yazilar", en: "/admin/posts" },
     "/admin/posts/new": { tr: "/admin/yazilar/yeni", en: "/admin/posts/new" },

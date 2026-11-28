@@ -40,6 +40,13 @@ export class UserModerationService {
     await this.audit(adminId, "user.ban", userId, { duration, reason })
   }
 
+  /** Askıyı kaldırır (süreli ya da kalıcı); kullanıcı yeniden giriş yapabilir. */
+  async unban(adminId: string, userId: string) {
+    await this.target(userId)
+    await this.db.update(user).set({ banned: false, banReason: null, banExpires: null }).where(eq(user.id, userId))
+    await this.audit(adminId, "user.unban", userId, {})
+  }
+
   /** Yaptırım uygulanabilir kullanıcıyı bulur: silinmemiş ve admin değil. */
   private async target(userId: string) {
     const [row] = await this.db

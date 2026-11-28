@@ -1,7 +1,7 @@
 "use client"
 
 import { REPLY_BODY_MAX } from "@pati-dostu/validators"
-import { Bell, BellOff, Check, Link2, Send, ThumbsUp, Trash2 } from "lucide-react"
+import { Bell, BellOff, Check, Link2, Lock, Send, ThumbsUp, Trash2 } from "lucide-react"
 import { useFormatter, useLocale, useTranslations } from "next-intl"
 import { type FormEvent, useEffect, useId, useMemo, useRef, useState } from "react"
 
@@ -367,53 +367,64 @@ export function TopicThread({
         </ol>
 
         {/* Masaüstü cevap formu */}
-        <div
-          id="reply"
-          className="scroll-mt-24 rounded-card border border-border bg-background p-4 max-lg:hidden lg:p-6"
-        >
-          {viewer ? (
-            <form onSubmit={submit} className="grid gap-2">
-              <label htmlFor={formId} className="text-[15px] font-extrabold text-heading">
-                {t("replyLabel")}
-              </label>
-              <MarkdownEditor
-                id={formId}
-                value={body}
-                onChange={setBody}
-                maxLength={REPLY_BODY_MAX}
-                placeholder={t("replyPlaceholder")}
-                aria-invalid={error ? true : undefined}
-                aria-describedby={`${formId}-hint${error ? ` ${formId}-error` : ""}`}
-              />
-              <p id={`${formId}-hint`} className="text-xs text-body">
-                {t("replyHint")}
-              </p>
-              {error && (
-                <p id={`${formId}-error`} role="alert" className="text-sm font-bold text-destructive">
-                  {error}
+        {topic.isLocked ? (
+          <p
+            id="reply"
+            role="note"
+            className="flex scroll-mt-24 items-center gap-2 rounded-card bg-smoke px-4 py-3 font-bold text-heading lg:px-6"
+          >
+            <Lock aria-hidden="true" className="size-4 shrink-0 text-primary" />
+            {t("lockedNote")}
+          </p>
+        ) : (
+          <div
+            id="reply"
+            className="scroll-mt-24 rounded-card border border-border bg-background p-4 max-lg:hidden lg:p-6"
+          >
+            {viewer ? (
+              <form onSubmit={submit} className="grid gap-2">
+                <label htmlFor={formId} className="text-[15px] font-extrabold text-heading">
+                  {t("replyLabel")}
+                </label>
+                <MarkdownEditor
+                  id={formId}
+                  value={body}
+                  onChange={setBody}
+                  maxLength={REPLY_BODY_MAX}
+                  placeholder={t("replyPlaceholder")}
+                  aria-invalid={error ? true : undefined}
+                  aria-describedby={`${formId}-hint${error ? ` ${formId}-error` : ""}`}
+                />
+                <p id={`${formId}-hint`} className="text-xs text-body">
+                  {t("replyHint")}
                 </p>
-              )}
-              <div className="flex justify-end">
-                <Button type="submit" disabled={sending || body.trim() === ""} aria-busy={sending}>
-                  {sending ? t("sending") : t("sendReply")}
-                </Button>
-              </div>
-            </form>
-          ) : (
-            <p className="text-body">
-              <Link
-                href={{ pathname: "/sign-in", query: { next } }}
-                className="font-extrabold text-primary underline underline-offset-4"
-              >
-                {t("signIn")}
-              </Link>{" "}
-              {t("signInToReply")}
-            </p>
-          )}
-        </div>
+                {error && (
+                  <p id={`${formId}-error`} role="alert" className="text-sm font-bold text-destructive">
+                    {error}
+                  </p>
+                )}
+                <div className="flex justify-end">
+                  <Button type="submit" disabled={sending || body.trim() === ""} aria-busy={sending}>
+                    {sending ? t("sending") : t("sendReply")}
+                  </Button>
+                </div>
+              </form>
+            ) : (
+              <p className="text-body">
+                <Link
+                  href={{ pathname: "/sign-in", query: { next } }}
+                  className="font-extrabold text-primary underline underline-offset-4"
+                >
+                  {t("signIn")}
+                </Link>{" "}
+                {t("signInToReply")}
+              </p>
+            )}
+          </div>
+        )}
       </section>
 
-      <MobileReplyBar viewer={viewer} next={next} onSend={send} sending={sending} error={error} />
+      {!topic.isLocked && <MobileReplyBar viewer={viewer} next={next} onSend={send} sending={sending} error={error} />}
 
       <ConfirmDialog
         open={confirm !== null}

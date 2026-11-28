@@ -156,6 +156,16 @@ const notificationStrings = {
       button: "Bildirimlere git",
       reasons: REPORT_REASON_LABELS.tr,
     },
+    forum_content_removed: {
+      subject: "Topluluk paylaşımınız kaldırıldı",
+      text: (title: string, kind: "topic" | "reply") =>
+        kind === "topic"
+          ? `"${title}" konunuz topluluk kurallarına aykırı bulunduğu için kaldırıldı.`
+          : `"${title}" konusuna yazdığınız cevap topluluk kurallarına aykırı bulunduğu için kaldırıldı.`,
+      detail: "Gerekçe",
+      button: "Topluluğa git",
+      reasons: REPORT_REASON_LABELS.tr,
+    },
     org_application_approved: {
       subject: "Kurumsal başvurunuz onaylandı",
       text: (name: string, type: "clinic" | "shelter") =>
@@ -250,6 +260,16 @@ const notificationStrings = {
       button: "Go to notifications",
       reasons: REPORT_REASON_LABELS.en,
     },
+    forum_content_removed: {
+      subject: "Your community post was removed",
+      text: (title: string, kind: "topic" | "reply") =>
+        kind === "topic"
+          ? `Your topic "${title}" was removed for breaking the community rules.`
+          : `Your reply to "${title}" was removed for breaking the community rules.`,
+      detail: "Reason",
+      button: "Go to the community",
+      reasons: REPORT_REASON_LABELS.en,
+    },
     org_application_approved: {
       subject: "Your organization application was approved",
       text: (name: string, type: "clinic" | "shelter") =>
@@ -335,6 +355,14 @@ export type NotificationMailData =
   | { type: "user_warned"; title: string; url: string; reason: string }
   | { type: "report_resolved"; title: string; url: string; outcome: "action_taken" | "no_violation" }
   | { type: "org_application_approved"; title: string; url: string; orgType: "clinic" | "shelter" }
+  | {
+      type: "forum_content_removed"
+      title: string
+      url: string
+      kind: "topic" | "reply"
+      reason: string
+      note: string | null
+    }
   | { type: "org_application_rejected"; title: string; url: string; reason: string }
   | { type: "listing_removed"; title: string; url: string; reason: string }
   | { type: "favorite_closed"; title: string; url: string; outcome: "adopted" | "reunited" | "closed" }
@@ -372,6 +400,13 @@ export function notificationMail(
       text = n.user_warned.text(data.title)
       detail = { label: n.user_warned.detail, value: n.user_warned.reasons[data.reason] ?? data.reason }
       break
+    case "forum_content_removed": {
+      ;({ subject, button: buttonLabel } = n.forum_content_removed)
+      text = n.forum_content_removed.text(data.title, data.kind)
+      const reason = n.forum_content_removed.reasons[data.reason] ?? data.reason
+      detail = { label: n.forum_content_removed.detail, value: data.note ? `${reason} — ${data.note}` : reason }
+      break
+    }
     case "org_application_approved":
       ;({ subject, button: buttonLabel } = n.org_application_approved)
       text = n.org_application_approved.text(data.title, data.orgType)

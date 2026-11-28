@@ -292,8 +292,8 @@ export class AdminReportsService {
         .where(eq(rejectionReason.slug, REMOVE_REASON[reason] ?? "kurallara-aykiri"))
       await this.listings.remove(admin, targetId, { reasonId: r?.id, note: "" })
     } else if (targetType === "comment") await this.comments.remove(admin, targetId)
-    else if (targetType === "topic") await this.forum.removeTopic(admin, targetId)
-    else if (targetType === "reply") await this.forum.removeReply(admin, targetId)
+    else if (targetType === "topic") await this.forum.removeTopic(admin, targetId, { reason })
+    else if (targetType === "reply") await this.forum.removeReply(admin, targetId, { reason })
   }
 
   /** İçerik sahibi ve geçmişi: üyelik, ilan sayıları, onay bekleyen ilanları, önceki sonuçlanan şikâyetler, uyarılar. */

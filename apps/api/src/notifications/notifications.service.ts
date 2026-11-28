@@ -28,6 +28,13 @@ export type NotificationPayload =
       /** İlgili içeriğin başlığı (ilan / konu); yoksa boş. */
       title: string
     }
+  | {
+      type: "forum_content_removed"
+      kind: "topic" | "reply"
+      title: string
+      reason: string
+      note: string | null
+    }
   | { type: "org_application_approved"; orgType: "clinic" | "shelter"; name: string }
   | { type: "org_application_rejected"; orgType: "clinic" | "shelter"; name: string; reason: string }
   | {
@@ -251,6 +258,15 @@ export class NotificationsService {
           title: payload.title,
           reason: payload.reason,
           url: `${web}${WEB_PATHS.notifications[locale]}`,
+        }
+      case "forum_content_removed":
+        return {
+          type: payload.type,
+          title: payload.title,
+          kind: payload.kind,
+          reason: payload.reason,
+          note: payload.note,
+          url: `${web}${WEB_PATHS.community[locale]}`,
         }
       case "org_application_approved":
         return {

@@ -763,6 +763,14 @@
       "org_application_rejected": {
         "title": "Kurumsal başvurunuz onaylanmadı",
         "body": "“{name}”: {reason}. Bilgileri düzeltip yeniden gönderebilirsiniz."
+      },
+      "forum_content_removed_topic": {
+        "title": "Topluluk konunuz kaldırıldı",
+        "body": "“{title}” konunuz topluluk kurallarına aykırı bulunduğu için kaldırıldı ({reason})."
+      },
+      "forum_content_removed_reply": {
+        "title": "Topluluk cevabınız kaldırıldı",
+        "body": "“{title}” konusuna yazdığınız cevap topluluk kurallarına aykırı bulunduğu için kaldırıldı ({reason})."
       }
     }
   },
@@ -960,7 +968,10 @@
     "formatToolbar": "Biçimlendirme",
     "formatBold": "Kalın",
     "formatItalic": "İtalik",
-    "formatList": "Madde listesi"
+    "formatList": "Madde listesi",
+    "pinned": "Sabit",
+    "locked": "Kilitli",
+    "lockedNote": "Bu konu yeni cevaplara kapatıldı."
   },
   "AskTopic": {
     "metaTitle": "Soru sor",
@@ -1166,7 +1177,8 @@
     "ORG_TYPE_REQUIRED": "Kurum türünü seçin.",
     "APPLICATION_PENDING": "Bekleyen bir başvurunuz var; sonuçlanmadan yenisi gönderilemez.",
     "ALREADY_ORGANIZATION": "Bu hesap kurumsal başvuru yapamaz (zaten kurum ya da yönetici hesabı).",
-    "APPLICATION_NOT_PENDING": "Bu başvuru zaten sonuçlanmış."
+    "APPLICATION_NOT_PENDING": "Bu başvuru zaten sonuçlanmış.",
+    "TOPIC_LOCKED": "Bu konu yeni cevaplara kapatıldı."
   },
   "Posts": {
     "blogTitle": "Blog",
@@ -1233,7 +1245,8 @@
       "reports": "Şikayetler",
       "blog": "Blog",
       "news": "Haberler",
-      "applications": "Kurum başvuruları"
+      "applications": "Kurum başvuruları",
+      "community": "Topluluk"
     },
     "pending": "bekliyor",
     "searchLabel": "Admin panelinde ara",
@@ -1916,5 +1929,82 @@
     "reasonTooShort": "Gerekçe en az 10 karakter olmalı.",
     "approved": "Başvuru onaylandı.",
     "rejected": "Başvuru reddedildi."
+  },
+  "AdminCommunity": {
+    "title": "Topluluk",
+    "tabsLabel": "Topluluk içerikleri",
+    "tabs": {
+      "topics": "Konular",
+      "replies": "Cevaplar",
+      "deleted": "Silinenler"
+    },
+    "kindLabel": "Silinen içerik türü",
+    "searchLabel": "Toplulukta ara",
+    "searchPlaceholder": "Başlık, metin, yazar adı ya da e-posta",
+    "categoryLabel": "Kategori",
+    "allCategories": "Tüm kategoriler",
+    "sortLabel": "Sıralama",
+    "sort": {
+      "new": "En yeni",
+      "old": "En eski",
+      "replies": "En çok cevap"
+    },
+    "empty": "Burada henüz içerik yok.",
+    "emptyFiltered": "Aramaya uyan içerik yok.",
+    "clearFilters": "Süzgeçleri temizle",
+    "range": "{from}–{to} / {total}",
+    "pagination": "Sayfalar",
+    "previous": "Önceki",
+    "next": "Sonraki",
+    "pageOf": "Sayfa {page} / {total}",
+    "topicsCaption": "Yayındaki konular",
+    "repliesCaption": "Yayındaki cevaplar",
+    "deletedTopicsCaption": "Silinmiş konular",
+    "deletedRepliesCaption": "Silinmiş cevaplar",
+    "colTopic": "Konu",
+    "colReply": "Cevap",
+    "colCategory": "Kategori",
+    "colAuthor": "Yazar",
+    "colReplies": "Cevap",
+    "colViews": "Okunma",
+    "colHelpful": "Faydalı",
+    "colDate": "Tarih",
+    "colRemoval": "Silinme",
+    "colActions": "İşlemler",
+    "view": "Görüntüle",
+    "viewRow": "Konuyu sitede aç: {title}",
+    "viewReply": "Cevabı konu sayfasında aç: {title}",
+    "more": "Diğer işlemler: {title}",
+    "pin": "Sabitle",
+    "unpin": "Sabitliği kaldır",
+    "lock": "Kilitle (cevaplara kapat)",
+    "unlock": "Kilidi aç",
+    "moveAction": "Kategoriyi değiştir",
+    "remove": "Sil",
+    "removeReplyRow": "{name} adlı kişinin “{title}” konusundaki cevabını sil",
+    "topicDeleted": "konu silinmiş",
+    "removedByAuthor": "Yazarı sildi",
+    "removedBy": "Silen: {name}",
+    "pinnedDone": "“{title}” sabitlendi.",
+    "unpinnedDone": "“{title}” sabitlikten çıkarıldı.",
+    "lockedDone": "“{title}” yeni cevaplara kapatıldı.",
+    "unlockedDone": "“{title}” yeniden cevaplara açıldı.",
+    "movedDone": "“{title}” {category} kategorisine taşındı.",
+    "removedTopicDone": "“{title}” silindi; yazarına bildirildi.",
+    "removedReplyDone": "{name} adlı kişinin cevabı silindi; yazarına bildirildi.",
+    "removeTopicTitle": "Konu silinsin mi?",
+    "removeTopicText": "“{title}” ve cevapları sitede görünmez olur. Yazarına gerekçeyle birlikte bildirim ve e-posta gider.",
+    "removeReplyTitle": "Cevap silinsin mi?",
+    "removeReplyText": "“{title}” konusundaki bu cevap sitede görünmez olur. Yazarına gerekçeyle birlikte bildirim ve e-posta gider.",
+    "reasonLabel": "Gerekçe",
+    "reasonPlaceholder": "Gerekçe seçin",
+    "reasonRequired": "Bir gerekçe seçin.",
+    "noteLabel": "Not",
+    "noteHint": "Yazara gönderilir; isteğe bağlı (\"Diğer\"de en az 10 karakter).",
+    "noteRequired": "\"Diğer\" seçildiğinde en az 10 karakterlik not yazın.",
+    "moveTitle": "Kategoriyi değiştir",
+    "moveText": "“{title}” konusunun taşınacağı kategoriyi seçin. Eski adres yeni adrese yönlenir.",
+    "move": "Taşı",
+    "cancel": "Vazgeç"
   }
 }

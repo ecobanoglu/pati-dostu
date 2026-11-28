@@ -48,6 +48,7 @@ export const routing = defineRouting({
     "/admin/listings": { tr: "/admin/ilanlar", en: "/admin/listings" },
     "/admin/reports": { tr: "/admin/sikayetler", en: "/admin/reports" },
     "/admin/users": { tr: "/admin/kullanicilar", en: "/admin/users" },
+    "/admin/community": { tr: "/admin/topluluk", en: "/admin/community" },
     "/admin/organization-applications": {
       tr: "/admin/kurum-basvurulari",
       en: "/admin/organization-applications",

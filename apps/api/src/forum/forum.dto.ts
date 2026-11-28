@@ -44,6 +44,10 @@ const topicCardSchema = z
     species: named.nullable(),
     author,
     isSolved: z.boolean(),
+    /** Admin sabitledi (listede en üstte, "Sabit" rozeti). */
+    isPinned: z.boolean(),
+    /** Admin kilitledi (yeni cevap yazılamaz). */
+    isLocked: z.boolean(),
     /** Veteriner kliniği hesabı cevap yazdı ("Veteriner cevapladı" rozeti). */
     vetAnswered: z.boolean(),
     answerCount: z.number().int(),

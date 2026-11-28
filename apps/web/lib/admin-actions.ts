@@ -13,3 +13,13 @@ export async function refreshListingCaches(): Promise<void> {
   if (user?.role !== "admin") return
   updateTag("listings")
 }
+
+/**
+ * Topluluk yönetiminden sonra (silme, taşıma, sabitleme, kilitleme) herkese açık topluluk önbelleğini (`forum`
+ * etiketi: kategori sayıları, konu listeleri, anasayfa bölümü) hemen geçersiz kılar. Yalnız admin çağırabilir.
+ */
+export async function refreshForumCaches(): Promise<void> {
+  const user = await getCurrentUser()
+  if (user?.role !== "admin") return
+  updateTag("forum")
+}

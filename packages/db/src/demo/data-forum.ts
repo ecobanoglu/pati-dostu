@@ -30,6 +30,10 @@ export type DemoTopic = {
   photos?: { query: string; count: number }
   /** Konuyu takip eden kullanıcılar (yazar her zaman takip eder). */
   followers?: string[]
+  /** Admin sabitledi ("En yeni"de en üstte). */
+  pinned?: boolean
+  /** Admin kilitledi (yeni cevap yazılamaz). */
+  locked?: boolean
   replies: DemoReply[]
 }
 
@@ -178,6 +182,7 @@ export const demoTopics: DemoTopic[] = [
     author: "inbox",
     ago: 2 * DAY,
     title: "Kısırlaştırma sonrası bakım nasıl olmalı?",
+    locked: true,
     body: "Dişi kedim yarın kısırlaştırılacak. Eve geldikten sonra nelere dikkat etmeliyim?\n\n- Yaka kullanmalı mıyım?\n- Ne zaman mama verebilirim?",
     views: 72,
     replies: [
@@ -302,6 +307,7 @@ export const demoTopics: DemoTopic[] = [
     author: "elif",
     ago: 15 * DAY,
     title: "İlk kez kedi sahiplenecekler için alışveriş listesi",
+    pinned: true,
     body: "Önümüzdeki hafta ilk kedimi sahipleniyorum. Eksik bir şey var mı?\n\n- Mama ve su kabı\n- Kum kabı ve kum\n- Taşıma çantası\n- Tırmalama tahtası",
     views: 310,
     followers: ["inbox"],

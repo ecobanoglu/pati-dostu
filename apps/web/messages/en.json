@@ -763,6 +763,14 @@
       "org_application_rejected": {
         "title": "Your organization application wasn't approved",
         "body": "“{name}”: {reason}. You can correct the details and resend."
+      },
+      "forum_content_removed_topic": {
+        "title": "Your community topic was removed",
+        "body": "Your topic “{title}” was removed for breaking the community rules ({reason})."
+      },
+      "forum_content_removed_reply": {
+        "title": "Your community reply was removed",
+        "body": "Your reply to “{title}” was removed for breaking the community rules ({reason})."
       }
     }
   },
@@ -960,7 +968,10 @@
     "formatToolbar": "Formatting",
     "formatBold": "Bold",
     "formatItalic": "Italic",
-    "formatList": "Bulleted list"
+    "formatList": "Bulleted list",
+    "pinned": "Pinned",
+    "locked": "Locked",
+    "lockedNote": "This topic is closed to new replies."
   },
   "AskTopic": {
     "metaTitle": "Ask a question",
@@ -1166,7 +1177,8 @@
     "ORG_TYPE_REQUIRED": "Choose the organization type.",
     "APPLICATION_PENDING": "You already have a pending application; you can't send another until it's reviewed.",
     "ALREADY_ORGANIZATION": "This account can't apply (it's already an organization or admin account).",
-    "APPLICATION_NOT_PENDING": "This application has already been reviewed."
+    "APPLICATION_NOT_PENDING": "This application has already been reviewed.",
+    "TOPIC_LOCKED": "This topic is closed to new replies."
   },
   "Posts": {
     "blogTitle": "Blog",
@@ -1233,7 +1245,8 @@
       "reports": "Reports",
       "blog": "Blog",
       "news": "News",
-      "applications": "Organization applications"
+      "applications": "Organization applications",
+      "community": "Community"
     },
     "pending": "pending",
     "searchLabel": "Search the admin panel",
@@ -1916,5 +1929,82 @@
     "reasonTooShort": "The reason must be at least 10 characters.",
     "approved": "Application approved.",
     "rejected": "Application rejected."
+  },
+  "AdminCommunity": {
+    "title": "Community",
+    "tabsLabel": "Community content",
+    "tabs": {
+      "topics": "Topics",
+      "replies": "Replies",
+      "deleted": "Deleted"
+    },
+    "kindLabel": "Deleted content type",
+    "searchLabel": "Search the community",
+    "searchPlaceholder": "Title, text, author name or email",
+    "categoryLabel": "Category",
+    "allCategories": "All categories",
+    "sortLabel": "Sort",
+    "sort": {
+      "new": "Newest",
+      "old": "Oldest",
+      "replies": "Most replies"
+    },
+    "empty": "No content here yet.",
+    "emptyFiltered": "No content matches the search.",
+    "clearFilters": "Clear filters",
+    "range": "{from}–{to} of {total}",
+    "pagination": "Pages",
+    "previous": "Previous",
+    "next": "Next",
+    "pageOf": "Page {page} of {total}",
+    "topicsCaption": "Published topics",
+    "repliesCaption": "Published replies",
+    "deletedTopicsCaption": "Deleted topics",
+    "deletedRepliesCaption": "Deleted replies",
+    "colTopic": "Topic",
+    "colReply": "Reply",
+    "colCategory": "Category",
+    "colAuthor": "Author",
+    "colReplies": "Replies",
+    "colViews": "Views",
+    "colHelpful": "Helpful",
+    "colDate": "Date",
+    "colRemoval": "Removal",
+    "colActions": "Actions",
+    "view": "View",
+    "viewRow": "Open topic on the site: {title}",
+    "viewReply": "Open the reply on the topic page: {title}",
+    "more": "More actions: {title}",
+    "pin": "Pin",
+    "unpin": "Unpin",
+    "lock": "Lock (close to replies)",
+    "unlock": "Unlock",
+    "moveAction": "Change category",
+    "remove": "Delete",
+    "removeReplyRow": "Delete {name}'s reply on “{title}”",
+    "topicDeleted": "topic deleted",
+    "removedByAuthor": "Deleted by the author",
+    "removedBy": "Deleted by {name}",
+    "pinnedDone": "“{title}” was pinned.",
+    "unpinnedDone": "“{title}” was unpinned.",
+    "lockedDone": "“{title}” was closed to new replies.",
+    "unlockedDone": "“{title}” was reopened to replies.",
+    "movedDone": "“{title}” was moved to {category}.",
+    "removedTopicDone": "“{title}” was deleted; the author was notified.",
+    "removedReplyDone": "{name}'s reply was deleted; the author was notified.",
+    "removeTopicTitle": "Delete the topic?",
+    "removeTopicText": "“{title}” and its replies will no longer be visible. The author gets a notification and email with the reason.",
+    "removeReplyTitle": "Delete the reply?",
+    "removeReplyText": "This reply on “{title}” will no longer be visible. The author gets a notification and email with the reason.",
+    "reasonLabel": "Reason",
+    "reasonPlaceholder": "Choose a reason",
+    "reasonRequired": "Choose a reason.",
+    "noteLabel": "Note",
+    "noteHint": "Sent to the author; optional (at least 10 characters for \"Other\").",
+    "noteRequired": "Write a note of at least 10 characters when \"Other\" is selected.",
+    "moveTitle": "Change category",
+    "moveText": "Choose the category to move “{title}” to. The old address redirects to the new one.",
+    "move": "Move",
+    "cancel": "Cancel"
   }
 }

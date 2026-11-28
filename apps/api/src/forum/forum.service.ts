@@ -38,6 +38,8 @@ import type { ForumCategoryItem, ReplyItem, SimilarTopic, TopicCard, TopicDetail
 
 type SessionUser = AuthSession["user"]
 type Locale = "tr" | "en"
+/** Admin silmesinin gerekçesi: hazır neden kodu (şikâyet nedenleri) + isteğe bağlı not. */
+export type Removal = { reason: string; note?: string }
 type Role = "user" | "clinic" | "shelter" | "admin"
 
 /** Konu slug'ı olamayacak sabit alt sayfalar (web: /topluluk/soru-sor). */
@@ -74,6 +76,8 @@ const cardColumns = {
   title: forumTopic.title,
   body: forumTopic.body,
   isSolved: forumTopic.isSolved,
+  isPinned: forumTopic.isPinned,
+  isLocked: forumTopic.isLocked,
   answerCount: forumTopic.answerCount,
   viewCount: forumTopic.viewCount,
   createdAt: forumTopic.createdAt,
@@ -143,7 +147,10 @@ export class ForumService {
     }))
   }
 
-  /** Konu listesi: kategori / tür süzgeci, başlık + ayrıntıda arama, sıralama, sayfalama (20'şer). */
+  /**
+   * Konu listesi: kategori / tür süzgeci, başlık + ayrıntıda arama, sıralama, sayfalama (20'şer). Admin'in sabitlediği
+   * konular "En yeni" sıralamada (arama yokken) en üstte durur.
+   */
   async list(q: TopicsQuery): Promise<TopicPage> {
     const term = q.q ? `%${likeEscape(q.q)}%` : null
     const where = and(
@@ -156,7 +163,11 @@ export class ForumService {
     const order =
       q.sort === "popular"
         ? [desc(forumTopic.answerCount), desc(forumTopic.viewCount), desc(forumTopic.createdAt)]
-        : [desc(forumTopic.createdAt), desc(forumTopic.id)]
+        : [
+            ...(q.sort === "new" && !term ? [desc(forumTopic.isPinned)] : []),
+            desc(forumTopic.createdAt),
+            desc(forumTopic.id),
+          ]
     const [rows, [total]] = await Promise.all([
       this.cardQuery()
         .where(where)
@@ -327,14 +338,23 @@ export class ForumService {
     return { id, slug }
   }
 
-  /** Konuyu siler (yumuşak): yazan ya da admin. */
-  async removeTopic(me: SessionUser, topicId: string): Promise<void> {
+  /**
+   * Konuyu siler (yumuşak): yazan ya da admin. Silen kişi ve (admin silmesinde) hazır gerekçe + not saklanır
+   * (Admin › Topluluk › Silinenler). Silinen konuyu döndürür (bildirim için).
+   */
+  async removeTopic(me: SessionUser, topicId: string, removal?: Removal) {
     const topic = await this.visibleTopicById(topicId)
     if (topic.authorId !== me.id && me.role !== "admin") throw this.forbidden()
     await this.db
       .update(forumTopic)
-      .set({ deletedAt: sql`now()` })
+      .set({
+        deletedAt: sql`now()`,
+        removedBy: me.id,
+        removalReason: removal?.reason ?? null,
+        removalNote: removal?.note || null,
+      })
       .where(eq(forumTopic.id, topicId))
+    return topic
   }
 
   /** Konuyu takip eder / takibi bırakır (tekrar çağrılabilir). */
@@ -358,6 +378,9 @@ export class ForumService {
   async reply(me: SessionUser, topicId: string, body: string): Promise<ReplyItem> {
     this.ensureVerified(me)
     const topic = await this.visibleTopicById(topicId)
+    if (topic.isLocked) {
+      throw new AppException(HttpStatus.CONFLICT, ErrorCode.TOPIC_LOCKED, "Konu yeni cevaplara kapalı.")
+    }
     await this.rateLimit.consume("reply", me.id)
     await this.moderation.assertAllowed("reply", me.id, { body })
     const row = await this.db.transaction(async (tx) => {
@@ -400,14 +423,23 @@ export class ForumService {
     })
   }
 
-  /** Cevabı siler (yumuşak): yazan ya da admin. Cevap sayısı düşer; en iyi cevapsa konu "çözülmedi"ye döner. */
-  async removeReply(me: SessionUser, replyId: string): Promise<void> {
+  /**
+   * Cevabı siler (yumuşak): yazan ya da admin. Cevap sayısı düşer; en iyi cevapsa konu "çözülmedi"ye döner. Silen kişi
+   * ve (admin silmesinde) gerekçe + not saklanır. Silinen cevabı döndürür (bildirim için).
+   */
+  async removeReply(me: SessionUser, replyId: string, removal?: Removal) {
     const reply = await this.visibleReplyById(replyId)
     if (reply.authorId !== me.id && me.role !== "admin") throw this.forbidden()
     await this.db.transaction(async (tx) => {
       await tx
         .update(forumReply)
-        .set({ deletedAt: sql`now()`, isBestAnswer: false })
+        .set({
+          deletedAt: sql`now()`,
+          isBestAnswer: false,
+          removedBy: me.id,
+          removalReason: removal?.reason ?? null,
+          removalNote: removal?.note || null,
+        })
         .where(eq(forumReply.id, replyId))
       await tx
         .update(forumTopic)
@@ -417,6 +449,7 @@ export class ForumService {
         })
         .where(eq(forumTopic.id, reply.topicId))
     })
+    return reply
   }
 
   /** "Faydalı" (beğeni) ekler ya da geri alır; kendi cevabı beğenilemez. Yeni sayıyı döndürür. */
@@ -505,6 +538,8 @@ export class ForumService {
       species: r.speciesSlug && r.speciesName ? { slug: r.speciesSlug, name: localize(r.speciesName, locale) } : null,
       author: { id: r.author.id, name: r.author.name, image: r.author.image, role: r.author.role as Role },
       isSolved: r.isSolved,
+      isPinned: r.isPinned,
+      isLocked: r.isLocked,
       vetAnswered: r.vetAnswered,
       answerCount: r.answerCount,
       viewCount: r.viewCount,
@@ -541,6 +576,7 @@ export class ForumService {
         authorId: forumTopic.authorId,
         slug: forumTopic.slug,
         title: forumTopic.title,
+        isLocked: forumTopic.isLocked,
         categorySlug: forumCategory.slug,
       })
       .from(forumTopic)
@@ -558,6 +594,7 @@ export class ForumService {
         topicId: forumReply.topicId,
         authorId: forumReply.authorId,
         isBestAnswer: forumReply.isBestAnswer,
+        topicTitle: forumTopic.title,
       })
       .from(forumReply)
       .innerJoin(forumTopic, eq(forumTopic.id, forumReply.topicId))

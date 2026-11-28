@@ -5,6 +5,17 @@ import { contentStatusEnum, createdAt, id, type LocalizedText, timestamps } from
 import { user } from "./auth.js"
 import { species } from "./dictionary.js"
 
+/**
+ * Silme bilgisi (yumuşak silmede `deletedAt` ile birlikte): silen kişi (yazar ya da admin), admin silmesinde hazır
+ * gerekçe kodu (şikâyet nedenleri: inappropriate, spam, sale, misinformation, other) ve not. Admin › Topluluk ›
+ * Silinenler gösterir.
+ */
+const removal = {
+  removedBy: text().references(() => user.id),
+  removalReason: text(),
+  removalNote: text(),
+}
+
 /** Topluluk kategorisi (sistem verisi; ad ve açıklama tür adları gibi { tr, en }). */
 export const forumCategory = pgTable("forum_category", {
   id: id(),
@@ -37,6 +48,11 @@ export const forumTopic = pgTable(
     answerCount: integer().notNull().default(0),
     /** Son cevap (yoksa oluşturulma) zamanı; "son etkinlik" ve listeleme için. */
     lastActivityAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
+    /** Admin sabitledi: "En yeni" sıralamada (aramasız) en üstte. */
+    isPinned: boolean().notNull().default(false),
+    /** Admin kilitledi: yeni cevap yazılamaz. */
+    isLocked: boolean().notNull().default(false),
+    ...removal,
     ...timestamps,
   },
   (t) => [
@@ -61,6 +77,7 @@ export const forumReply = pgTable(
     status: contentStatusEnum().notNull().default("published"),
     isBestAnswer: boolean().notNull().default(false),
     likeCount: integer().notNull().default(0),
+    ...removal,
     ...timestamps,
   },
   (t) => [index().on(t.topicId, t.createdAt)]

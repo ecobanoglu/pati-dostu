@@ -7,6 +7,7 @@ import {
   Flag,
   LayoutGrid,
   type LucideIcon,
+  MessagesSquare,
   Newspaper,
   ShieldCheck,
   Users,
@@ -21,13 +22,14 @@ import { type AdminCounts, useAdminCounts } from "@/lib/use-admin-counts"
 import { cn } from "@/lib/utils"
 
 type NavItem = {
-  key: "listingReview" | "listings" | "users" | "applications" | "reports" | "blog" | "news"
+  key: "listingReview" | "listings" | "users" | "applications" | "community" | "reports" | "blog" | "news"
   href: {
     pathname:
       | "/admin/listing-review"
       | "/admin/listings"
       | "/admin/users"
       | "/admin/organization-applications"
+      | "/admin/community"
       | "/admin/reports"
       | "/admin/posts"
     query?: Record<string, string>
@@ -73,6 +75,12 @@ const NAV: NavItem[] = [
     icon: Building2,
     count: "pendingApplications",
     isActive: (p) => p === "/admin/organization-applications",
+  },
+  {
+    key: "community",
+    href: { pathname: "/admin/community" },
+    icon: MessagesSquare,
+    isActive: (p) => p === "/admin/community",
   },
   {
     key: "reports",

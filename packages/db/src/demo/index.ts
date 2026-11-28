@@ -430,6 +430,8 @@ async function seedForum(owners: Map<string, string>) {
       slug: slugify(t.title),
       body: t.body,
       isSolved: t.replies.some((r) => r.best),
+      isPinned: t.pinned ?? false,
+      isLocked: t.locked ?? false,
       viewCount: t.views,
       answerCount: t.replies.length,
       lastActivityAt: at(last?.ago ?? t.ago),

@@ -44,6 +44,8 @@ export const ErrorCode = {
   CANNOT_MODERATE_ADMIN: "CANNOT_MODERATE_ADMIN",
   /** Rol değişikliğine izin yok (kurum hesabı, kendi rolü, son admin, askıdaki hesap). */
   ROLE_CHANGE_NOT_ALLOWED: "ROLE_CHANGE_NOT_ALLOWED",
+  /** Konu admin tarafından kilitlendi; yeni cevap yazılamaz. */
+  TOPIC_LOCKED: "TOPIC_LOCKED",
   // Kurumsal başvuru
   /** Bekleyen bir başvurunuz var (sonuçlanmadan yenisi gönderilemez). */
   APPLICATION_PENDING: "APPLICATION_PENDING",

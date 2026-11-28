@@ -1,4 +1,4 @@
-import { Check, MessageCircle } from "lucide-react"
+import { Check, Lock, MessageCircle, Pin } from "lucide-react"
 import { useFormatter, useLocale, useTranslations } from "next-intl"
 
 import { Link } from "@/i18n/navigation"
@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils"
 
 import { displayName } from "./query"
 
-/** Konu rozetleri: kategori adı, "Çözüldü", "Veteriner cevapladı". */
+/** Konu rozetleri: kategori adı, "Sabit", "Çözüldü", "Veteriner cevapladı", "Kilitli". */
 export function TopicBadges({ topic, size = "md" }: { topic: TopicCardData; size?: "sm" | "md" }) {
   const t = useTranslations("Community")
   const badge = cn(
@@ -19,6 +19,12 @@ export function TopicBadges({ topic, size = "md" }: { topic: TopicCardData; size
       <span className={cn("font-extrabold text-primary", size === "sm" ? "text-xs" : "text-[13px]")}>
         {topic.category.name}
       </span>
+      {topic.isPinned && (
+        <span className={cn(badge, "bg-notice-soft text-notice-text")}>
+          <Pin aria-hidden="true" className="size-3" />
+          {t("pinned")}
+        </span>
+      )}
       {topic.isSolved && (
         <span className={cn(badge, "bg-success-soft text-success-text")}>
           <Check aria-hidden="true" className="size-3" />
@@ -26,6 +32,12 @@ export function TopicBadges({ topic, size = "md" }: { topic: TopicCardData; size
         </span>
       )}
       {topic.vetAnswered && <span className={cn(badge, "bg-smoke text-primary")}>{t("vetAnswered")}</span>}
+      {topic.isLocked && (
+        <span className={cn(badge, "bg-muted text-heading")}>
+          <Lock aria-hidden="true" className="size-3" />
+          {t("locked")}
+        </span>
+      )}
     </span>
   )
 }

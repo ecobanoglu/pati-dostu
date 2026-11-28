@@ -39,6 +39,7 @@ export type NotificationItem = {
     | "report_resolved"
     | "org_application_approved"
     | "org_application_rejected"
+    | "forum_content_removed"
   payload: Record<string, unknown>
   readAt: string | null
   createdAt: string
@@ -88,6 +89,7 @@ const tones: Record<NotificationItem["type"], { icon: LucideIcon; className: str
   report_resolved: { icon: Flag, className: "text-primary" },
   org_application_approved: { icon: BadgeCheck, className: "text-success-text" },
   org_application_rejected: { icon: TriangleAlert, className: "text-danger" },
+  forum_content_removed: { icon: TriangleAlert, className: "text-danger" },
 }
 
 /** Payload'daki metin alanını güvenle okur (API `Record<string, unknown>` döndürür). */
@@ -102,6 +104,8 @@ function str(payload: Record<string, unknown>, key: string): string {
  */
 function messageKey(n: NotificationItem): string {
   if (n.type === "forum_reply") return n.payload.own === false ? "forum_reply_follow" : "forum_reply_own"
+  if (n.type === "forum_content_removed")
+    return n.payload.kind === "reply" ? "forum_content_removed_reply" : "forum_content_removed_topic"
   if (n.type === "report_resolved")
     return str(n.payload, "outcome") === "no_violation"
       ? "report_resolved_no_violation"
@@ -149,6 +153,7 @@ function targetOf(n: NotificationItem) {
   }
   if (n.type === "favorite_closed") return "/account/favorites" as const
   if (n.type === "org_application_approved") return "/account" as const
+  if (n.type === "forum_content_removed") return "/community" as const
   if (n.type === "org_application_rejected") return "/account/organization-application" as const
   if (n.type === "new_message") {
     const c = str(n.payload, "conversationId")
@@ -264,7 +269,7 @@ export function NotificationsList({ initial, now }: { initial: NotificationPage;
                     body={t(`item.${messageKey(n)}.body` as "item.listing_rejected.body", {
                       title: str(n.payload, "title"),
                       reason:
-                        n.type === "report_created" || n.type === "user_warned"
+                        n.type === "report_created" || n.type === "user_warned" || n.type === "forum_content_removed"
                           ? tr(`reasons.${str(n.payload, "reason")}` as "reasons.other")
                           : str(n.payload, "reason"),
                       target:

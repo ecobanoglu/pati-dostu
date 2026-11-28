@@ -53,6 +53,8 @@ export const notificationTypes = {
   org_application_approved: "moderation",
   /** Kurumsal başvurunuz reddedildi (gerekçeyle; düzeltip yeniden gönderebilir). Sabit kanal — site içi + e-posta. */
   org_application_rejected: "moderation",
+  /** Topluluk konunuz / cevabınız admin tarafından kaldırıldı (gerekçeyle). Sabit kanal — site içi + e-posta. */
+  forum_content_removed: "moderation",
 } as const satisfies Record<string, NotificationTopic | "moderation">
 export type NotificationType = keyof typeof notificationTypes
 
@@ -65,6 +67,7 @@ export const fixedNotificationChannels: Partial<Record<NotificationType, { inApp
   report_resolved: { inApp: true, email: false },
   org_application_approved: { inApp: true, email: true },
   org_application_rejected: { inApp: true, email: true },
+  forum_content_removed: { inApp: true, email: true },
 }
 export const notificationTypeList = Object.keys(notificationTypes) as NotificationType[]
 

@@ -17,6 +17,10 @@ export type TopicCardData = {
   species: { slug: string; name: string } | null
   author: { id: string; name: string; image: string | null; role: "user" | "clinic" | "shelter" | "admin" }
   isSolved: boolean
+  /** Admin sabitledi (listede en üstte). */
+  isPinned: boolean
+  /** Admin kilitledi (yeni cevap yazılamaz). */
+  isLocked: boolean
   vetAnswered: boolean
   answerCount: number
   viewCount: number

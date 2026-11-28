@@ -1022,7 +1022,16 @@
     "allListings": "All listings",
     "allListingsShort": "All",
     "latestEmpty": "No live listings yet. Be the first to post one!",
-    "postListing": "Post a listing"
+    "postListing": "Post a listing",
+    "communityTitle": "Questions from the community",
+    "toCommunity": "Go to community",
+    "answers": "{count, plural, =0 {No answers yet} one {# answer} other {# answers}}",
+    "communityEmpty": "No questions in the community yet.",
+    "askQuestion": "Ask the first one!",
+    "blogTitle": "Latest from the blog",
+    "allPosts": "All posts",
+    "readMore": "Read more",
+    "blogEmpty": "No blog posts yet."
   },
   "Errors": {
     "BAD_REQUEST": "The request is invalid.",

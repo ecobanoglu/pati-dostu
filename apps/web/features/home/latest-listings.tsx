@@ -1,10 +1,11 @@
-import { ArrowRight } from "lucide-react"
 import { getLocale, getTranslations } from "next-intl/server"
 
 import { ListingCard } from "@/components/listing/listing-card"
 import { Link } from "@/i18n/navigation"
 import { emptyFilters, toApiQuery } from "@/lib/listing-filters"
 import { getListings } from "@/lib/listings"
+
+import { SectionHeader } from "./section-header"
 
 /** Anasayfada gösterilen ilan sayısı (masaüstünde 4×3, mobilde 2×6). */
 const COUNT = 12
@@ -22,16 +23,13 @@ export async function LatestListings() {
 
   return (
     <section aria-labelledby="latest-title" className="mx-auto max-w-site px-4 py-10 lg:px-6 lg:py-16">
-      <div className="mb-5 flex items-baseline justify-between gap-4 lg:mb-7">
-        <h2 id="latest-title" className="text-h2 text-heading">
-          {t("latestTitle")}
-        </h2>
-        <Link href="/listings" className="flex min-h-tap items-center gap-1.5 font-extrabold text-primary">
-          <span className="lg:hidden">{t("allListingsShort")}</span>
-          <span className="max-lg:hidden">{t("allListings")}</span>
-          <ArrowRight aria-hidden="true" className="size-4" />
-        </Link>
-      </div>
+      <SectionHeader
+        id="latest-title"
+        title={t("latestTitle")}
+        href="/listings"
+        linkShort={t("allListingsShort")}
+        linkLong={t("allListings")}
+      />
       {page.items.length === 0 ? (
         <p className="rounded-card border border-border p-6 text-body">
           {t("latestEmpty")}{" "}

@@ -1022,7 +1022,16 @@
     "allListings": "Tüm ilanlar",
     "allListingsShort": "Tümü",
     "latestEmpty": "Henüz yayında ilan yok. İlk ilanı siz verin!",
-    "postListing": "İlan ver"
+    "postListing": "İlan ver",
+    "communityTitle": "Topluluktan sorular",
+    "toCommunity": "Topluluğa git",
+    "answers": "{count, plural, =0 {Henüz cevap yok} other {# cevap}}",
+    "communityEmpty": "Toplulukta henüz soru yok.",
+    "askQuestion": "İlk soruyu siz sorun!",
+    "blogTitle": "Blogdan son yazılar",
+    "allPosts": "Tüm yazılar",
+    "readMore": "Devamını oku",
+    "blogEmpty": "Henüz blog yazısı yok."
   },
   "Errors": {
     "BAD_REQUEST": "İstek geçersiz.",
